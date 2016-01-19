@@ -22,6 +22,12 @@ extern "C" {
   void cortex_undumpi_close(cortex_dumpi_profile* profile);
 
   /**
+   * Set the callbacks that must be used for translation.
+   */
+  void cortex_set_translation_callbacks(cortex_dumpi_profile* profile, 
+				const libundumpi_callbacks *callback);
+
+  /**
    * Move to the head of the MPI stream.
    */
   int cortex_dumpi_start_stream_read(cortex_dumpi_profile *profile);

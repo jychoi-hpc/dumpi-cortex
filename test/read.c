@@ -1,4 +1,5 @@
 #include <cortex/cortex.h>
+#include <string.h>
 
 int main(int argc, char** argv) {
 	
@@ -16,9 +17,12 @@ int main(int argc, char** argv) {
 		exit(-1);
 	}
 
+	libundumpi_callbacks cbacks;
+	memset(&cbacks,0,sizeof(cbacks));
+
 	cortex_dumpi_start_stream_read(profile);
 
-	cortex_undumpi_read_stream(profile,NULL,NULL);
+	cortex_undumpi_read_stream(profile,&cbacks,NULL);
 
 	cortex_undumpi_close(profile);
 
