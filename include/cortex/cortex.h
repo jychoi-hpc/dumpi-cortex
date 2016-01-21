@@ -17,9 +17,10 @@ extern "C" {
    * Open a trace file for reading.
    * It is the caller's job to clean up using undumpi_close.
    * \param fname  the name of the binary trace file
+   * \param world_size size of MPI_COMM_WORLD
    * \return a heap-allocated object on success, NULL on failure
    */
-  cortex_dumpi_profile* cortex_undumpi_open(const char* fname);
+  cortex_dumpi_profile* cortex_undumpi_open(const char* fname, unsigned int world_size);
 
   /**
    * All done.

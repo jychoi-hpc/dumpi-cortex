@@ -11,6 +11,7 @@
 #include <cortex/operation.h>
 
 struct cortex_operation; // forward declaration
+struct cortex_comm; // forward declaration
 
 typedef struct cortex_dumpi_profile {
 	dumpi_profile* dumpi; /* internal dumpi profile */
@@ -19,6 +20,9 @@ typedef struct cortex_dumpi_profile {
 
 	struct cortex_operation* first_pending;
 	struct cortex_operation* last_pending;
+
+	unsigned int nprocs; /* size of MPI_COMM_WORLD */
+	struct cortex_comm* comms; /* hash table for the communicators */
 } cortex_dumpi_profile;
 
 #endif

@@ -7,13 +7,19 @@
 #include <string.h>
 #include "cortex/cortex.h"
 
-cortex_dumpi_profile* cortex_undumpi_open(const char* fname) {
+cortex_dumpi_profile* cortex_undumpi_open(const char* fname, unsigned int world_size) {
 	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)malloc(sizeof(cortex_dumpi_profile));
 	profile->dumpi = undumpi_open(fname);
+	profile->nprocs = world_size;
 	if(profile->dumpi == NULL) {
 		free(profile);
 		return NULL;
 	}
+
+	// create the world communicator
+	profile->comms = NULL;
+	cortex_comm_add(profile, 2, world_size);
+
 	libundumpi_callbacks cbacks;
 	memset(&cbacks,0,sizeof(cbacks));
 	cortex_set_callbacks(&cbacks);
@@ -23,6 +29,7 @@ cortex_dumpi_profile* cortex_undumpi_open(const char* fname) {
 
 void cortex_undumpi_close(cortex_dumpi_profile* profile) {
 	undumpi_close(profile->dumpi);
+	cortex_comm_delete_all(profile);
 	free(profile);
 }
 
