@@ -1,5 +1,10 @@
-#ifndef CORTEX_UTIL
-#define CORTEX_UTIL
+/*
+ * Copyright (C) 2016 University of Chicago
+ * See COPYRIGHT notice in top-level directory.
+ *
+ */
+#ifndef CORTEX_UTIL_H
+#define CORTEX_UTIL_H
 
 typedef struct dumpi_pcontrol {} dumpi_pcontrol;
 

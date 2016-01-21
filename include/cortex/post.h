@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2016 University of Chicago
+ * See COPYRIGHT notice in top-level directory.
+ *
+ */
+#ifndef CORTEX_POST_H
+#define CORTEX_POST_H
+
 #include <dumpi/libundumpi/callbacks.h>
 #include <dumpi/common/argtypes.h>
 #include <dumpi/common/constants.h>
@@ -579,3 +587,5 @@ int cortex_post_MPIO_Waitany(const dumpio_waitany *prm, uint16_t thread, const d
 int cortex_post_MPIO_Waitsome(const dumpio_waitsome *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
 
 int cortex_post_MPIO_Testsome(const dumpio_testsome *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
+
+#endif

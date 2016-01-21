@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2016 University of Chicago
+ * See COPYRIGHT notice in top-level directory.
+ *
+ */
+
 #include "cortex/cortex.h"
 #include "cortex/callbacks.h"
 #include <dumpi/libundumpi/callbacks.h>

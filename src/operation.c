@@ -1,3 +1,9 @@
+/*
+ * Copyright (C) 2016 University of Chicago
+ * See COPYRIGHT notice in top-level directory.
+ *
+ */
+
 #include <string.h>
 #include "cortex/operation.h"
 #include "cortex/util.h"

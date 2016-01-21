@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2016 University of Chicago
+ * See COPYRIGHT notice in top-level directory.
+ *
+ */
 #ifndef DUMPI_CORTEX_OPERATION_H
 #define DUMPI_CORTEX_OPERATION_H
 
