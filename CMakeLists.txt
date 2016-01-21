@@ -22,13 +22,7 @@ if(NOT DEFINED CMAKE_INSTALL_PREFIX)
 	set(CMAKE_INSTALL_PREFIX /usr/local)
 endif(NOT DEFINED CMAKE_INSTALL_PREFIX)
 
-set(DUMPI_ROOT "/home/mdorier/sw/dumpi/0.0.0")
-
 find_package(DUMPI REQUIRED)
-
-#include_directories(${DUMPI_ROOT}/include)
-#link_directories(${DUMPI_ROOT}/lib)
-
 include_directories(${DUMPI_INCLUDE_DIR})
 
 #-----------------------------------------------------------#

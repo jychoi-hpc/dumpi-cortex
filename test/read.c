@@ -9,13 +9,6 @@ static int handleDUMPIInit(const dumpi_init *prm, uint16_t thread,
 	return 0;
 }
 
-static int handleDUMPISendRecv(const dumpi_sendrecv* prm, uint16_t thread,
-			const dumpi_time *cpu, const dumpi_time *wall,
-			const dumpi_perfinfo *perf, void *uarg) {
-	printf("MPI_SendRecv called\n");
-	return 0;
-}
-
 int cortex_translate_MPI_Init(const dumpi_init *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
 	printf("cortex_MPI_Init overloaded\n");
 	cortex_post_MPI_Init(prm,thread,cpu,wall,perf,uarg);
@@ -41,7 +34,6 @@ int main(int argc, char** argv) {
 	libundumpi_callbacks cbacks;
 	memset(&cbacks,0,sizeof(cbacks));
 	cbacks.on_init = handleDUMPIInit;
-	cbacks.on_sendrecv = handleDUMPISendRecv;
 
 	cortex_dumpi_start_stream_read(profile);
 
