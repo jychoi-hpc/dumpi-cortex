@@ -33,11 +33,11 @@ int cortex_undumpi_read_single_call(cortex_dumpi_profile *profile,
 			       void *userarg,
 			       int *mpi_finalized) {
 	if(cortex_has_operation(profile)) {
-		cortex_exec(profile, callarr);
+		cortex_exec(profile, callarr, userarg, mpi_finalized);
 	} else {
 		profile->active = undumpi_read_single_call(profile->dumpi, profile->callarr, (void*)profile, mpi_finalized);
 		if(cortex_has_operation(profile)) {
-			cortex_exec(profile, callarr);
+			cortex_exec(profile, callarr, userarg, mpi_finalized);
 		}
 	}
 	return profile->active || cortex_has_operation(profile);
@@ -56,9 +56,9 @@ int cortex_undumpi_read_stream_full(cortex_dumpi_profile* profile,
 	int mpi_finalized = 0;
 	int active = 1;
 	while(active) {
-		active = cortex_undumpi_read_single_call(profile, profile->callarr, (void*)profile, &mpi_finalized);
+		active = cortex_undumpi_read_single_call(profile, user_callarr, (void*)profile, &mpi_finalized);
 		while(cortex_has_operation(profile)) {
-			cortex_exec(profile, user_callarr);
+			cortex_exec(profile, user_callarr, userarg, &mpi_finalized);
 		}
 	}
 	return 1;

@@ -9,11 +9,11 @@ struct cortex_operation;
 
 typedef struct cortex_operation {
 	dumpi_function type;
-	const void* args;
+	void* args;
 	uint16_t thread;
-	const dumpi_time cpu;
-	const dumpi_time wall;
-	const dumpi_perfinfo perf;
+	dumpi_time cpu;
+	dumpi_time wall;
+	dumpi_perfinfo perf;
 
 	struct cortex_operation* next;
 	struct cortex_operation* prev;
@@ -30,6 +30,6 @@ int cortex_post(struct cortex_dumpi_profile* profile,
 		const dumpi_time *wall, 
 		const dumpi_perfinfo *perf);
 
-int cortex_exec(struct cortex_dumpi_profile* profile, libundumpi_cbpair* callarr);
+int cortex_exec(struct cortex_dumpi_profile* profile, libundumpi_cbpair* callarr, void* uargs, int* mpi_finalized);
 
 #endif

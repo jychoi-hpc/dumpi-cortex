@@ -24,8 +24,12 @@ endif(NOT DEFINED CMAKE_INSTALL_PREFIX)
 
 set(DUMPI_ROOT "/home/mdorier/sw/dumpi/0.0.0")
 
-include_directories(${DUMPI_ROOT}/include)
-link_directories(${DUMPI_ROOT}/lib)
+find_package(DUMPI REQUIRED)
+
+#include_directories(${DUMPI_ROOT}/include)
+#link_directories(${DUMPI_ROOT}/lib)
+
+include_directories(${DUMPI_INCLUDE_DIR})
 
 #-----------------------------------------------------------#
 include_directories(${CORTEX_SOURCE_DIR})
@@ -41,5 +45,5 @@ add_subdirectory (test)
 #-----------------------------------------------------------#
 # Installation
 #-----------------------------------------------------------#
-#install(FILES "include/bbio.h" DESTINATION include)
-#install(FILES "${CMAKE_BINARY_DIR}/lib/libcortex.a" DESTINATION lib)
+install(DIRECTORY "include/cortex" DESTINATION include)
+install(FILES "${CMAKE_BINARY_DIR}/lib/libcortex.a" DESTINATION lib)
