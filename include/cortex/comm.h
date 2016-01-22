@@ -25,7 +25,8 @@ void cortex_comm_delete(cortex_dumpi_profile* profile, dumpi_comm comm);
 
 void cortex_comm_delete_all(cortex_dumpi_profile* profile);
 
-
 int cortex_comm_get_size(cortex_dumpi_profile* profile, dumpi_comm, int* size);
+
+int cortex_comm_dup(cortex_dumpi_profile* profile, dumpi_comm oldc, dumpi_comm newc);
 
 #endif

@@ -16,6 +16,27 @@ static int handleDUMPISendrecv(const dumpi_sendrecv* prm, uint16_t thread,
 	return 0;
 }
 
+static int handleDUMPISend(const dumpi_send* prm, uint16_t thread,
+			const dumpi_time *cpu, const dumpi_time *wall,
+			const dumpi_perfinfo *perf, void *uarg) {
+	printf("MPI_Send called\n");
+	return 0;
+}
+
+static int handleDUMPIRecv(const dumpi_recv* prm, uint16_t thread,
+			const dumpi_time *cpu, const dumpi_time *wall,
+			const dumpi_perfinfo *perf, void *uarg) {
+	printf("MPI_Recv called\n");
+	return 0;
+}
+
+static int handleDUMPIBcast(const dumpi_bcast* prm, uint16_t thread,
+			const dumpi_time *cpu, const dumpi_time *wall,
+			const dumpi_perfinfo *perf, void *uarg) {
+	printf("MPI_Bcast called\n");
+	return 0;
+}
+
 static handleDUMPIBarrier(const dumpi_barrier* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
@@ -47,9 +68,12 @@ int main(int argc, char** argv) {
 
 	libundumpi_callbacks cbacks;
 	memset(&cbacks,0,sizeof(cbacks));
-	cbacks.on_init = handleDUMPIInit;
-	cbacks.on_sendrecv = handleDUMPISendrecv;
-	cbacks.on_barrier = handleDUMPIBarrier;
+	cbacks.on_init 		= handleDUMPIInit;
+	cbacks.on_sendrecv 	= handleDUMPISendrecv;
+	cbacks.on_barrier 	= handleDUMPIBarrier;
+	cbacks.on_send		= handleDUMPISend;
+	cbacks.on_recv		= handleDUMPIRecv;
+	cbacks.on_bcast		= handleDUMPIBcast;
 
 	cortex_dumpi_start_stream_read(profile);
 
