@@ -2,6 +2,7 @@
 #include "cortex/comm.h"
 
 /**
+ * Translation of MPI_Comm_dup.
  */
 int cortex_translate_MPI_Comm_dup(const dumpi_comm_dup *prm, 
 			uint16_t thread, 

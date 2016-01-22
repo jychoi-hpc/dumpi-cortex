@@ -2,6 +2,10 @@
 #include "cortex/comm.h"
 
 /**
+ * Translation of MPI_Comm_create.
+ * TODO: Right now this translates into an MPI_Comm_dup because
+ * we don't have information on the groups. We should support 
+ * groups if we want to appropriatly handle this...
  */
 int cortex_translate_MPI_Comm_create(const dumpi_comm_create *prm, 
 			uint16_t thread, 

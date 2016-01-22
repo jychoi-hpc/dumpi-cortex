@@ -41,7 +41,6 @@ static int bcast_binomial(const dumpi_bcast* prm,
 	int comm_size, src, dst, relative_rank, mask, bnytes, root;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 	root = prm->root;
-	printf("comm_size = %d\n",comm_size);
 	relative_rank = (rank >= root) ? rank - root : rank - root + comm_size;
 
 	dumpi_recv recv_prm;
