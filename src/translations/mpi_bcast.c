@@ -10,6 +10,11 @@ static int bcast_binomial(const dumpi_bcast* prm,
 
 /**
  * Translation of MPI_Bcast into point to point communications.
+ * TODO: right now a binomial implementation is used;
+ * we should also implement scatter_doubling_allgather (line 481
+ * in bcast.c in Mpich).
+ * TODO: we should also implement Bcast_scatter_ring_allgather
+ * (line 791 in bcast.c)
  */
 int cortex_translate_MPI_Bcast(const dumpi_bcast *prm, 
 			uint16_t thread, 
