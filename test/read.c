@@ -44,6 +44,13 @@ static handleDUMPIBarrier(const dumpi_barrier* prm, uint16_t thread,
 	return 0;
 }
 
+static handleDUMPIReduce(const dumpi_reduce* prm, uint16_t thread,
+			const dumpi_time *cpu, const dumpi_time *wall,
+			const dumpi_perfinfo *perf, void *uarg) {
+	printf("MPI_Reduce called\n");
+	return 0;
+}
+
 int cortex_translate_MPI_Init(const dumpi_init *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
 	printf("cortex_MPI_Init overloaded\n");
 	cortex_post_MPI_Init(prm,thread,cpu,wall,perf,uarg);
@@ -74,6 +81,7 @@ int main(int argc, char** argv) {
 	cbacks.on_send		= handleDUMPISend;
 	cbacks.on_recv		= handleDUMPIRecv;
 	cbacks.on_bcast		= handleDUMPIBcast;
+	cbacks.on_reduce	= handleDUMPIReduce;
 
 	cortex_dumpi_start_stream_read(profile);
 
