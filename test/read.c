@@ -63,6 +63,13 @@ static handleDUMPIAllgather(const dumpi_allgather* prm, uint16_t thread,
 			const dumpi_perfinfo *perf, void *uarg) {
 	printf("MPI_Allgather called\n");
 	return 0;
+}
+
+static handleDUMPIAllgatherv(const dumpi_allgatherv* prm, uint16_t thread,
+			const dumpi_time *cpu, const dumpi_time *wall,
+			const dumpi_perfinfo *perf, void *uarg) {
+	printf("MPI_Allgatherv called\n");
+	return 0;
 } 
 
 int cortex_translate_MPI_Init(const dumpi_init *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
@@ -97,6 +104,8 @@ int main(int argc, char** argv) {
 	cbacks.on_bcast		= handleDUMPIBcast;
 	cbacks.on_reduce	= handleDUMPIReduce;
 	cbacks.on_allreduce	= handleDUMPIAllReduce;
+	cbacks.on_allgather	= handleDUMPIAllgather;
+	cbacks.on_allgatherv	= handleDUMPIAllgatherv;
 
 	cortex_dumpi_start_stream_read(profile);
 
