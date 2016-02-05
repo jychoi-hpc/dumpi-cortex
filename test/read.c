@@ -58,6 +58,13 @@ static handleDUMPIAllReduce(const dumpi_allreduce* prm, uint16_t thread,
 	return 0;
 }
 
+static handleDUMPIAllgather(const dumpi_allgather* prm, uint16_t thread,
+			const dumpi_time *cpu, const dumpi_time *wall,
+			const dumpi_perfinfo *perf, void *uarg) {
+	printf("MPI_Allgather called\n");
+	return 0;
+} 
+
 int cortex_translate_MPI_Init(const dumpi_init *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
 	printf("cortex_MPI_Init overloaded\n");
 	cortex_post_MPI_Init(prm,thread,cpu,wall,perf,uarg);
