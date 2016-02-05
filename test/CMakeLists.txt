@@ -5,6 +5,7 @@ set(TRANSLATION_SOURCE
 	${CORTEX_SOURCE_DIR}/src/translations/mpi_bcast.c
 	${CORTEX_SOURCE_DIR}/src/translations/mpi_reduce.c
 	${CORTEX_SOURCE_DIR}/src/translations/mpi_allreduce.c
+	${CORTEX_SOURCE_DIR}/src/translations/mpi_allgather.c
 	${CORTEX_SOURCE_DIR}/src/translations/mpi_comm_dup.c
 	${CORTEX_SOURCE_DIR}/src/translations/mpi_comm_split.c
 	${CORTEX_SOURCE_DIR}/src/translations/mpi_comm_create.c
