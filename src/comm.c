@@ -48,7 +48,9 @@ void cortex_comm_delete_all(cortex_dumpi_profile* profile) {
 
 int cortex_comm_get_size(cortex_dumpi_profile* profile, dumpi_comm comm, int* size) {
 	cortex_comm* ccomm = cortex_comm_find(profile, comm);
-	if(ccomm == NULL) return -1;
+	if(ccomm == NULL) {
+		return -1;
+	}
 	*size = ccomm->size;
 	return 0;
 }
@@ -67,7 +69,6 @@ int cortex_comm_dup(cortex_dumpi_profile* profile, dumpi_comm oldc, dumpi_comm n
 	ccomm_new = (cortex_comm*)malloc(sizeof(cortex_comm));
 	ccomm_new->handle = newc;
 	ccomm_new->size = ccomm->size;
-
 	cortex_comm** root = &(profile->comms);
 	HASH_ADD_COMM(*root, handle, ccomm_new);
 

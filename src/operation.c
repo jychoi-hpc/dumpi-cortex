@@ -326,6 +326,288 @@ static void* copy_parameters(dumpi_function type, const void *prm) {
 		break;
 	}
 	return result;
+
+#undef COPY
+#undef COPY2
+#undef STRCOPY
+
+}
+
+static void detete_parameter_members(dumpi_function type, const void *prm) {
+	if(type >= DUMPI_ALL_FUNCTIONS) return;
+
+#define DELETE(_fun,_field) free(((_fun*)prm)->_field);
+
+	int i,j;
+	switch(type) {
+	case DUMPI_Waitany:
+		DELETE(dumpi_waitany,requests)
+		break;
+	case DUMPI_Testany:
+		DELETE(dumpi_testany,requests)
+		break;
+	case DUMPI_Waitall:
+		DELETE(dumpi_waitall,requests)
+		break;
+	case DUMPI_Testall:
+		DELETE(dumpi_testall,requests)
+		break;
+	case DUMPI_Waitsome:
+		DELETE(dumpi_waitsome,requests)
+		break;
+	case DUMPI_Testsome:
+		DELETE(dumpi_testsome,requests)
+		break;
+	case DUMPI_Startall:
+		DELETE(dumpi_startall,requests)
+		break;
+	case DUMPI_Type_indexed:
+		DELETE(dumpi_type_indexed,lengths)
+		DELETE(dumpi_type_indexed,indices)
+		break;
+	case DUMPI_Type_hindexed:
+		DELETE(dumpi_type_hindexed,lengths)
+		DELETE(dumpi_type_hindexed,indices)
+		break;
+	case DUMPI_Type_struct:
+		DELETE(dumpi_type_struct,lengths)
+		DELETE(dumpi_type_struct,indices)
+		DELETE(dumpi_type_struct,oldtypes)
+		break;
+	case DUMPI_Gatherv:
+		DELETE(dumpi_gatherv,recvcounts)
+		DELETE(dumpi_gatherv,displs)
+		break;
+	case DUMPI_Scatterv:
+		DELETE(dumpi_scatterv,sendcounts)
+		DELETE(dumpi_scatterv,displs)
+		break;
+	case DUMPI_Allgatherv:
+		DELETE(dumpi_allgatherv,recvcounts)
+		DELETE(dumpi_allgatherv,displs)
+		break;
+	case DUMPI_Alltoallv:
+		DELETE(dumpi_alltoallv,sendcounts)
+		DELETE(dumpi_alltoallv,senddispls)
+		DELETE(dumpi_alltoallv,recvcounts)
+		DELETE(dumpi_alltoallv,recvdispls)
+		break;
+	case DUMPI_Reduce_scatter:
+		DELETE(dumpi_reduce_scatter,recvcounts)
+		break;
+	case DUMPI_Group_translate_ranks:
+		DELETE(dumpi_group_translate_ranks,ranks1)
+		DELETE(dumpi_group_translate_ranks,ranks2)
+		break;
+	case DUMPI_Group_incl:
+		DELETE(dumpi_group_incl,ranks)
+		break;
+	case DUMPI_Group_excl:
+		DELETE(dumpi_group_excl,ranks)
+		break;
+	case DUMPI_Group_range_incl:
+		DELETE(dumpi_group_range_incl,ranges)
+		break;
+	case DUMPI_Group_range_excl:
+		DELETE(dumpi_group_range_excl,ranges)
+		break;
+	case DUMPI_Cart_create:
+		DELETE(dumpi_cart_create,dims)
+		DELETE(dumpi_cart_create,periods)
+		break;
+	case DUMPI_Dims_create:
+		DELETE(dumpi_dims_create,dims.in)
+		DELETE(dumpi_dims_create,dims.out)
+		break;
+	case DUMPI_Graph_create:
+		DELETE(dumpi_graph_create,index)
+		DELETE(dumpi_graph_create,edges)
+		break;
+	case DUMPI_Graph_get:
+		DELETE(dumpi_graph_get,index)
+		DELETE(dumpi_graph_get,edges)
+		break;
+	case DUMPI_Cart_get:
+		DELETE(dumpi_cart_get,dims)
+		DELETE(dumpi_cart_get,periods)
+		DELETE(dumpi_cart_get,coords)
+		break;
+	case DUMPI_Cart_rank:
+		DELETE(dumpi_cart_rank,coords)
+		break;
+	case DUMPI_Cart_coords:
+		DELETE(dumpi_cart_coords,coords)
+		break;
+	case DUMPI_Graph_neighbors:
+		DELETE(dumpi_graph_neighbors,neighbors)
+		break;
+	case DUMPI_Cart_sub:
+		DELETE(dumpi_cart_sub,remain_dims)
+		break;
+	case DUMPI_Cart_map:
+		DELETE(dumpi_cart_map,dims)
+		DELETE(dumpi_cart_map,period)
+		break;
+	case DUMPI_Graph_map:
+		DELETE(dumpi_graph_map,index)
+		DELETE(dumpi_graph_map,edges)
+		break;
+	case DUMPI_Get_processor_name:
+		DELETE(dumpi_get_processor_name,name)
+		break;
+	case DUMPI_Error_string:
+		DELETE(dumpi_error_string,errorstring)
+		break;
+	case DUMPI_Init:
+		for(i=0; i<((dumpi_init*)prm)->argc; i++) {
+			DELETE(dumpi_init,argv[i])
+		}
+		DELETE(dumpi_init,argv)
+		break;
+	case DUMPI_Close_port:
+		DELETE(dumpi_close_port,portname)
+		break;
+	case DUMPI_Comm_accept:
+		DELETE(dumpi_comm_accept,portname)
+		break;
+	case DUMPI_Comm_connect:
+		DELETE(dumpi_comm_connect,portname)
+		break;
+	case DUMPI_Comm_spawn:
+		if(((dumpi_comm_spawn*)prm)->oldcommrank == ((dumpi_comm_spawn*)prm)->root) {
+			DELETE(dumpi_comm_spawn,command)
+			i = 0;
+			while(((dumpi_comm_spawn*)prm)->argv[i] != NULL) {
+				DELETE(dumpi_comm_spawn,argv[i])
+				i++;
+			}
+			DELETE(dumpi_comm_spawn,argv)
+		}
+		break;
+	case DUMPI_Comm_spawn_multiple:
+		if(((dumpi_comm_spawn_multiple*)prm)->oldcommrank == ((dumpi_comm_spawn_multiple*)prm)->root) {
+			for(j=0; j < ((dumpi_comm_spawn_multiple*)prm)->count; j++) {
+				DELETE(dumpi_comm_spawn_multiple,commands[j])
+				i = 0;
+				 while(((dumpi_comm_spawn_multiple*)prm)->argvs[j][i] != NULL) {
+					DELETE(dumpi_comm_spawn_multiple,argvs[j][i])
+					i++;
+				}
+				DELETE(dumpi_comm_spawn_multiple,argvs[j])
+			}
+			DELETE(dumpi_comm_spawn_multiple,commands)
+			DELETE(dumpi_comm_spawn_multiple,argvs)
+		}
+		break;
+	case DUMPI_Lookup_name:
+		DELETE(dumpi_lookup_name,servicename)
+		DELETE(dumpi_lookup_name,portname)
+		break;
+	case DUMPI_Open_port:
+		DELETE(dumpi_open_port,portname)
+		break;
+	case DUMPI_Publish_name:
+		DELETE(dumpi_publish_name,servicename)
+		DELETE(dumpi_publish_name,portname)
+		break;
+	case DUMPI_Unpublish_name:
+		DELETE(dumpi_unpublish_name,servicename)
+		DELETE(dumpi_unpublish_name,portname)
+		break;
+	case DUMPI_Alltoallw:
+		DELETE(dumpi_alltoallw,sendcounts)
+		DELETE(dumpi_alltoallw,senddispls)
+		DELETE(dumpi_alltoallw,sendtypes)
+		DELETE(dumpi_alltoallw,recvcounts)
+		DELETE(dumpi_alltoallw,recvdispls)
+		DELETE(dumpi_alltoallw,recvtypes)
+		break;
+	case DUMPI_Add_error_string:
+		DELETE(dumpi_add_error_string,errorstring)
+		break;
+	case DUMPI_Comm_get_name:
+		DELETE(dumpi_comm_get_name,name)
+		break;
+	case DUMPI_Comm_set_name:
+		DELETE(dumpi_comm_set_name,name)
+		break;
+	case DUMPI_Init_thread:
+		for(i=0; i<((dumpi_init_thread*)prm)->argc; i++) {
+			DELETE(dumpi_init_thread,argv[i])
+		}
+		DELETE(dumpi_init_thread,argv)
+		break;
+	case DUMPI_Type_get_contents:
+		DELETE(dumpi_type_get_contents,arrintegers)
+		DELETE(dumpi_type_get_contents,arraddresses)
+		break;
+	case DUMPI_Type_get_name:
+		DELETE(dumpi_type_get_name,name)
+		break;
+	case DUMPI_Type_set_name:
+		DELETE(dumpi_type_set_name,name)
+		break;
+	case DUMPI_Info_get:
+		DELETE(dumpi_info_get,key)
+		DELETE(dumpi_info_get,value)
+		break;
+	case DUMPI_Info_get_nthkey:
+		DELETE(dumpi_info_get_nthkey,key)
+		break;
+	case DUMPI_Info_get_valuelen:
+		DELETE(dumpi_info_get_valuelen,key)
+		break;
+	case DUMPI_Info_set:
+		DELETE(dumpi_info_set,key)
+		DELETE(dumpi_info_set,value)
+		break;
+	case DUMPI_Pack_external:
+		DELETE(dumpi_pack_external,datarep)
+		break;
+	case DUMPI_Pack_external_size:
+		DELETE(dumpi_pack_external_size,datarep)
+		break;
+	case DUMPI_Type_create_darray:
+		DELETE(dumpi_type_create_darray,gsizes)
+		DELETE(dumpi_type_create_darray,distribs)
+		DELETE(dumpi_type_create_darray,dargs)
+		DELETE(dumpi_type_create_darray,psizes)
+		break;
+	case DUMPI_Type_create_hindexed:
+		DELETE(dumpi_type_create_hindexed,blocklengths)
+		DELETE(dumpi_type_create_hindexed,displacements)
+		break;
+	case DUMPI_Type_create_indexed_block:
+		DELETE(dumpi_type_create_indexed_block,displacments)
+		break;
+	case DUMPI_Type_create_struct:
+		DELETE(dumpi_type_create_struct,blocklengths)
+		DELETE(dumpi_type_create_struct,displacements)
+		DELETE(dumpi_type_create_struct,oldtypes)
+		break;
+	case DUMPI_Type_create_subarray:
+		DELETE(dumpi_type_create_subarray,sizes)
+		DELETE(dumpi_type_create_subarray,subsizes)
+		DELETE(dumpi_type_create_subarray,starts)
+		break;
+	case DUMPI_Unpack_external:
+		DELETE(dumpi_unpack_external,datarep)
+		break;
+	case DUMPI_File_open:
+		DELETE(dumpi_file_open,filename)
+		break;
+	case DUMPI_File_delete:
+		DELETE(dumpi_file_delete,filename)
+		break;
+	case DUMPI_File_set_view:
+		DELETE(dumpi_file_set_view,datarep)
+		break;
+	case DUMPI_File_get_view:
+		DELETE(dumpi_file_get_view,datarep)
+		break;
+	}
+	return;
+#undef DELETE
 }
 
 static cortex_operation* create_operation(dumpi_function type, const void *prm,
@@ -341,8 +623,11 @@ static cortex_operation* create_operation(dumpi_function type, const void *prm,
 	return op;
 }
 
-static void fee_operation(cortex_operation* op) {
-	if(op->args) free(op->args);
+static void free_operation(cortex_operation* op) {
+	if(op->args) {
+		detete_parameter_members(op->type,op->args);
+		free(op->args);
+	}
 	free(op);
 }
 
@@ -375,6 +660,6 @@ int cortex_exec(cortex_dumpi_profile* profile, libundumpi_cbpair* callarr, void*
 	libundumpi_unsafe_fun callout = callarr[i].callout;
 	if(callout) callout(op->args, op->thread, &(op->cpu), &(op->wall), &(op->perf), uargs);
 
-	fee_operation(op);
+	free_operation(op);
 	return 0;
 }
