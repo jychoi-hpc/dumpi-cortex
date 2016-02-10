@@ -4,6 +4,7 @@ set(CORTEX_LIB_SRC
 	${CORTEX_SOURCE_DIR}/src/operation.c
 	${CORTEX_SOURCE_DIR}/src/post.c
 	${CORTEX_SOURCE_DIR}/src/comm.c
+	${CORTEX_SOURCE_DIR}/src/datatype.c
 )
 
 add_library(cortex ${CORTEX_LIB_SRC})
