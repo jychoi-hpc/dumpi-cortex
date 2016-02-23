@@ -1,5 +1,6 @@
 #include "cortex/cortex.h"
-
+#include "cortex/constants.h"
+#include "cortex/datatype.h"
 /**
  * This translates MPI_Allgather calls into a series of
  * point to point calls. The following
@@ -16,10 +17,16 @@ int cortex_translate_MPI_Allgather(const dumpi_allgather *prm,
 	rank = thread;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 
-	int j, i, pof2, src, rem;
+	int j, i, pof2, src, rem, jnext;
 	int curr_cnt, dst;
 	int mask, dst_tree_root, my_tree_root,
 	    last_recv_cnt = 0;
+	int type_size, tot_bytes;
+	int left, right;
+
+	if(prm->sendcount == 0) return 0;
+
+	type_size = cortex_datatype_get_size(prm->recvtype);
 
 	dumpi_sendrecv sendrecv_prm;
 		sendrecv_prm.comm 	= prm->comm;
@@ -31,12 +38,13 @@ int cortex_translate_MPI_Allgather(const dumpi_allgather *prm,
 		sendrecv_prm.recvtag	= 1234;
 		sendrecv_prm.status	= NULL;
 
+	tot_bytes = prm->recvcount * comm_size * type_size;
+	if(tot_bytes < CORTEX_ALLGATHER_LONG_MSG_SIZE && !(comm_size & (comm_size - 1))) {
 
-	mask = 0x1;
-	curr_cnt = prm->recvcount;
-	i = 0;
+		mask = 0x1;
+		curr_cnt = prm->recvcount;
+		i = 0;
 
-	if(!(comm_size & (comm_size - 1))) {
 		/* Power-of-two no. of processes, use recursive doubling algo */
 		while(mask < comm_size) {
 			dst = rank ^ mask;
@@ -63,8 +71,8 @@ int cortex_translate_MPI_Allgather(const dumpi_allgather *prm,
 			i++;
 		}
 
-	} else {
-		/* Non-power-of-two no. of processes, use Bruck algorithm. */
+	} else if(tot_bytes < CORTEX_ALLGATHER_SHORT_MSG_SIZE) {
+		/* Non-power-of-two no. of processes but small messages, use Bruck algorithm. */
 		/* do the first \floor(\lg p) steps */
 		curr_cnt = prm->recvcount;
 		pof2 = 1;
@@ -93,7 +101,26 @@ int cortex_translate_MPI_Allgather(const dumpi_allgather *prm,
 			sendrecv_prm.source = src;
 			cortex_post_MPI_Sendrecv(&sendrecv_prm, rank, cpu, wall, perf, uarg);
 		}
-	} // TODO for long messages, Ring algo should be used... (allgather.c line 585)
+	} else {
+		/* For long messages, Ring algo should be used... (allgather.c line 585) */
+		left = (comm_size + rank - 1) % comm_size;
+		right = (rank + 1) % comm_size;
+
+		j = rank;
+		jnext = left;
+		for(i=1; i<comm_size; i++) {
+			
+			sendrecv_prm.sendcount = prm->recvcount;
+			sendrecv_prm.dest = right;
+			sendrecv_prm.recvcount = prm->recvcount;
+			sendrecv_prm.source = left;
+			
+			cortex_post_MPI_Sendrecv(&sendrecv_prm, rank, cpu, wall, perf, uarg);
+
+			j = jnext;
+			jnext = (comm_size + jnext - 1) % comm_size;
+		}
+	}
 
 	return 0;
 }
