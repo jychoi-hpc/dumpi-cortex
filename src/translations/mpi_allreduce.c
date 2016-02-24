@@ -3,8 +3,6 @@
 
 /**
  * Translation of MPI_Allreduce into point to point communications.
- * TODO:  here we use a simple reduce followed by a bcast; other
- * algorithms may be used by MPI in most cases, we should implement them.
  */
 int cortex_translate_MPI_Allreduce(const dumpi_allreduce *prm, 
 			uint16_t thread, 
@@ -12,6 +10,8 @@ int cortex_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
+
+// Old method here (reduce followed by bcast)
 /*
 	dumpi_reduce reduce_prm;
 		reduce_prm.count 	= prm->count;
