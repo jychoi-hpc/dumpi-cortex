@@ -13,4 +13,7 @@
 // equivalent of MPIR_CVAR_ALLREDUCE_SHORT_MSG_SIZE in Mpich
 #define CORTEX_ALLREDUCE_SHORT_MSG_SIZE		2048
 
+// equivalent of MPIR_CVAR_ALLTOALL_THROTTLE in Mpich
+#define CORTEX__ALLTOALL_THROTTLE		32
+
 #endif

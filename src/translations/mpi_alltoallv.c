@@ -1,4 +1,5 @@
 #include "cortex/cortex.h"
+#include "cortex/constants.h"
 
 /**
  * This translates MPI_Alltoallv calls into a series of
@@ -27,7 +28,7 @@ int cortex_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 	rank = thread;
 
-	bblock = 32; // this is actuall controlled by MPIR_CVAR_ALLTOALL_THROTTLE
+	bblock = CORTEX_ALLTOALL_THROTTLE;
 
 	starray = (dumpi_status*)malloc(2*bblock*sizeof(dumpi_status));
 	reqarray = (dumpi_request*)malloc(2*bblock*sizeof(dumpi_request));
