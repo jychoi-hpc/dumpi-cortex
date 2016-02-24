@@ -25,4 +25,7 @@
 // equivalent of MPIR_CVAR_BCAST_LONG_MSG_SIZE in Mpich
 #define CORTEX_BCAST_LONG_MSG_SIZE		524288
 
+// equivalent of MPIR_CVAR_REDUCE_SHORT_MSG_SIZE in Mpich
+#define CORTEX_REDUCE_SHORT_MSG_SIZE		2048
+
 #endif
