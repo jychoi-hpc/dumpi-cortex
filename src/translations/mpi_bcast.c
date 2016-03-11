@@ -1,5 +1,6 @@
 #include "cortex/cortex.h"
 #include "cortex/constants.h"
+#include "cortex/debug.h"
 
 static int bcast_binomial(const dumpi_bcast* prm,
 			int rank,
@@ -24,11 +25,6 @@ static int bcast_scatter_ring_allgather(const dumpi_bcast* prm,
 
 /**
  * Translation of MPI_Bcast into point to point communications.
- * TODO: right now a binomial implementation is used;
- * we should also implement scatter_doubling_allgather (line 481
- * in bcast.c in Mpich).
- * TODO: we should also implement Bcast_scatter_ring_allgather
- * (line 791 in bcast.c)
  */
 int cortex_translate_MPI_Bcast(const dumpi_bcast *prm, 
 			uint16_t thread, 
@@ -42,10 +38,13 @@ int cortex_translate_MPI_Bcast(const dumpi_bcast *prm,
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 	int nbytes = prm->count * type_size;
 	if((nbytes < CORTEX_BCAST_SHORT_MSG_SIZE) || (comm_size < CORTEX_BCAST_MIN_PROCS)) {
+		INFO("Bcast for %d bytes and %d processes, use binomial algorithm\n",nbytes,comm_size);
 		return bcast_binomial(prm,thread,cpu,wall,perf,uarg);
 	} else if((nbytes < CORTEX_BCAST_LONG_MSG_SIZE) && !(comm_size & (comm_size - 1))) {
+		INFO("Bcast for %d bytes and %d processes, use scatter followed by recursive doubling allgather\n",nbytes,comm_size);
 		return bcast_scatter_doubling_allgather(prm,thread,cpu,wall,perf,uarg);
 	} else {
+		INFO("Bcast for %d bytes and %d processes, use scatter followed by ring allgather\n",nbytes,comm_size);
 		return bcast_scatter_ring_allgather(prm,thread,cpu,wall,perf,uarg);
 	}
 }

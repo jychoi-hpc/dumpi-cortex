@@ -1,11 +1,10 @@
 #include "cortex/cortex.h"
+#include "cortex/debug.h"
 
 /**
  * This translates MPI_Barrier calls into a series of
  * point to point calls (MPI_Sendrecv). The following
  * algorithm was found in the Mpich implementation.
- * TODO: deal with inter-communicators
- * TODO: deal with SMP-awareness
  */
 int cortex_translate_MPI_Barrier(const dumpi_barrier *prm, 
 			uint16_t thread, 
@@ -13,6 +12,8 @@ int cortex_translate_MPI_Barrier(const dumpi_barrier *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
+
+	INFO("Barrier using Mpich's barrier algorithm");
 
 	int rank, size, src, dst, mask;
 	rank = thread;

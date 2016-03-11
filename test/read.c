@@ -80,14 +80,15 @@ int cortex_translate_MPI_Init(const dumpi_init *prm, uint16_t thread, const dump
 
 int main(int argc, char** argv) {
 	
-	if(argc != 2) {
-		printf("Usage: %s dumpifile.bin\n", argv[0]);
+	if(argc != 3) {
+		printf("Usage: %s dumpifile.bin world_size\n", argv[0]);
 		exit(-1);
 	}
 
 	const char* filename = argv[1];
+	int world_size = atoi(argv[2]);
 
-	cortex_dumpi_profile* profile = cortex_undumpi_open(filename,9);
+	cortex_dumpi_profile* profile = cortex_undumpi_open(filename,world_size);
 
 	if(!profile) {
 		fprintf(stderr,"Unable to open file %s\n",filename);

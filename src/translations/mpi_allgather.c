@@ -1,6 +1,8 @@
 #include "cortex/cortex.h"
 #include "cortex/constants.h"
 #include "cortex/datatype.h"
+#include "cortex/debug.h"
+
 /**
  * This translates MPI_Allgather calls into a series of
  * point to point calls. The following
@@ -41,6 +43,8 @@ int cortex_translate_MPI_Allgather(const dumpi_allgather *prm,
 	tot_bytes = prm->recvcount * comm_size * type_size;
 	if(tot_bytes < CORTEX_ALLGATHER_LONG_MSG_SIZE && !(comm_size & (comm_size - 1))) {
 
+		INFO("Allgather for %d bytes across %d processes, use recursive doubling algorithm\n",tot_bytes,comm_size);
+
 		mask = 0x1;
 		curr_cnt = prm->recvcount;
 		i = 0;
@@ -74,6 +78,9 @@ int cortex_translate_MPI_Allgather(const dumpi_allgather *prm,
 	} else if(tot_bytes < CORTEX_ALLGATHER_SHORT_MSG_SIZE) {
 		/* Non-power-of-two no. of processes but small messages, use Bruck algorithm. */
 		/* do the first \floor(\lg p) steps */
+
+		INFO("Allgather for %d bytes across %d processes, use Bruck algorithm\n",tot_bytes,comm_size);
+
 		curr_cnt = prm->recvcount;
 		pof2 = 1;
 		while (pof2 <= comm_size/2) {
@@ -103,6 +110,9 @@ int cortex_translate_MPI_Allgather(const dumpi_allgather *prm,
 		}
 	} else {
 		/* For long messages, Ring algo should be used... (allgather.c line 585) */
+
+		INFO("Allgather for %d bytes across %d processes, use ring algorithm\n",tot_bytes,comm_size);
+
 		left = (comm_size + rank - 1) % comm_size;
 		right = (rank + 1) % comm_size;
 

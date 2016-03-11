@@ -1,5 +1,6 @@
 #include "cortex/cortex.h"
 #include "cortex/constants.h"
+#include "cortex/debug.h"
 
 /**
  * This translates MPI_Alltoallv calls into a series of
@@ -17,6 +18,8 @@ int cortex_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 	int dst, rank, req_cnt, req_num = 1;
 	int ii, ss, bblock;
 	int type_size;
+
+	INFO("Alltoallv using Mpich's algorithm with isend/irecv\n");
 
 	dumpi_request* reqarray;
 	dumpi_status* starray;

@@ -1,5 +1,6 @@
 #include "cortex/cortex.h"
 #include "cortex/constants.h"
+#include "cortex/debug.h"
 
 static int reduce_binomial(const dumpi_reduce* prm,
 			int rank,
@@ -33,10 +34,14 @@ int cortex_translate_MPI_Reduce(const dumpi_reduce *prm,
 	pof2 >>=1;
 
 	if((prm->count*type_size > CORTEX_REDUCE_SHORT_MSG_SIZE) && (prm->count >= pof2)) {
+		INFO("Reduce for %d bytes and %d processes, use redcast-gather algorithm\n",(prm->count*type_size),comm_size);
 		return reduce_redscat_gather(prm,thread,cpu,wall,perf,uarg);
 	} else {
+		INFO("Reduce for %d bytes and %d processes, use binomial algorithm\n",(prm->count*type_size),comm_size);
 		return reduce_binomial(prm,thread,cpu,wall,perf,uarg);
 	}
+
+	return 0;
 }
 
 /**
@@ -44,8 +49,8 @@ int cortex_translate_MPI_Reduce(const dumpi_reduce *prm,
  * it can be found in the Mpich implementation in
  * mpich-3.1.4/src/mpi/coll/reduce.c line 79.
  *
- * TODO: here we have assume op is commutative.
- * TODO: here we have assume datatype is contiguous.
+ * TODO: here we assume op is commutative.
+ * TODO: here we assume datatype is contiguous.
  */
 static int reduce_binomial(const dumpi_reduce* prm,
 			int rank,

@@ -1,5 +1,6 @@
 #include "cortex/cortex.h"
 #include "cortex/constants.h"
+#include "cortex/debug.h"
 
 /**
  * This translates MPI_Allgatherv calls into a series of
@@ -39,6 +40,9 @@ int cortex_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 
 	if((total_count*recvtype_size < CORTEX_ALLGATHER_LONG_MSG_SIZE) && !(comm_size & (comm_size - 1))) {
 		/* Power-of-two no. of processes, use recursive doubling algo */
+
+		INFO("Allgatherv for %d bytes across %d processes, use recursive doubling algorithm\n",(total_count*recvtype_size),comm_size);
+
 		i = 0;
 		mask = 0x1;
 		curr_cnt = prm->recvcounts[rank];
@@ -75,6 +79,9 @@ int cortex_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 	} else if(total_count*recvtype_size < CORTEX_ALLGATHER_SHORT_MSG_SIZE){
 		/* Non-power-of-two no. of processes, use Bruck algorithm. */
 		/* do the first \floor(\lg p) steps */
+
+		INFO("Allgatherv for %d bytes across %d processes, use Bruck algorithm\n",(total_count*recvtype_size),comm_size);
+
 		curr_cnt = prm->recvcounts[rank];
 		pof2 = 1;
 		while (pof2 <= comm_size/2) {
@@ -108,6 +115,9 @@ int cortex_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 		}
 	} else {
 		// for long messages, Ring algo should be used... (allgatherv.c line 643)
+
+		INFO("Allgatherv for %d bytes across %d processes, use Ring algorithm\n",(total_count*recvtype_size),comm_size);
+
 		int left = (comm_size + rank - 1) % comm_size;
 		int right = (rank + 1) % comm_size;
 

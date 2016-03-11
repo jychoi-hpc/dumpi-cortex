@@ -1,5 +1,6 @@
 #include "cortex/cortex.h"
 #include "cortex/constants.h"
+#include "cortex/debug.h"
 
 /**
  * Translation of MPI_Allreduce into point to point communications.
@@ -10,25 +11,6 @@ int cortex_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
-
-// Old method here (reduce followed by bcast)
-/*
-	dumpi_reduce reduce_prm;
-		reduce_prm.count 	= prm->count;
-		reduce_prm.datatype	= prm->datatype;
-		reduce_prm.op		= prm->op;
-		reduce_prm.root		= 0;
-		reduce_prm.comm		= prm->comm;
-
-	dumpi_bcast bcast_prm;
-		bcast_prm.count		= prm->count;
-		bcast_prm.datatype	= prm->datatype;
-		bcast_prm.root		= 0;
-		bcast_prm.comm		= prm->comm;
-
-	cortex_translate_MPI_Reduce(&reduce_prm, thread, cpu, wall, perf, uarg);
-	cortex_translate_MPI_Bcast(&bcast_prm, thread, cpu, wall, perf, uarg);
-*/
 
 	int comm_size, i, send_idx, recv_idx, last_idx, send_cnt, recv_cnt;
 	int pof2, mask, rem, newrank, newdst, dst, *cnts, *disps;
@@ -83,6 +65,9 @@ int cortex_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 	   using recursive doubling in that case.) */
 	if (newrank != -1) { 
 		if ((prm->count*type_size <= CORTEX_ALLREDUCE_SHORT_MSG_SIZE) || (prm->count < pof2)) {
+
+			INFO("Allreduce using recursive doubling algorithm\n");
+
 			mask = 0x1;
 			while (mask < pof2) {
 				newdst = newrank ^ mask;
@@ -107,6 +92,9 @@ int cortex_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 			/* for the reduce-scatter, calculate the count that
 			each process receives and the displacement within
 			the buffer */
+
+			INFO("Allreduce using reduce-scatter followed by allgather\n");
+
 
 			cnts = (int*)malloc(pof2*sizeof(int));
 			disps = (int*)malloc(pof2*sizeof(int));
