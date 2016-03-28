@@ -9,6 +9,7 @@
 #include <dumpi/libundumpi/bindings.h>
 #include <dumpi/libundumpi/libundumpi.h>
 #include <cortex/operation.h>
+#include <cortex/dragonfly.h>
 
 struct cortex_operation; // forward declaration
 struct cortex_comm; // forward declaration
@@ -21,7 +22,9 @@ typedef struct cortex_dumpi_profile {
 	struct cortex_operation* first_pending;
 	struct cortex_operation* last_pending;
 
-	unsigned int nprocs; /* size of MPI_COMM_WORLD */
+	job_id_t job_id; /* job id */
+	size_t nprocs; /* size of MPI_COMM_WORLD */
+	rank_t rank; /* rank of this process in MPI_COMM_WORLD */
 	struct cortex_comm* comms; /* hash table for the communicators */
 } cortex_dumpi_profile;
 

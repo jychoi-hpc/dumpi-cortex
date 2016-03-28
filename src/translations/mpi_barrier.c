@@ -13,7 +13,7 @@ int cortex_translate_MPI_Barrier(const dumpi_barrier *prm,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
 
-	INFO("Barrier using Mpich's barrier algorithm");
+	INFO("Barrier using Mpich's barrier algorithm\n");
 
 	int rank, size, src, dst, mask;
 	rank = thread;

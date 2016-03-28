@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
 	const char* filename = argv[1];
 	int world_size = atoi(argv[2]);
 
-	cortex_dumpi_profile* profile = cortex_undumpi_open(filename,world_size);
+	cortex_dumpi_profile* profile = cortex_undumpi_open(filename,1453,world_size,0);
 
 	if(!profile) {
 		fprintf(stderr,"Unable to open file %s\n",filename);

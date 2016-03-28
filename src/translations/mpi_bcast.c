@@ -2,6 +2,10 @@
 #include "cortex/constants.h"
 #include "cortex/debug.h"
 
+/**
+ * Bcast based on a binomial tree across all processes of prm->comm.
+ * Root is prm->root.
+ */
 static int bcast_binomial(const dumpi_bcast* prm,
 			int rank,
 			const dumpi_time *cpu,
@@ -9,6 +13,32 @@ static int bcast_binomial(const dumpi_bcast* prm,
 			const dumpi_perfinfo *perf,
 			void *uarg);
 
+/**
+ * Bcast based on a binomial tree across ranks specified in comm_ranks
+ * (of size comm_size).
+ * The root is comm_ranks[0].
+ */
+static int partial_bcast_binomial(const dumpi_bcast* prm,
+			int rank,
+			int16_t* comm_ranks, size_t comm_size,
+			const dumpi_time *cpu,
+			const dumpi_time *wall,
+			const dumpi_perfinfo *perf,
+			void *uarg);
+
+/**
+ * Bcast on a Dragonfly network, using Router/Group/Terminal order.
+ */
+static int dfly_bcast_rgt(const dumpi_bcast* prm,
+			int rank,
+			const dumpi_time *cpu,
+			const dumpi_time *wall,
+			const dumpi_perfinfo *perf,
+			void *uarg);
+			
+/**
+ * Bcast based on Scatter and doubling Allgather.
+ */
 static int bcast_scatter_doubling_allgather(const dumpi_bcast* prm,
 			int rank,
 			const dumpi_time *cpu,
@@ -16,6 +46,9 @@ static int bcast_scatter_doubling_allgather(const dumpi_bcast* prm,
 			const dumpi_perfinfo *perf,
 			void *uarg);
 
+/**
+ * Bcased based on scatter and ring allgather.
+ */
 static int bcast_scatter_ring_allgather(const dumpi_bcast* prm,
 			int rank,
 			const dumpi_time *cpu,
@@ -229,7 +262,8 @@ static int bcast_scatter_ring_allgather(const dumpi_bcast* prm,
 			sr_prm.source = left;
 			sr_prm.recvtag = 1234;
 			sr_prm.comm = prm->comm;
-		
+		cortex_post_MPI_Sendrecv(&sr_prm,rank,cpu,wall,perf,uarg);		
+
 		curr_size += recvd_size;
 		j = jnext;
 		jnext = (comm_size + jnext - 1) % comm_size;
@@ -238,3 +272,139 @@ static int bcast_scatter_ring_allgather(const dumpi_bcast* prm,
 	return 0;
 }
 
+static int partial_bcast_binomial(
+			const dumpi_bcast* prm,
+                        int rank,
+			int16_t* comm_ranks, size_t comm_size,
+                        const dumpi_time *cpu,
+                        const dumpi_time *wall,
+                        const dumpi_perfinfo *perf,
+                        void *uarg)
+{
+	// find the index of this rank in the array
+	int my_index = 0;
+	int src, dst;
+	while(my_index < comm_size && comm_ranks[my_index] != rank) my_index++;
+
+	if(my_index == comm_size) return -1;
+
+	int mask = 0x1;
+	while(mask < comm_size) {
+		if(my_index & mask) {
+			src = my_index - mask;
+			dumpi_recv recv_prm;
+				recv_prm.count = prm->count;
+				recv_prm.datatype = prm->datatype;
+				recv_prm.source = comm_ranks[src];
+				recv_prm.tag = 1234;
+				recv_prm.comm = prm->comm;
+				recv_prm.status = NULL;
+			cortex_post_MPI_Recv(&recv_prm,rank,cpu,wall,perf,uarg);
+			break;
+		}
+		mask <<= 1;
+	}
+
+	mask >>= 1;
+	while(mask > 0) {
+		if(my_index + mask < comm_size) {
+			dst = my_index + mask;
+			dumpi_send send_prm;
+				send_prm.count = prm->count;
+				send_prm.datatype = prm->datatype;
+				send_prm.dest = comm_ranks[dst];
+				send_prm.tag = 1234;
+				send_prm.comm = prm->comm;
+			cortex_post_MPI_Send(&send_prm,rank,cpu,wall,perf,uarg);
+		}
+		mask >>= 1;
+	}
+	return 0;
+}
+
+typedef struct {
+	uint32_t count;
+	rank_t* ranks;
+} job_router_t;
+
+typedef struct {
+	uint32_t count;
+	router_id_t* router_ids;
+	job_router_t* routers;
+} job_group_t;
+
+typedef struct {
+	uint32_t count;
+	group_id_t* group_ids;
+	job_group_t* groups;
+} job_topo_t;
+
+static int dfly_bcast_rgt(const dumpi_bcast* prm,
+                        int rank,
+                        const dumpi_time *cpu,
+                        const dumpi_time *wall,
+                        const dumpi_perfinfo *perf,
+                        void *uarg)
+{
+	/* STEP 0: get the topology information for this process */
+//	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)uarg;
+//	job_id_t this_job = profile->job_id;
+//	terminal_id_t this_terminal; // terminal containing this process
+//	cortex_dfly_job_get_terminal_from_rank(this_job, rank, &this_terminal);
+//	router_id_t this_router; // router containing this process
+//	cortex_dfly_get_router_from_terminal(this_temrinal, &this_router);
+//	group_id_t this_group; // group containing this process
+//	cortex_dfly_get_group_from_router(this_router, &this_group);
+	// Locate the root of the broadcast in the topology
+//	terminal_id_t root_terminal; // terminal containing root process
+//	cortex_dfly_job_get_terminal_from_rank(this_job, prm->root, &root_terminal);
+//	router_id_t root_router; // router containing the root process
+//	cortex_dfly_get_router_from_terminal(root_terminal, &root_router);
+//	group_id_t root_group; // group containing the root process
+//	cortex_dfly_get_group_from_router(root_router, &root_group);
+	// Get the list of ranks attached to the same router as this process
+//	terminal_id_t* local_terminals = NULL;
+//	{
+//		uint16_t terminal_count;
+//		cortex_dfly_job_get_terminal_count(this_job, this_router, &terminal_count);
+//		local_terminals = (terminal_id_t*)malloc(sizeof(terminal_id_t)*terminal_count);
+//		cortex_dfly_job_get_terminal_list(this_job, this_router, locat_terminals);
+//	}
+
+	/* STEP 1: build teams. A team is a subset of terminals belonging to the same
+	   group and having the lowest MPI rank among the ranks connected to their terminal.
+	   If the root process of the broadcast is not part of the team, it is added to it
+	   and the other terminal connected to the same router is removed from the team.
+	   The idea is to have 1 representative terminal for each router of the group.
+	   This is done in all group.
+	*/
+
+	// TODO
+
+	/* STEP 2: Build couples. A couple is made of one terminal of the root group and
+	   one terminal of another group. Both terminals should be team members in their
+	   group. The idea is to have in every group one representative terminal receiving
+	   from the root group. There should be one such representative for each non-root group.
+	*/
+
+	// TODO
+
+	/* STEP 3 (G_root only): Do a tree-based broadcast in the team of G_root. */
+	
+	// TODO
+
+	/* STEP 4: For each couple, send data from one end to another. */
+
+	// TODO
+
+	/* STEP 5 (Everybody but G_root): Each group has a terminal with data (the second member
+	   of the couples), they all do a tree-based broadcast within their team.
+	*/
+	
+	/* STEP 6: Each team member broadcasts to the terminals connected to its router.
+	*/
+
+	// TODO
+
+//	if(local_terminals) free(local_terminals);
+}
