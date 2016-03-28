@@ -1,15 +1,61 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <iostream>
+#include <algorithm>
 #include "stdint.h"
 #include "stdlib.h"
 #include "cortex/dragonfly.h"
 
+struct placement_info {
+
+	rank_t		rank;
+	terminal_id_t	terminal;
+	router_id_t	router;
+	group_id_t 	group;
+
+	bool operator==(const placement_info& other) const {
+		return (rank == other.rank) && (terminal == other.terminal)
+		       && (router == other.router) && (group == other.group);
+	}
+};
+
 typedef std::vector<rank_t> rank_vector_t;
 typedef std::map<router_id_t, rank_vector_t> router_map_t;
 typedef std::map<group_id_t, router_map_t> group_map_t;
+typedef std::pair<rank_t, rank_t> couple_t;
 
-/* This function builds the topology structure */
+/**
+ * This function prints the steps of a tree-based broadcast across the processes of
+ * the ranks array. The root of the broadcast is ranks[0].
+ * input ranks : array of ranks participating in the broadcast.
+ */
+static int dfly_bcast_tree(const std::vector<rank_t>& ranks) {
+	for(int i=0; i<ranks.size(); i++) {
+		int mask = 0x1;
+		while(mask < ranks.size()) {
+			if(i & mask) break;
+			mask = mask << 1;
+		}
+		mask = mask >> 1;
+		while(mask > 0) {
+			if(i + mask < ranks.size()) {
+				std::cout << "SEND " << ranks[i] << " ==> " << ranks[i+mask] << std::endl;
+			}
+			mask = mask >> 1;
+		}
+	}
+	return 0;
+}
+
+/** 
+ * This function builds the topology structure. 
+ * input job_id : the job id
+ * input ranks : the list of ranks involved
+ * output topo : the topology
+ * The topology is a map associating group_ids involved in the job with router_maps.
+ * A router_map is a map associating router_ids involved in the job with a vector of ranks handled by this router.
+ */
 static int dfly_build_topology(group_map_t& topo, job_id_t job_id, const std::vector<rank_t>& ranks) {
 	
 	topo.clear();
@@ -26,14 +72,18 @@ static int dfly_build_topology(group_map_t& topo, job_id_t job_id, const std::ve
 	return 0;
 }
 
-/* This function builds a team for group g based on the given topology. */
-static int dfly_build_team(group_map_t& topo, std::vector<rank_t>& team, job_id_t job_id, group_id_t g, rank_t root_rank) {
-
-	// get information about the root process's location
-	router_id_t   r_root;
-	terminal_id_t t_root;
-	cortex_dfly_job_get_terminal_from_rank(job_id, root_rank, &t_root);
-	cortex_dfly_get_router_from_terminal(t_root,&r_root);
+/** 
+ * This function builds a team for group g based on the given topology.
+ * output team : vector of ranks belonging to the group and composing the team
+ * input topo : topology structure
+ * input job_id : id of the job
+ * input root : placement information for the root process
+ * input g : group for which to build a team
+ * The root rank is necessarily a team member if the group contains it.
+ */
+static int dfly_build_team(std::vector<rank_t>& team, 
+			   group_map_t& topo, job_id_t job_id, 
+			   const placement_info& root, group_id_t g) {
 
 	// clear the team
 	team.clear();
@@ -47,77 +97,89 @@ static int dfly_build_team(group_map_t& topo, std::vector<rank_t>& team, job_id_
 	router_map_t::const_iterator r = rmap.begin();
 	for(; r != rmap.end(); r++) {
 		// if router's id is the root router, insert the root rank of the bcast
-		if(r->first == r_root) {
-			team.push_back(root_rank);
+		if(r->first == root.router) {
+			team.push_back(root.rank);
 		} else {
-			team.push_back(r->second[0]);
+			team.insert(team.begin(),r->second[0]);
 		}
 	}
 	return 0;
 }
 
-static int dfly_build_couples(group_map_t& topo, 
-		std::vector<std::pair<rank_t,rank_t> >& couples,
-		job_id_t job_id, rank_t root_rank) {
-	// get root rank information (group, router, terminal)
-	group_id_t    g_root;
-	router_id_t   r_root;
-	terminal_id_t t_root;
-	cortex_dfly_job_get_terminal_from_rank(job_id, root_rank, &t_root);
-	cortex_dfly_get_router_from_terminal(t_root,&r_root);
-	cortex_dfly_get_group_from_router(r_root,&g_root);
-
+/**
+ * This function builds the set of couples. A couple is a pair of
+ * ranks such that the first element is in the root group and the second element
+ * is in the remote group.
+ * output couples : array of couples built
+ * input topo : topology structure
+ * input job_id : id of the job
+ * input root : placement of the root process.
+ */
+static int dfly_build_couples(std::vector<couple_t>& couples,
+		group_map_t& topo, job_id_t job_id,
+		const placement_info& root) {
 	// build the team ranks used in the root group
 	std::vector<rank_t> root_team_ranks_vec;
-	dfly_build_team(topo, root_team_ranks_vec, job_id, g_root, root_rank);
-	std::set<rank_t> root_ream_ranks_set(root_team_ranks_vec.begin(), root_team_ranks_vec.end());
+	dfly_build_team(root_team_ranks_vec, topo, job_id, root, root.group);
+	// convert it into a set
+	std::set<rank_t> root_team_ranks_set(root_team_ranks_vec.begin(), root_team_ranks_vec.end());
 
-	// divide groups into different levels
+	// divide groups into different levels depending on whether they can be reached directly
+	// from the root group or not
 	std::set<group_id_t> distant_groups;
 	// iterator over all non-root groups
 	for(group_map_t::const_iterator g = topo.begin(); g != topo.end(); g++) {
-		if(g->first != g_root) {
-			group_id_t g1 = g->first;
-			router_id_t r1, r2;
-			cortex_dfly_get_group_link_list(g1, g_root, &r1, &r2);
-			if(topo[g_root].count(r2) == 0) { // r2 is not in g_root, the group g1 is distant
-				distant_groups.insert(g1);
-				continue;
-			}
-			// here we know that r2 is in g_root, we take the first terminal of r2 for the pair,
-			// unless the router contains the root rank in which case we choose it
-			std::pair<rank_t,rank_t> couple;
-			couple.first = r2 == r_root ? root_rank : topo[g_root][r2][0];
-			if(topo[g1].count(r1)) { // r1 is in g1
-				couple.second = topo[g1][r1][0];
-			} else { // r1 is not in g1
-				couple.second = topo[g1].begin()->second[0]; // take the first router instead
-			}
-			// insert in couples
-			couples.push_back(couple);
-			// remove the rank used in g_root from the root_team_ranks_set
-			root_ream_ranks_set.erase(couple.first);
+		if(g->first == root.group) continue; // root group, do nothing
+
+		// get a router r1 in g1 and r2 in root group that are connected		
+		group_id_t g1 = g->first;
+		router_id_t r1, r2;
+		cortex_dfly_get_group_link_list(g1, root.group, &r1, &r2);
+
+		// check if r2 is used by the job
+		if(topo[root.group].count(r2) == 0) { // r2 is not used, the group g1 is distant
+			// and will be handled later
+			distant_groups.insert(g1);
+			continue;
 		}
+		// here we know that r2 is used by the job, we take the first terminal of the job
+		// that belongs to r2 for the pair,
+		// unless the router contains the root rank in which case we choose it
+		couple_t couple;
+		couple.first = (r2 == root.router) ? root.rank : topo[root.group][r2][0];
+
+		if(topo[g1].count(r1)) { // r1 in g1 is used by the job
+			// take the first rank in g1 that belongs to the job
+			couple.second = topo[g1][r1][0];
+		} else { // r1 is not used by the job, we take the first rank in the first router used
+			// in g1 instead
+			couple.second = topo[g1].begin()->second[0]; // take the first router instead
+		}
+		// insert in couples
+		couples.push_back(couple);
+		// remove the rank used in root group from the root_team_ranks_set
+		// so that it won't be used for distant groups unless it's really necessary
+		root_team_ranks_set.erase(couple.first);
 	}
 	
 	// for all distant groups, build a pair
 	int i = 0; // index to do a round-robin in root_team_ranks_vec
+		   // after we have emptied root_ream_ranks_set
 	for(std::set<group_id_t>::iterator g = distant_groups.begin(); g != distant_groups.end(); g++) {
-		group_id_t g1 = *g;
-		router_id_t r1, r2;
-		cortex_dfly_get_group_link_list(g1, g_root, &r1, &r2);
+		group_id_t g1 = *g; // get the distant group's id
+		router_id_t r1, r2; // find the routers that connect it to the root group
+		cortex_dfly_get_group_link_list(g1, root.group, &r1, &r2);
 		
-		std::pair<rank_t,rank_t> couple;
-		rank_t rk1, rk2;
-		if(root_ream_ranks_set.size() != 0) {
-			rk2 = *(root_ream_ranks_set.begin());
-			root_ream_ranks_set.erase(rk1);
+		rank_t rkr, rk1;
+
+		if(root_team_ranks_set.size() != 0) {
+			rkr = *(root_team_ranks_set.begin());
+			root_team_ranks_set.erase(rkr);
 		} else {
-			rk2 = root_team_ranks_vec[i];
+			rkr = root_team_ranks_vec[i];
 			i += 1;
 			i %= root_team_ranks_vec.size();
 		}
-		couple.first = rk2;
 		
 		if(topo[g1].count(r1)) { // r1 is in g1 
 			rk1 = topo[g1][r1][0];
@@ -125,7 +187,7 @@ static int dfly_build_couples(group_map_t& topo,
 			rk1 = topo[g1].begin()->second[0]; // take the first router instead
 		}
 		// insert in couples
-		couples.push_back(couple);
+		couples.push_back(couple_t(rkr,rk1));
 	}
 
 	return 0;
@@ -133,22 +195,102 @@ static int dfly_build_couples(group_map_t& topo,
 
 extern "C" int dfly_broadcast_rgt(job_id_t job_id, rank_t* ranks, size_t num_ranks, rank_t my_rank) {
 	rank_t root_rank = ranks[0];
+	// get the placement of the root process
+	placement_info 	root;
+	terminal_id_t 	root_terminal;
+	router_id_t 	root_router;
+	group_id_t 	root_group;
+	cortex_dfly_job_get_terminal_from_rank(job_id,root_rank,&root_terminal);
+	cortex_dfly_get_router_from_terminal(root_terminal,&root_router);
+	cortex_dfly_get_group_from_router(root_router,&root_group);
+	root.rank 	= root_rank;
+	root.terminal 	= root_terminal;
+	root.router 	= root_router;
+	root.group 	= root_group;
 
 	// build the topology
 	group_map_t topo;
 	std::vector<rank_t> ranks_vec(ranks,ranks+num_ranks);
 	dfly_build_topology(topo, job_id, ranks_vec);
 
-	// get the groups involved
+	// teams
+	std::map<group_id_t, std::vector<rank_t> > teams;
+
+	// get the groups involved and build the teams
 	std::vector<group_id_t> groups(topo.size());
 	group_map_t::iterator g = topo.begin();
 	int i = 0;
 	for(; g != topo.end(); g++, i++) {
-		groups[i] = g->first;
+		group_id_t g1 = g->first;
+		groups[i] = g1;
+		// build the team for group g1
+		dfly_build_team(teams[g1], topo, job_id, root, g1);
 	}
 
-	// for
+	// build couples
+	std::vector<couple_t> couples;
+	dfly_build_couples(couples,topo,job_id,root);
 
+	// do a broadcast in the team of the root group
+	std::vector<rank_t>& root_team = teams[root.group];
+	dfly_bcast_tree(root_team);
+
+	// send in couples
+	for(i=0; i<couples.size(); i++) {
+		couple_t& c = couples[i];
+		std::cout << "SEND " << c.first << " ==> " << c.second << std::endl;
+	}
+
+	// do a broadcast in the non-root teams
+	// first we need to make sure that the first rank in a team is the end of a couple
+	for(i=0; i<couples.size(); i++) {
+		// locate the end of the couple
+		couple_t& c = couples[i];
+		terminal_id_t t;
+		router_id_t r;
+		group_id_t g;
+		cortex_dfly_job_get_terminal_from_rank(job_id,c.second,&t);
+		cortex_dfly_get_router_from_terminal(root_terminal,&r);
+		cortex_dfly_get_group_from_router(root_router,&g);
+		// get the team of its group
+		std::vector<rank_t>& team = teams[g];
+		if(team[0] != c.second) {
+			std::vector<rank_t>::iterator it = std::find(team.begin(),team.end(),c.second);
+			if(it == team.end()) {
+				std::cerr << "Error here..." << std::endl;
+			}
+			*it = team[0];
+			team[0] = c.second;
+		}
+		// do the actual broadcast
+		dfly_bcast_tree(team);
+	}
+	
+	// do a broadcast in each router
+	g = topo.begin();
+	for(; g != topo.end(); g++) {
+		// get an iterator over the routers in this group
+		router_map_t::iterator r = g->second.begin();
+		for(; r != g->second.end(); r++) {
+			// get the router id
+			router_id_t r_id = r->first;
+			// get the list of ranks
+			rank_vector_t& processes = r->second;
+			// if this router contains the root rank
+			if(r_id == root.router) {
+				// find it
+				rank_vector_t::iterator it = std::find(processes.begin(),processes.end(),root.rank);
+				if(it == processes.end()) {
+					std::cerr << "Error here..." << std::endl;
+				}
+				// exchange the first element
+				*it = processes[0];
+				processes[0] = root.rank;
+			}
+			// do a broadcast
+			dfly_bcast_tree(processes);
+		}
+	}
 
 	return 0;
 }
