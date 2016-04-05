@@ -3,9 +3,12 @@
 #include <set>
 #include <iostream>
 #include <algorithm>
+#include <mpi.h>
 #include "stdint.h"
 #include "stdlib.h"
-#include "cortex/dragonfly.h"
+#include "codes/dragonfly-cortex-api.h"
+#include "codes/codes.h"
+#include "codes/configuration.h"
 
 struct placement_info {
 
@@ -25,12 +28,58 @@ typedef std::map<router_id_t, rank_vector_t> router_map_t;
 typedef std::map<group_id_t, router_map_t> group_map_t;
 typedef std::pair<rank_t, rank_t> couple_t;
 
+static int print_topo(group_map_t& topo) {
+	group_map_t::iterator g = topo.begin();
+	for(; g != topo.end(); g++) {
+		std::cout << "Group " << g->first << ":" << std::endl;
+		router_map_t::iterator r = g->second.begin();
+		for(; r != g->second.end(); r++) {
+			std::cout << "   Router " << r->first << ":";
+			rank_vector_t::iterator t = r->second.begin();
+			for(; t != r->second.end(); t++) {
+				std::cout << " " << *t;
+			}
+			std::cout << std::endl;
+		}
+		std::cout << std::endl;
+	}
+	return 0;
+}
+
+#define CN_BW 1.0// (10.0/5.25)
+#define LOCAL_BW 1.0 //(10.0/5.25)
+#define GLOBAL_BW 1.0 //(10.0/4.7)
+
+static double cost(job_id_t jid, rank_t rank1, rank_t rank2) {
+	terminal_id_t t1, t2;
+	router_id_t r1, r2;
+	group_id_t g1, g2;
+
+	cortex_dfly_job_get_terminal_from_rank(jid, rank1, &t1);
+	cortex_dfly_job_get_terminal_from_rank(jid, rank2, &t2);
+	cortex_dfly_get_router_from_terminal(t1,&r1);
+	cortex_dfly_get_router_from_terminal(t2,&r2);
+	cortex_dfly_get_group_from_router(r1,&g1);
+	cortex_dfly_get_group_from_router(r2,&g2);
+
+	if(t1 == t2) return 0.0; // same terminal
+	if(r1 == r2) return 2*CN_BW; // same router
+	if(g1 == g2) return 2*CN_BW+LOCAL_BW; // same group
+	double b = 2*CN_BW + GLOBAL_BW;
+	
+	router_id_t r3, r4;
+	cortex_dfly_get_group_link_list(g1, g2, &r3, &r4);
+	if(r3 != r1) b += LOCAL_BW;
+	if(r4 != r2) b += LOCAL_BW;
+	return b;
+}
+
 /**
  * This function prints the steps of a tree-based broadcast across the processes of
  * the ranks array. The root of the broadcast is ranks[0].
  * input ranks : array of ranks participating in the broadcast.
  */
-static int dfly_bcast_tree(const std::vector<rank_t>& ranks) {
+static int dfly_bcast_tree(job_id_t jid, const std::vector<rank_t>& ranks) {
 	for(int i=0; i<ranks.size(); i++) {
 		int mask = 0x1;
 		while(mask < ranks.size()) {
@@ -40,7 +89,8 @@ static int dfly_bcast_tree(const std::vector<rank_t>& ranks) {
 		mask = mask >> 1;
 		while(mask > 0) {
 			if(i + mask < ranks.size()) {
-				std::cout << "SEND " << ranks[i] << " ==> " << ranks[i+mask] << std::endl;
+				std::cout << "SEND " << ranks[i] << " ==> " << ranks[i+mask] << 
+					" cost = " << cost(jid,ranks[i],ranks[i+mask]) << std::endl;
 			}
 			mask = mask >> 1;
 		}
@@ -66,6 +116,7 @@ static int dfly_build_topology(group_map_t& topo, job_id_t job_id, const std::ve
 		cortex_dfly_job_get_terminal_from_rank(job_id, ranks[i], &t);
 		cortex_dfly_get_router_from_terminal(t,&r);
 		cortex_dfly_get_group_from_router(r,&g);
+//		std::cout << "pushing rank " << ranks[i] << " in group " << g << " router " << r << " terminal " << t << std::endl;
 		topo[g][r].push_back(ranks[i]);
 	}
 
@@ -98,9 +149,9 @@ static int dfly_build_team(std::vector<rank_t>& team,
 	for(; r != rmap.end(); r++) {
 		// if router's id is the root router, insert the root rank of the bcast
 		if(r->first == root.router) {
-			team.push_back(root.rank);
+			team.insert(team.begin(),root.rank);
 		} else {
-			team.insert(team.begin(),r->second[0]);
+			team.push_back(r->second[0]);
 		}
 	}
 	return 0;
@@ -213,6 +264,7 @@ extern "C" int dfly_broadcast_rgt(job_id_t job_id, rank_t* ranks, size_t num_ran
 	std::vector<rank_t> ranks_vec(ranks,ranks+num_ranks);
 	dfly_build_topology(topo, job_id, ranks_vec);
 
+	//print_topo(topo);
 	// teams
 	std::map<group_id_t, std::vector<rank_t> > teams;
 
@@ -232,17 +284,22 @@ extern "C" int dfly_broadcast_rgt(job_id_t job_id, rank_t* ranks, size_t num_ran
 	dfly_build_couples(couples,topo,job_id,root);
 
 	// do a broadcast in the team of the root group
+	std::cout << "Phase 1: broadcast in the team of the root group" << std::endl;
 	std::vector<rank_t>& root_team = teams[root.group];
-	dfly_bcast_tree(root_team);
+	// make sure to put the 
+	dfly_bcast_tree(job_id, root_team);
 
 	// send in couples
+	std::cout << "Phase 2: broadcast across couples" << std::endl;
 	for(i=0; i<couples.size(); i++) {
 		couple_t& c = couples[i];
-		std::cout << "SEND " << c.first << " ==> " << c.second << std::endl;
+		std::cout << "SEND " << c.first << " ==> " << c.second 
+			<< " cost = " << cost(job_id, c.first, c.second) << std::endl;
 	}
 
 	// do a broadcast in the non-root teams
 	// first we need to make sure that the first rank in a team is the end of a couple
+	std::cout << "Phase 3: broadcast inside each group" << std::endl;
 	for(i=0; i<couples.size(); i++) {
 		// locate the end of the couple
 		couple_t& c = couples[i];
@@ -250,23 +307,25 @@ extern "C" int dfly_broadcast_rgt(job_id_t job_id, rank_t* ranks, size_t num_ran
 		router_id_t r;
 		group_id_t g;
 		cortex_dfly_job_get_terminal_from_rank(job_id,c.second,&t);
-		cortex_dfly_get_router_from_terminal(root_terminal,&r);
-		cortex_dfly_get_group_from_router(root_router,&g);
+		cortex_dfly_get_router_from_terminal(t,&r);
+		cortex_dfly_get_group_from_router(r,&g);
 		// get the team of its group
 		std::vector<rank_t>& team = teams[g];
 		if(team[0] != c.second) {
 			std::vector<rank_t>::iterator it = std::find(team.begin(),team.end(),c.second);
 			if(it == team.end()) {
-				std::cerr << "Error here..." << std::endl;
+				std::cerr << "A - Error here..." << std::endl;
 			}
 			*it = team[0];
 			team[0] = c.second;
 		}
 		// do the actual broadcast
-		dfly_bcast_tree(team);
+		std::cout << "Inside group " << g << std::endl;
+		dfly_bcast_tree(job_id,team);
 	}
 	
 	// do a broadcast in each router
+	std::cout << "Phase 4: broadcast inside each router of each group" << std::endl;
 	g = topo.begin();
 	for(; g != topo.end(); g++) {
 		// get an iterator over the routers in this group
@@ -281,14 +340,15 @@ extern "C" int dfly_broadcast_rgt(job_id_t job_id, rank_t* ranks, size_t num_ran
 				// find it
 				rank_vector_t::iterator it = std::find(processes.begin(),processes.end(),root.rank);
 				if(it == processes.end()) {
-					std::cerr << "Error here..." << std::endl;
+					std::cerr << "B - Error here..." << std::endl;
 				}
 				// exchange the first element
 				*it = processes[0];
 				processes[0] = root.rank;
 			}
+			std::cout << "Inside router " << r_id << std::endl;
 			// do a broadcast
-			dfly_bcast_tree(processes);
+			dfly_bcast_tree(job_id,processes);
 		}
 	}
 
@@ -322,7 +382,7 @@ extern "C" int dfly_broadcast_grt(job_id_t job_id, rank_t* ranks, size_t num_ran
 		if(g->first == root.group) continue;
 		group_ranks.push_back(g->second.begin()->second[0]);
 	}
-	dfly_bcast_tree(group_ranks);
+	dfly_bcast_tree(job_id,group_ranks);
 
 	// within each group, do a broadcast across routers
 	for(group_map_t::iterator g = topo.begin(); g != topo.end(); g++) {
@@ -334,7 +394,7 @@ extern "C" int dfly_broadcast_grt(job_id_t job_id, rank_t* ranks, size_t num_ran
 			if(r->first == root.router) continue;
 			router_ranks.push_back(r->second[0]);
 		}
-		dfly_bcast_tree(router_ranks);
+		dfly_bcast_tree(job_id,router_ranks);
 	}
 
 	// within each router, do a broadcast across terminals
@@ -348,7 +408,7 @@ extern "C" int dfly_broadcast_grt(job_id_t job_id, rank_t* ranks, size_t num_ran
 			if(*t == root.rank) continue;
 			terminal_ranks.push_back(*t);
 		}
-		dfly_bcast_tree(terminal_ranks);
+		dfly_bcast_tree(job_id,terminal_ranks);
 	}
 	}
 
@@ -358,30 +418,28 @@ extern "C" int dfly_broadcast_grt(job_id_t job_id, rank_t* ranks, size_t num_ran
 int main(int argc, char** argv) {
 
 	if(argc != 4) {
-		std::cerr << "Usage: " << argv[0] << " #groups #routers_per_group #terminals_per_router" << std::endl;
+		std::cerr << "Usage: " << argv[0] << " num_procs dfly_config alloc_config";
 		exit(-1);
 	}
-		
-	cortex_dfly_topo topo;
 
-	topo.cn_per_router = atoi(argv[3]);
-	topo.routers_per_group = atoi(argv[2]);
-	topo.num_groups = atoi(argv[1]);
-	topo.glink_per_router = (topo.num_groups-1)/topo.routers_per_group;
-	topo.local_bandwidth = 2.0;
-	topo.global_bandwidth = 1.0;
-	topo.cn_bandwidth = 5.0;
+	MPI_Init(&argc,&argv);
 
-	cortex_dfly_topology_set(&topo);
+	int n = atoi(argv[1]);
+	std::string dfly_config(argv[2]);
+	std::string alloc_config(argv[3]);
+
+	configuration_load(dfly_config.c_str(), MPI_COMM_WORLD, &config);
+	cortex_dfly_topology_init();
+	cortex_dfly_set_jobmap((char*)alloc_config.c_str());
 	
-	int n = topo.cn_per_router * topo.routers_per_group * topo.num_groups;
 	std::vector<rank_t> ranks(n);
 	for(int i=0; i<n; i++) {
 		ranks[i] = i;
-		cortex_dfly_location_set(1, i, i);
 	}
 
-	dfly_broadcast_rgt(1, &ranks[0], n, 0);
-
+	dfly_broadcast_grt(0, &ranks[0], n, 0);
+//	dfly_broadcast_rgt(0, &ranks[0], n, 0);
+//	dfly_bcast_tree(0,ranks);
+	MPI_Finalize();
 	return 0;
 }
