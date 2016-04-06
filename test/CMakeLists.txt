@@ -11,10 +11,11 @@ set(TRANSLATION_SOURCE
 	${CORTEX_SOURCE_DIR}/src/translations/mpi_comm_dup.c
 	${CORTEX_SOURCE_DIR}/src/translations/mpi_comm_split.c
 	${CORTEX_SOURCE_DIR}/src/translations/mpi_comm_create.c
+	${CORTEX_SOURCE_DIR}/src/translations/dfly/bcast.cpp
 )
 
 add_executable(translate ${READ_TEST_SOURCE} ${TRANSLATION_SOURCE})
-target_link_libraries(translate cortex ${DUMPI_LIBRARIES})
+target_link_libraries(translate cortex ${DUMPI_LIBRARIES} ${TOPO_LIBRARIES} ${CODES_LIBRARIES} ${ROSS_LIBRARIES})
 
 add_executable(read ${READ_TEST_SOURCE})
-target_link_libraries(read cortex ${DUMPI_LIBRARIES})
+target_link_libraries(read cortex ${DUMPI_LIBRARIES} ${TOPO_LIBRARIES} ${CODES_LIBRARIES} ${ROSS_LIBRARIES})

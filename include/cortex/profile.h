@@ -9,10 +9,13 @@
 #include <dumpi/libundumpi/bindings.h>
 #include <dumpi/libundumpi/libundumpi.h>
 #include <cortex/operation.h>
-#include <cortex/dragonfly.h>
+//#include <cortex/dragonfly.h>
 
 struct cortex_operation; // forward declaration
 struct cortex_comm; // forward declaration
+
+typedef int16_t job_id_t;
+typedef int32_t  rank_t;
 
 typedef struct cortex_dumpi_profile {
 	dumpi_profile* dumpi; /* internal dumpi profile */
