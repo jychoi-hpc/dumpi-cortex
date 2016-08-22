@@ -22,19 +22,19 @@ if(NOT DEFINED CMAKE_INSTALL_PREFIX)
 	set(CMAKE_INSTALL_PREFIX /usr/local)
 endif(NOT DEFINED CMAKE_INSTALL_PREFIX)
 
-set(DUMPI_ROOT "/home/mdorier/sw/dumpi")
+#set(DUMPI_ROOT "/home/mdorier/sw/dumpi")
 find_package(DUMPI REQUIRED)
 include_directories(${DUMPI_INCLUDE_DIR})
 
-set(CODES_ROOT "/home/mdorier/sw/codes")
+#set(CODES_ROOT "/home/mdorier/sw/codes")
 find_package(CODES REQUIRED)
 include_directories(${CODES_INCLUDE_DIR})
 
-set(ROSS_ROOT "/home/mdorier/sw/ross")
+#set(ROSS_ROOT "/home/mdorier/sw/ross")
 find_package(ROSS REQUIRED)
 include_directories(${ROSS_INCLUDE_DIR})
 
-set(TOPO_ROOT "/home/mdorier/sw/topo")
+#set(TOPO_ROOT "/home/mdorier/sw/topo")
 find_package(TOPO REQUIRED)
 include_directories(${TOPO_INCLUDE_DIR})
 
