@@ -37,35 +37,35 @@ static int handleDUMPIBcast(const dumpi_bcast* prm, uint16_t thread,
 	return 0;
 }
 
-static handleDUMPIBarrier(const dumpi_barrier* prm, uint16_t thread,
+static int handleDUMPIBarrier(const dumpi_barrier* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
 	printf("MPI_Barrier called\n");
 	return 0;
 }
 
-static handleDUMPIReduce(const dumpi_reduce* prm, uint16_t thread,
+static int handleDUMPIReduce(const dumpi_reduce* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
 	printf("MPI_Reduce called\n");
 	return 0;
 }
 
-static handleDUMPIAllReduce(const dumpi_allreduce* prm, uint16_t thread,
+static int handleDUMPIAllReduce(const dumpi_allreduce* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
 	printf("MPI_Allreduce called\n");
 	return 0;
 }
 
-static handleDUMPIAllgather(const dumpi_allgather* prm, uint16_t thread,
+static int handleDUMPIAllgather(const dumpi_allgather* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
 	printf("MPI_Allgather called\n");
 	return 0;
 }
 
-static handleDUMPIAllgatherv(const dumpi_allgatherv* prm, uint16_t thread,
+static int handleDUMPIAllgatherv(const dumpi_allgatherv* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
 	printf("MPI_Allgatherv called\n");
