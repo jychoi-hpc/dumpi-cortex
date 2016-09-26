@@ -8,7 +8,7 @@
  * point to point calls. The following
  * algorithm was found in the Mpich implementation.
  */
-int cortex_translate_MPI_Allgather(const dumpi_allgather *prm,
+int cortex_mpich_translate_MPI_Allgather(const dumpi_allgather *prm,
 			uint16_t thread, 
 			const dumpi_time *cpu, 
 			const dumpi_time *wall,

@@ -19,7 +19,7 @@ typedef int32_t  rank_t;
 
 typedef struct cortex_dumpi_profile {
 	dumpi_profile* dumpi; /* internal dumpi profile */
-	libundumpi_cbpair callarr[DUMPI_END_OF_STREAM]; /* same callbacks in the form of an array */
+//	libundumpi_cbpair callarr[DUMPI_END_OF_STREAM]; /* same callbacks in the form of an array */
 	int active; /* stores the result of the last call to cortex_undumpi_read_single_call */
 
 	struct cortex_operation* first_pending;

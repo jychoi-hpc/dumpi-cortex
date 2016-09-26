@@ -6,7 +6,7 @@
  * point to point calls (MPI_Sendrecv). The following
  * algorithm was found in the Mpich implementation.
  */
-int cortex_translate_MPI_Barrier(const dumpi_barrier *prm, 
+int cortex_mpich_translate_MPI_Barrier(const dumpi_barrier *prm, 
 			uint16_t thread, 
 			const dumpi_time *cpu, 
 			const dumpi_time *wall,

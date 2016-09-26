@@ -1,5 +1,5 @@
 #include <cortex/cortex.h>
-#include <cortex/post.h>
+#include <cortex/cortex-mpich.h>
 #include <string.h>
 
 static int handleDUMPIInit(const dumpi_init *prm, uint16_t thread,
@@ -72,12 +72,6 @@ static int handleDUMPIAllgatherv(const dumpi_allgatherv* prm, uint16_t thread,
 	return 0;
 } 
 
-int cortex_translate_MPI_Init(const dumpi_init *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
-	printf("cortex_MPI_Init overloaded\n");
-	cortex_post_MPI_Init(prm,thread,cpu,wall,perf,uarg);
-	return 0;
-}
-
 int main(int argc, char** argv) {
 	
 	if(argc != 3) {
@@ -110,7 +104,7 @@ int main(int argc, char** argv) {
 
 	cortex_dumpi_start_stream_read(profile);
 
-	cortex_undumpi_read_stream(profile,&cbacks,NULL);
+	cortex_undumpi_read_stream(profile, &cbacks, CORTEX_MPICH_TRANSLATION, NULL);
 
 	cortex_undumpi_close(profile);
 

@@ -5,7 +5,7 @@
 /**
  * Translation of MPI_Allreduce into point to point communications.
  */
-int cortex_translate_MPI_Allreduce(const dumpi_allreduce *prm, 
+int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm, 
 			uint16_t thread, 
 			const dumpi_time *cpu, 
 			const dumpi_time *wall,

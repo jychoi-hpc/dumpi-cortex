@@ -8,6 +8,7 @@
 
 #include <dumpi/libundumpi/libundumpi.h>
 #include <cortex/profile.h>
+#include <cortex/callbacks.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,6 +59,7 @@ extern "C" {
    */
   int cortex_undumpi_read_single_call(cortex_dumpi_profile *profile,
 			       struct libundumpi_cbpair *callarr,
+			       struct libundumpi_cbpair *translations,
 			       void *userarg,
 			       int *mpi_finalized);
   /**
@@ -69,6 +71,7 @@ extern "C" {
    */
   int cortex_undumpi_read_stream_full(cortex_dumpi_profile* profile,
                           const libundumpi_callbacks *callback,
+			  const libundumpi_callbacks *translations,
                           void *userarg,
                           bool print_progress,
                           double percent_terminate);
@@ -82,6 +85,7 @@ extern "C" {
    */
   int cortex_undumpi_read_stream(cortex_dumpi_profile* profile,
                           const libundumpi_callbacks *callback,
+			  const libundumpi_callbacks *translations,
                           void *userarg);
 
   /**

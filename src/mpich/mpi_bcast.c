@@ -59,7 +59,7 @@ static int bcast_scatter_ring_allgather(const dumpi_bcast* prm,
 /**
  * Translation of MPI_Bcast into point to point communications.
  */
-int cortex_translate_MPI_Bcast(const dumpi_bcast *prm, 
+int cortex_mpich_translate_MPI_Bcast(const dumpi_bcast *prm, 
 			uint16_t thread, 
 			const dumpi_time *cpu, 
 			const dumpi_time *wall,

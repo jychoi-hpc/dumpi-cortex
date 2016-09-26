@@ -19,7 +19,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 /**
  * Translation of MPI_Reduce into point to point communications.
  */
-int cortex_translate_MPI_Reduce(const dumpi_reduce *prm, 
+int cortex_mpich_translate_MPI_Reduce(const dumpi_reduce *prm, 
 			uint16_t thread, 
 			const dumpi_time *cpu, 
 			const dumpi_time *wall,
