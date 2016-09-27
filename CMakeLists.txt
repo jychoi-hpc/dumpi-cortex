@@ -35,7 +35,6 @@ include_directories(${CORTEX_SOURCE_DIR}/src)
 #-----------------------------------------------------------#
 add_subdirectory (lib)
 add_subdirectory (test)
-add_subdirectory (bin)
 
 #-----------------------------------------------------------#
 # Installation
