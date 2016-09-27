@@ -1,5 +1,5 @@
 #include "cortex/cortex.h"
-#include "cortex/constants.h"
+#include "cortex/mpich-constants.h"
 #include "cortex/datatype.h"
 #include "cortex/debug.h"
 

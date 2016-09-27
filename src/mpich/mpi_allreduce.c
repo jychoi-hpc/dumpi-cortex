@@ -1,5 +1,5 @@
 #include "cortex/cortex.h"
-#include "cortex/constants.h"
+#include "cortex/mpich-constants.h"
 #include "cortex/debug.h"
 
 #define MPICH_ALLREDUCE_TAG -1234
