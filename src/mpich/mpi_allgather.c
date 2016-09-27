@@ -3,6 +3,8 @@
 #include "cortex/datatype.h"
 #include "cortex/debug.h"
 
+#define MPICH_ALLGATHER_TAG -1234
+
 /**
  * This translates MPI_Allgather calls into a series of
  * point to point calls. The following
@@ -34,10 +36,10 @@ int cortex_mpich_translate_MPI_Allgather(const dumpi_allgather *prm,
 		sendrecv_prm.comm 	= prm->comm;
 		sendrecv_prm.sendcount 	= 1;
 		sendrecv_prm.sendtype 	= prm->recvtype;
-		sendrecv_prm.sendtag	= 1234;
+		sendrecv_prm.sendtag	= MPICH_ALLGATHER_TAG;
 		sendrecv_prm.recvcount	= 1;
 		sendrecv_prm.recvtype	= prm->recvtype;
-		sendrecv_prm.recvtag	= 1234;
+		sendrecv_prm.recvtag	= MPICH_ALLGATHER_TAG;
 		sendrecv_prm.status	= NULL;
 
 	tot_bytes = prm->recvcount * comm_size * type_size;

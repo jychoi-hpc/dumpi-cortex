@@ -2,6 +2,8 @@
 #include "cortex/constants.h"
 #include "cortex/debug.h"
 
+#define MPICH_ALLGATHERV_TAG -1234
+
 /**
  * This translates MPI_Allgatherv calls into a series of
  * point to point calls. The following
@@ -27,9 +29,9 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 	dumpi_sendrecv sendrecv_prm;
 		sendrecv_prm.comm 	= prm->comm;
 		sendrecv_prm.sendtype 	= prm->recvtype;
-		sendrecv_prm.sendtag	= 1234;
+		sendrecv_prm.sendtag	= MPICH_ALLGATHERV_TAG;
 		sendrecv_prm.recvtype	= prm->recvtype;
-		sendrecv_prm.recvtag	= 1234;
+		sendrecv_prm.recvtag	= MPICH_ALLGATHERV_TAG;
 		sendrecv_prm.status	= NULL;
 
 	total_count = 0;
@@ -152,7 +154,7 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 					recv_prm.count 		= recvnow;
 					recv_prm.datatype 	= prm->recvtype;
 					recv_prm.source 	= left;
-					recv_prm.tag 		= 1234;
+					recv_prm.tag 		= MPICH_ALLGATHERV_TAG;
 					recv_prm.comm 		= prm->comm;
 				cortex_post_MPI_Recv(&recv_prm, rank, cpu, wall, perf, uarg);
 				torecv -= recvnow;
@@ -161,7 +163,7 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 					send_prm.count 		= sendnow;
 					send_prm.datatype 	= prm->recvtype;
 					send_prm.dest 		= right;
-					send_prm.tag 		= 1234;
+					send_prm.tag 		= MPICH_ALLGATHERV_TAG;
 					send_prm.comm 		= prm->comm;
 				cortex_post_MPI_Send(&send_prm, rank, cpu, wall, perf, uarg);
 				tosend -= sendnow;

@@ -2,6 +2,8 @@
 #include "cortex/constants.h"
 #include "cortex/debug.h"
 
+#define MPICH_BCAST_TAG -1234
+
 /**
  * Bcast based on a binomial tree across all processes of prm->comm.
  * Root is prm->root.
@@ -107,12 +109,12 @@ static int bcast_binomial(const dumpi_bcast* prm,
 	dumpi_recv recv_prm;
 		recv_prm.count 		= prm->count;
 		recv_prm.datatype 	= prm->datatype;
-		recv_prm.tag 		= 1234;
+		recv_prm.tag 		= MPICH_BCAST_TAG;
 		recv_prm.comm 		= prm->comm;
 	dumpi_send send_prm;
 		send_prm.count 		= prm->count;
 		send_prm.datatype 	= prm->datatype;
-		send_prm.tag 		= 1234;
+		send_prm.tag 		= MPICH_BCAST_TAG;
 		send_prm.comm 		= prm->comm;
 
 	mask = 0x1;
@@ -194,11 +196,11 @@ static int bcast_scatter_doubling_allgather(const dumpi_bcast* prm,
 				sr_prm.sendcount = curr_size;
 				sr_prm.sendtype = DUMPI_BYTE;
 				sr_prm.dest = dst;
-				sr_prm.sendtag = 1234;
+				sr_prm.sendtag = MPICH_BCAST_TAG;
 				sr_prm.recvcount = (nbytes-recv_offset < 0 ? 0 : nbytes-recv_offset);
 				sr_prm.recvtype = DUMPI_BYTE;
 				sr_prm.source = dst;
-				sr_prm.recvtag = 1234;
+				sr_prm.recvtag = MPICH_BCAST_TAG;
 			cortex_post_MPI_Sendrecv(&sr_prm,rank,cpu,wall,perf,uarg);
 
 			curr_size += recv_size;
@@ -256,11 +258,11 @@ static int bcast_scatter_ring_allgather(const dumpi_bcast* prm,
 			sr_prm.sendcount = right_count;
 			sr_prm.sendtype = DUMPI_BYTE;
 			sr_prm.dest = right;
-			sr_prm.sendtag = 1234;
+			sr_prm.sendtag = MPICH_BCAST_TAG;
 			sr_prm.recvcount = left_count;
 			sr_prm.recvtype = DUMPI_BYTE;
 			sr_prm.source = left;
-			sr_prm.recvtag = 1234;
+			sr_prm.recvtag = MPICH_BCAST_TAG;
 			sr_prm.comm = prm->comm;
 		cortex_post_MPI_Sendrecv(&sr_prm,rank,cpu,wall,perf,uarg);		
 
@@ -296,7 +298,7 @@ static int partial_bcast_binomial(
 				recv_prm.count = prm->count;
 				recv_prm.datatype = prm->datatype;
 				recv_prm.source = comm_ranks[src];
-				recv_prm.tag = 1234;
+				recv_prm.tag = MPICH_BCAST_TAG;
 				recv_prm.comm = prm->comm;
 				recv_prm.status = NULL;
 			cortex_post_MPI_Recv(&recv_prm,rank,cpu,wall,perf,uarg);
@@ -313,7 +315,7 @@ static int partial_bcast_binomial(
 				send_prm.count = prm->count;
 				send_prm.datatype = prm->datatype;
 				send_prm.dest = comm_ranks[dst];
-				send_prm.tag = 1234;
+				send_prm.tag = MPICH_BCAST_TAG;
 				send_prm.comm = prm->comm;
 			cortex_post_MPI_Send(&send_prm,rank,cpu,wall,perf,uarg);
 		}
