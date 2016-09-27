@@ -1,7 +1,12 @@
+# Description
+
 DUMPI-CoRtEx is a library that reads DUMPI traces and enables the conversion of
 MPI collective communication events into their equivalent sequence of point to
 point events, in particular as implemented in MPICH.
 
+Please refer to the Wiki for a tutorial on how to install and use.
+
+# Supported primitives
 
 DUMPI-CoRtEx currently supports the following collectives.
 * MPI_Allgather
