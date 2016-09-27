@@ -3,9 +3,19 @@
 
 #define HEADER(name) fprintf(stderr,"%s %s:%d ",name,__FILE__,__LINE__)
 
+#ifdef __DEBUG
+
 #define INFO(msg, ...) { HEADER("[INFO]"); fprintf(stderr, msg, ##__VA_ARGS__); }
 
 #define WARN(msg, ...) { HEADER("[WARNING]"); fprintf(stderr, msg, ##__VA_ARGS__); }
+
+#else
+
+#define INFO(msg, ...)
+
+#define WARN(msg, ...)
+
+#endif
 
 #define ERROR(msg, ...) { HEADER("[ERROR]"); fprintf(stderr, msg, ##__VA_ARGS__); exit(-1); }
 

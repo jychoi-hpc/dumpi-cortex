@@ -12,21 +12,21 @@ static int handleDUMPIInit(const dumpi_init *prm, uint16_t thread,
 static int handleDUMPISendrecv(const dumpi_sendrecv* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
-	printf("MPI_Sendrecv called\n");
+	printf("MPI_Sendrecv called with src=%d and dst=%d\n",prm->source,prm->dest);
 	return 0;
 }
 
 static int handleDUMPISend(const dumpi_send* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
-	printf("MPI_Send called\n");
+	printf("MPI_Send called with dst=%d\n",prm->dest);
 	return 0;
 }
 
 static int handleDUMPIRecv(const dumpi_recv* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
-	printf("MPI_Recv called\n");
+	printf("MPI_Recv called with src=%d\n",prm->source);
 	return 0;
 }
 
@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
 	const char* filename = argv[1];
 	int world_size = atoi(argv[2]);
 
-	cortex_dumpi_profile* profile = cortex_undumpi_open(filename,1453,world_size,0);
+	cortex_dumpi_profile* profile = cortex_undumpi_open(filename,12345,world_size,0);
 
 	if(!profile) {
 		fprintf(stderr,"Unable to open file %s\n",filename);

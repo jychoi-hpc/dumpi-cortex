@@ -8,7 +8,7 @@
 
 #include <dumpi/libundumpi/libundumpi.h>
 #include <cortex/profile.h>
-#include <cortex/callbacks.h>
+#include <cortex/default-callbacks.h>
 
 #ifdef __cplusplus
 extern "C" {

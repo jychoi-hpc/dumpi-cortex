@@ -5,7 +5,6 @@
  */
 
 #include "cortex/cortex.h"
-#include "cortex/callbacks.h"
 #include "cortex/post.h"
 
 #define CORTEX_FORWARD(fun,prm,thread,cpu,wall,perf) 			\

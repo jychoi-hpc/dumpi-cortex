@@ -23,10 +23,6 @@ cortex_dumpi_profile* cortex_undumpi_open(const char* fname, job_id_t job_id, si
 	profile->comms = NULL;
 	cortex_comm_add(profile, 2, world_size);
 
-//	libundumpi_callbacks cbacks;
-//	memset(&cbacks,0,sizeof(cbacks));
-//	cortex_set_callbacks(&cbacks);
-//	libundumpi_populate_callbacks(&cbacks, profile->callarr);
 	return profile;
 }
 

@@ -5,7 +5,6 @@
  */
 
 #include "cortex/cortex.h"
-#include "cortex/callbacks.h"
 #include <dumpi/libundumpi/callbacks.h>
 #include <dumpi/common/argtypes.h>
 #include <dumpi/common/constants.h>
