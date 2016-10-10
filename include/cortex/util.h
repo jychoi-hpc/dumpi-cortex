@@ -6,6 +6,10 @@
 #ifndef CORTEX_UTIL_H
 #define CORTEX_UTIL_H
 
+#ifdef __cplusplus
+extern "C"
+#endif
+
 typedef struct dumpi_pcontrol {} dumpi_pcontrol;
 
 #define FOREACH_DUMPI_OPERATION \
@@ -299,5 +303,9 @@ X(DUMPIO_Testany,dumpio_testany)	\
 X(DUMPIO_Waitany,dumpio_waitany)	\
 X(DUMPIO_Waitsome,dumpio_waitsome)	\
 X(DUMPIO_Testsome,dumpio_testsome)	\
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

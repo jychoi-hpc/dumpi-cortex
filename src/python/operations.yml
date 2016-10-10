@@ -1,0 +1,2247 @@
+---
+- dumpi_func_call:
+  - name: fn
+    type: uint64_t
+- dumpi_send:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_recv:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: source
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: status
+    type: dumpi_status*
+- dumpi_get_count:
+  - name: status
+    type: dumpi_status*
+  - name: datatype
+    type: dumpi_datatype
+  - name: count
+    type: int
+- dumpi_bsend:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_ssend:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_rsend:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_buffer_attach:
+  - name: size
+    type: int
+- dumpi_buffer_detach:
+  - name: size
+    type: int
+- dumpi_isend:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: request
+    type: dumpi_request
+- dumpi_ibsend:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: request
+    type: dumpi_request
+- dumpi_issend:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: request
+    type: dumpi_request
+- dumpi_irsend:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: request
+    type: dumpi_request
+- dumpi_irecv:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: source
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: request
+    type: dumpi_request
+- dumpi_wait:
+  - name: request
+    type: dumpi_request
+  - name: status
+    type: dumpi_status*
+- dumpi_test:
+  - name: request
+    type: dumpi_request
+  - name: flag
+    type: int
+  - name: status
+    type: dumpi_status*
+- dumpi_request_free:
+  - name: request
+    type: dumpi_request
+- dumpi_waitany:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpi_request[count]
+  - name: index
+    type: int
+  - name: status
+    type: dumpi_status*
+- dumpi_testany:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpi_request[count]
+  - name: index
+    type: int
+  - name: flag
+    type: int
+  - name: status
+    type: dumpi_status*
+- dumpi_waitall:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpi_request[count]
+  - name: statuses
+    type: dumpi_status[count]
+- dumpi_testall:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpi_request[count]
+  - name: flag
+    type: int
+  - name: statuses
+    type: dumpi_status[count]
+- dumpi_waitsome:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpi_request[count]
+  - name: outcount
+    type: int
+  - name: indices
+    type: int[outcount]
+  - name: statuses
+    type: dumpi_status[outcount]
+- dumpi_testsome:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpi_request[count]
+  - name: outcount
+    type: int
+  - name: indices
+    type: int[outcount]
+  - name: statuses
+    type: dumpi_status[outcount]
+- dumpi_iprobe:
+  - name: source
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: flag
+    type: int
+  - name: status
+    type: dumpi_status*
+- dumpi_probe:
+  - name: source
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: status
+    type: dumpi_status*
+- dumpi_cancel:
+  - name: request
+    type: dumpi_request
+- dumpi_test_cancelled:
+  - name: status
+    type: dumpi_status*
+  - name: cancelled
+    type: int
+- dumpi_send_init:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: request
+    type: dumpi_request
+- dumpi_bsend_init:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: request
+    type: dumpi_request
+- dumpi_ssend_init:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: request
+    type: dumpi_request
+- dumpi_rsend_init:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: request
+    type: dumpi_request
+- dumpi_recv_init:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: source
+    type: int
+  - name: tag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: request
+    type: dumpi_request
+- dumpi_start:
+  - name: request
+    type: dumpi_request
+- dumpi_startall:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpi_request[count]
+- dumpi_sendrecv:
+  - name: sendcount
+    type: int
+  - name: sendtype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: sendtag
+    type: int
+  - name: recvcount
+    type: int
+  - name: recvtype
+    type: dumpi_datatype
+  - name: source
+    type: int
+  - name: recvtag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: status
+    type: dumpi_status*
+- dumpi_sendrecv_replace:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: dest
+    type: int
+  - name: sendtag
+    type: int
+  - name: source
+    type: int
+  - name: recvtag
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: status
+    type: dumpi_status*
+- dumpi_type_contiguous:
+  - name: count
+    type: int
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_vector:
+  - name: count
+    type: int
+  - name: blocklength
+    type: int
+  - name: stride
+    type: int
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_hvector:
+  - name: count
+    type: int
+  - name: blocklength
+    type: int
+  - name: stride
+    type: int
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_indexed:
+  - name: count
+    type: int
+  - name: lengths
+    type: int[count]
+  - name: indices
+    type: int[count]
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_hindexed:
+  - name: count
+    type: int
+  - name: lengths
+    type: int[count]
+  - name: indices
+    type: int[count]
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_struct:
+  - name: count
+    type: int
+  - name: lengths
+    type: int[count]
+  - name: indices
+    type: int[count]
+  - name: oldtypes
+    type: dumpi_datatype[count]
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_address:
+  - name: address
+    type: int
+- dumpi_type_extent:
+  - name: datatype
+    type: dumpi_datatype
+  - name: extent
+    type: int
+- dumpi_type_size:
+  - name: datatype
+    type: dumpi_datatype
+  - name: size
+    type: int
+- dumpi_type_lb:
+  - name: datatype
+    type: dumpi_datatype
+  - name: lb
+    type: int
+- dumpi_type_ub:
+  - name: datatype
+    type: dumpi_datatype
+  - name: ub
+    type: int
+- dumpi_type_commit:
+  - name: datatype
+    type: dumpi_datatype
+- dumpi_type_free:
+  - name: datatype
+    type: dumpi_datatype
+- dumpi_get_elements:
+  - name: status
+    type: dumpi_status*
+  - name: datatype
+    type: dumpi_datatype
+  - name: elements
+    type: int
+- dumpi_pack:
+  - name: incount
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: outcount
+    type: int
+  - name: position
+    type: 
+    - name: in
+      type: int
+    - name: out
+      type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_unpack:
+  - name: incount
+    type: int
+  - name: position
+    type:
+    - name: in
+      type: int
+    - name: out
+      type: int
+  - name: outcount
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: comm
+    type: dumpi_comm
+- dumpi_pack_size:
+  - name: incount
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: comm
+    type: dumpi_comm
+  - name: size
+    type: int
+- dumpi_barrier:
+  - name: comm
+    type: dumpi_comm
+- dumpi_bcast:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: root
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_gather:
+  - name: commrank
+    type: int
+  - name: sendcount
+    type: int
+  - name: sendtype
+    type: dumpi_datatype
+  - name: recvcount
+    type: int
+  - name: recvtype
+    type: dumpi_datatype
+  - name: root
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_gatherv:
+  - name: commrank
+    type: int
+  - name: commsize
+    type: int
+  - name: sendcount
+    type: int
+  - name: sendtype
+    type: dumpi_datatype
+  - name: recvcounts
+    type: int[commsize]
+  - name: displs
+    type: int[commsize]
+  - name: recvtype
+    type: dumpi_datatype
+  - name: root
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_scatter:
+  - name: commrank
+    type: int
+  - name: sendcount
+    type: int
+  - name: sendtype
+    type: dumpi_datatype
+  - name: recvcount
+    type: int
+  - name: recvtype
+    type: dumpi_datatype
+  - name: root
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_scatterv:
+  - name: commrank
+    type: int
+  - name: commsize
+    type: int
+  - name: sendcounts
+    type: int[commsize]
+  - name: displs
+    type: int[commsize]
+  - name: sendtype
+    type: dumpi_datatype
+  - name: recvcount
+    type: int
+  - name: recvtype
+    type: dumpi_datatype
+  - name: root
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_allgather:
+  - name: sendcount
+    type: int
+  - name: sendtype
+    type: dumpi_datatype
+  - name: recvcount
+    type: int
+  - name: recvtype
+    type: dumpi_datatype
+  - name: comm
+    type: dumpi_comm
+- dumpi_allgatherv:
+  - name: commsize
+    type: int
+  - name: sendcount
+    type: int
+  - name: sendtype
+    type: dumpi_datatype
+  - name: recvcounts
+    type: int[commsize]
+  - name: displs
+    type: int[commsize]
+  - name: recvtype
+    type: dumpi_datatype
+  - name: comm
+    type: dumpi_comm
+- dumpi_alltoall:
+  - name: sendcount
+    type: int
+  - name: sendtype
+    type: dumpi_datatype
+  - name: recvcount
+    type: int
+  - name: recvtype
+    type: dumpi_datatype
+  - name: comm
+    type: dumpi_comm
+- dumpi_alltoallv:
+  - name: commsize
+    type: int
+  - name: sendcounts
+    type: int[commsize]
+  - name: senddispls
+    type: int[commsize]
+  - name: sendtype
+    type: dumpi_datatype
+  - name: recvcounts
+    type: int[commsize]
+  - name: recvdispls
+    type: int[commsize]
+  - name: recvtype
+    type: dumpi_datatype
+  - name: comm
+    type: dumpi_comm
+- dumpi_reduce:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: op
+    type: dumpi_op
+  - name: root
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_op_create:
+  - name: commute
+    type: int
+  - name: op
+    type: dumpi_op
+- dumpi_op_free:
+  - name: op
+    type: dumpi_op
+- dumpi_allreduce:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: op
+    type: dumpi_op
+  - name: comm
+    type: dumpi_comm
+- dumpi_reduce_scatter:
+  - name: commsize
+    type: int
+  - name: recvcounts
+    type: int[commsize]
+  - name: datatype
+    type: dumpi_datatype
+  - name: op
+    type: dumpi_op
+  - name: comm
+    type: dumpi_comm
+- dumpi_scan:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: op
+    type: dumpi_op
+  - name: comm
+    type: dumpi_comm
+- dumpi_group_size:
+  - name: group
+    type: dumpi_group
+  - name: size
+    type: int
+- dumpi_group_rank:
+  - name: group
+    type: dumpi_group
+  - name: rank
+    type: int
+- dumpi_group_translate_ranks:
+  - name: group1
+    type: dumpi_group
+  - name: count
+    type: int
+  - name: ranks1
+    type: int[count]
+  - name: group2
+    type: dumpi_group
+  - name: ranks2
+    type: int[count]
+- dumpi_group_compare:
+  - name: group1
+    type: dumpi_group
+  - name: group2
+    type: dumpi_group
+  - name: result
+    type: int
+- dumpi_comm_group:
+  - name: comm
+    type: dumpi_comm
+  - name: group
+    type: dumpi_group
+- dumpi_group_union:
+  - name: group1
+    type: dumpi_group
+  - name: group2
+    type: dumpi_group
+  - name: newgroup
+    type: dumpi_group
+- dumpi_group_intersection:
+  - name: group1
+    type: dumpi_group
+  - name: group2
+    type: dumpi_group
+  - name: newgroup
+    type: dumpi_group
+- dumpi_group_difference:
+  - name: group1
+    type: dumpi_group
+  - name: group2
+    type: dumpi_group
+  - name: newgroup
+    type: dumpi_group
+- dumpi_group_incl:
+  - name: group
+    type: dumpi_group
+  - name: count
+    type: int
+  - name: ranks
+    type: int[count]
+  - name: newgroup
+    type: dumpi_group
+- dumpi_group_excl:
+  - name: group
+    type: dumpi_group
+  - name: count
+    type: int
+  - name: ranks
+    type: int[count]
+  - name: newgroup
+    type: dumpi_group
+- dumpi_group_range_incl:
+  - name: group
+    type: dumpi_group
+  - name: count
+    type: int
+  - name: ranges
+    type: int[count][3]
+  - name: newgroup
+    type: dumpi_group
+- dumpi_group_range_excl:
+  - name: group
+    type: dumpi_group
+  - name: count
+    type: int
+  - name: ranges
+    type: int[count][3]
+  - name: newgroup
+    type: dumpi_group
+- dumpi_group_free:
+  - name: group
+    type: dumpi_group
+- dumpi_comm_size:
+  - name: comm
+    type: dumpi_comm
+  - name: size
+    type: int
+- dumpi_comm_rank:
+  - name: comm
+    type: dumpi_comm
+  - name: rank
+    type: int
+- dumpi_comm_compare:
+  - name: comm1
+    type: dumpi_comm
+  - name: comm2
+    type: dumpi_comm
+  - name: result
+    type: int
+- dumpi_comm_dup:
+  - name: oldcomm
+    type: dumpi_comm
+  - name: newcomm
+    type: dumpi_comm
+- dumpi_comm_create:
+  - name: oldcomm
+    type: dumpi_comm
+  - name: group
+    type: dumpi_group
+  - name: newcomm
+    type: dumpi_comm
+- dumpi_comm_split:
+  - name: oldcomm
+    type: dumpi_comm
+  - name: color
+    type: int
+  - name: key
+    type: int
+  - name: newcomm
+    type: dumpi_comm
+- dumpi_comm_free:
+  - name: comm
+    type: dumpi_comm
+- dumpi_comm_test_inter:
+  - name: comm
+    type: dumpi_comm
+  - name: inter
+    type: int
+- dumpi_comm_remote_size:
+  - name: comm
+    type: dumpi_comm
+  - name: size
+    type: int
+- dumpi_comm_remote_group:
+  - name: comm
+    type: dumpi_comm
+  - name: group
+    type: dumpi_group
+- dumpi_intercomm_create:
+  - name: localcomm
+    type: dumpi_comm
+  - name: localleader
+    type: int
+  - name: remotecomm
+    type: dumpi_comm
+  - name: remoteleader
+    type: int
+  - name: tag
+    type: int
+  - name: newcomm
+    type: dumpi_comm
+- dumpi_intercomm_merge:
+  - name: comm
+    type: dumpi_comm
+  - name: high
+    type: int
+  - name: newcomm
+    type: dumpi_comm
+- dumpi_keyval_create:
+  - name: key
+    type: dumpi_keyval
+- dumpi_keyval_free:
+  - name: key
+    type: int
+- dumpi_attr_put:
+  - name: comm
+    type: dumpi_comm
+  - name: key
+    type: int
+- dumpi_attr_get:
+  - name: comm
+    type: dumpi_comm
+  - name: key
+    type: int
+  - name: flag
+    type: int
+- dumpi_attr_delete:
+  - name: comm
+    type: dumpi_comm
+  - name: key
+    type: int
+- dumpi_topo_test:
+  - name: comm
+    type: dumpi_comm
+  - name: topo
+    type: dumpi_topology
+- dumpi_cart_create:
+  - name: oldcomm
+    type: dumpi_comm
+  - name: ndim
+    type: int
+  - name: dims
+    type: int[ndim]
+  - name: periods
+    type: int[ndim]
+  - name: reorder
+    type: int
+  - name: newcomm
+    type: dumpi_comm
+- dumpi_dims_create:
+  - name: nodes
+    type: int
+  - name: ndim
+    type: int
+  - name: dims
+    type:
+    - name: in
+      type: int[ndim]
+    - name: out
+      type: int[ndim]
+- dumpi_graph_create:
+  - name: numedges
+    type: int
+  - name: oldcomm
+    type: dumpi_comm
+  - name: nodes
+    type: int
+  - name: index
+    type: int[nodes]
+  - name: edges
+    type: int[numedges]
+  - name: reorder
+    type: int
+  - name: newcomm
+    type: dumpi_comm
+- dumpi_graphdims_get:
+  - name: comm
+    type: dumpi_comm
+  - name: nodes
+    type: int
+  - name: edges
+    type: int
+- dumpi_graph_get:
+  - name: totedges
+    type: int
+  - name: totnodes
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: maxindex
+    type: int
+  - name: maxedges
+    type: int
+  - name: index
+    type: int[totnodes]
+  - name: edges
+    type: int[totedges]
+- dumpi_cartdim_get:
+  - name: comm
+    type: dumpi_comm
+  - name: ndim
+    type: int
+- dumpi_cart_get:
+  - name: ndim
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: maxdims
+    type: int
+  - name: dims
+    type: int[ndim]
+  - name: periods
+    type: int[ndim]
+  - name: coords
+    type: int[ndim]
+- dumpi_cart_rank:
+  - name: ndim
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: coords
+    type: int[ndim]
+  - name: rank
+    type: int
+- dumpi_cart_coords:
+  - name: ndim
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: rank
+    type: int
+  - name: maxdims
+    type: int
+  - name: coords
+    type: int[ndim]
+- dumpi_graph_neighbors_count:
+  - name: comm
+    type: dumpi_comm
+  - name: rank
+    type: int
+  - name: nneigh
+    type: int
+- dumpi_graph_neighbors:
+  - name: nneigh
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: rank
+    type: int
+  - name: maxneighbors
+    type: int
+  - name: neighbors
+    type: int[nneigh]
+- dumpi_cart_shift:
+  - name: comm
+    type: dumpi_comm
+  - name: direction
+    type: int
+  - name: displ
+    type: int
+  - name: source
+    type: int
+  - name: dest
+    type: int
+- dumpi_cart_sub:
+  - name: ndim
+    type: int
+  - name: oldcomm
+    type: dumpi_comm
+  - name: remain_dims
+    type: int[ndim]
+  - name: newcomm
+    type: dumpi_comm
+- dumpi_cart_map:
+  - name: comm
+    type: dumpi_comm
+  - name: ndim
+    type: int
+  - name: dims
+    type: int[ndim]
+  - name: period
+    type: int[ndim]
+  - name: newrank
+    type: int
+- dumpi_graph_map:
+  - name: numedges
+    type: int
+  - name: comm
+    type: dumpi_comm
+  - name: nodes
+    type: int
+  - name: index
+    type: int[nodes]
+  - name: edges
+    type: int[numedges]
+  - name: newrank
+    type: int
+- dumpi_get_processor_name:
+  - name: name
+    type: string
+  - name: resultlen
+    type: int
+- dumpi_get_version:
+  - name: version
+    type: int
+  - name: subversion
+    type: int
+- dumpi_errhandler_create:
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_errhandler_set:
+  - name: comm
+    type: dumpi_comm
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_errhandler_get:
+  - name: comm
+    type: dumpi_comm
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_errhandler_free:
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_error_string:
+  - name: errorcode
+    type: int
+  - name: errorstring
+    type: string
+  - name: resultlen
+    type: int
+- dumpi_error_class:
+  - name: errorcode
+    type: int
+  - name: errorclass
+    type: int
+- dumpi_wtime:
+  - name: psec
+    type: uint64_t
+- dumpi_wtick:
+  - name: psec
+    type: uint64_t
+- dumpi_init:
+  - name: argc
+    type: int
+  - name: argv
+    type: string[argc]
+- dumpi_finalize:
+  - name: dummy
+    type: int
+- dumpi_initialized:
+  - name: result
+    type: int
+- dumpi_abort:
+  - name: comm
+    type: dumpi_comm
+  - name: errorcode
+    type: int
+- dumpi_close_port:
+  - name: portname
+    type: string
+- dumpi_comm_accept:
+  - name: portname
+    type: string
+  - name: info
+    type: dumpi_info
+  - name: root
+    type: int
+  - name: oldcomm
+    type: dumpi_comm
+  - name: newcomm
+    type: dumpi_comm
+- dumpi_comm_connect:
+  - name: portname
+    type: string
+  - name: info
+    type: dumpi_info
+  - name: root
+    type: int
+  - name: oldcomm
+    type: dumpi_comm
+  - name: newcomm
+    type: dumpi_comm
+- dumpi_comm_disconnect:
+  - name: comm
+    type: dumpi_comm
+- dumpi_comm_get_parent:
+  - name: parent
+    type: dumpi_comm
+- dumpi_comm_join:
+  - name: fd
+    type: int
+  - name: comm
+    type: dumpi_comm
+- dumpi_comm_spawn:
+  - name: oldcommrank
+    type: int
+  - name: command
+    type: string
+  - name: argv
+    type: string*
+  - name: maxprocs
+    type: int
+  - name: info
+    type: dumpi_info
+  - name: root
+    type: int
+  - name: oldcomm
+    type: dumpi_comm
+  - name: newcomm
+    type: dumpi_comm
+  - name: errcodes
+    type: int[maxprocs]
+- dumpi_comm_spawn_multiple:
+  - name: totprocs
+    type: int
+  - name: oldcommrank
+    type: int
+  - name: count
+    type: int
+  - name: commands
+    type: string[count]
+  - name: argvs
+    type: string[count]*
+  - name: maxprocs
+    type: int[count]
+  - name: info
+    type: dumpi_info[count]
+  - name: root
+    type: int
+  - name: oldcomm
+    type: dumpi_comm
+  - name: newcomm
+    type: dumpi_comm
+  - name: errcodes
+    type: int*
+- dumpi_lookup_name:
+  - name: servicename
+    type: string
+  - name: info
+    type: dumpi_info
+  - name: portname
+    type: string
+- dumpi_open_port:
+  - name: info
+    type: dumpi_info
+  - name: portname
+    type: string
+- dumpi_publish_name:
+  - name: servicename
+    type: string
+  - name: info
+    type: dumpi_info
+  - name: portname
+    type: string
+- dumpi_unpublish_name:
+  - name: servicename
+    type: string
+  - name: info
+    type: dumpi_info
+  - name: portname
+    type: string
+- dumpi_accumulate:
+  - name: origincount
+    type: int
+  - name: origintype
+    type: dumpi_datatype
+  - name: targetrank
+    type: int
+  - name: targetdisp
+    type: int
+  - name: targetcount
+    type: int
+  - name: targettype
+    type: dumpi_datatype
+  - name: op
+    type: dumpi_op
+  - name: win
+    type: dumpi_win
+- dumpi_get:
+  - name: origincount
+    type: int
+  - name: origintype
+    type: dumpi_datatype
+  - name: targetrank
+    type: int
+  - name: targetdisp
+    type: int
+  - name: targetcount
+    type: int
+  - name: targettype
+    type: dumpi_datatype
+  - name: win
+    type: dumpi_win
+- dumpi_put:
+  - name: origincount
+    type: int
+  - name: origintype
+    type: dumpi_datatype
+  - name: targetrank
+    type: int
+  - name: targetdisp
+    type: int
+  - name: targetcount
+    type: int
+  - name: targettype
+    type: dumpi_datatype
+  - name: win
+    type: dumpi_win
+- dumpi_win_complete:
+  - name: win
+    type: dumpi_win
+- dumpi_win_create:
+  - name: size
+    type: int
+  - name: dispunit
+    type: int
+  - name: info
+    type: dumpi_info
+  - name: comm
+    type: dumpi_comm
+  - name: win
+    type: dumpi_win
+- dumpi_win_fence:
+  - name: assertion
+    type: int
+  - name: win
+    type: dumpi_win
+- dumpi_win_free:
+  - name: win
+    type: dumpi_win
+- dumpi_win_get_group:
+  - name: win
+    type: dumpi_win
+  - name: group
+    type: dumpi_group
+- dumpi_win_lock:
+  - name: locktype
+    type: int
+  - name: winrank
+    type: int
+  - name: assertion
+    type: int
+  - name: win
+    type: dumpi_win
+- dumpi_win_post:
+  - name: group
+    type: dumpi_group
+  - name: assertion
+    type: int
+  - name: win
+    type: dumpi_win
+- dumpi_win_start:
+  - name: group
+    type: dumpi_group
+  - name: assertion
+    type: int
+  - name: win
+    type: dumpi_win
+- dumpi_win_test:
+  - name: win
+    type: dumpi_win
+  - name: flag
+    type: int
+- dumpi_win_unlock:
+  - name: winrank
+    type: int
+  - name: win
+    type: dumpi_win
+- dumpi_win_wait:
+  - name: win
+    type: dumpi_win
+- dumpi_alltoallw:
+  - name: commsize
+    type: int
+  - name: sendcounts
+    type: int[commsize]
+  - name: senddispls
+    type: int[commsize]
+  - name: sendtypes
+    type: dumpi_datatype[commsize]
+  - name: recvcounts
+    type: int[commsize]
+  - name: recvdispls
+    type: int[commsize]
+  - name: recvtypes
+    type: dumpi_datatype[commsize]
+  - name: comm
+    type: dumpi_comm
+- dumpi_exscan:
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: op
+    type: dumpi_op
+  - name: comm
+    type: dumpi_comm
+- dumpi_add_error_class:
+  - name: errorclass
+    type: int
+- dumpi_add_error_code:
+  - name: errorclass
+    type: int
+  - name: errorcode
+    type: int
+- dumpi_add_error_string:
+  - name: errorcode
+    type: int
+  - name: errorstring
+    type: string
+- dumpi_comm_call_errhandler:
+  - name: comm
+    type: dumpi_comm
+  - name: errorcode
+    type: int
+- dumpi_comm_create_keyval:
+  - name: keyval
+    type: int
+- dumpi_comm_delete_attr:
+  - name: comm
+    type: dumpi_comm
+  - name: keyval
+    type: int
+- dumpi_comm_free_keyval:
+  - name: keyval
+    type: int
+- dumpi_comm_get_attr:
+  - name: comm
+    type: dumpi_comm
+  - name: keyval
+    type: int
+  - name: flag
+    type: int
+- dumpi_comm_get_name:
+  - name: comm
+    type: dumpi_comm
+  - name: name
+    type: string
+  - name: resultlen
+    type: int
+- dumpi_comm_set_attr:
+  - name: comm
+    type: dumpi_comm
+  - name: keyval
+    type: int
+- dumpi_comm_set_name:
+  - name: comm
+    type: dumpi_comm
+  - name: name
+    type: string
+- dumpi_file_call_errhandler:
+  - name: file
+    type: dumpi_file
+  - name: errorcode
+    type: int
+- dumpi_grequest_complete:
+  - name: request
+    type: dumpi_request
+- dumpi_grequest_start:
+  - name: request
+    type: dumpi_request
+- dumpi_init_thread:
+  - name: argc
+    type: int
+  - name: argv
+    type: string[argc]
+  - name: required
+    type: int
+  - name: provided
+    type: int
+- dumpi_is_thread_main:
+  - name: flag
+    type: int
+- dumpi_query_thread:
+  - name: supported
+    type: int
+- dumpi_status_set_cancelled:
+  - name: status
+    type: dumpi_status*
+  - name: flag
+    type: int
+- dumpi_status_set_elements:
+  - name: status
+    type: dumpi_status*
+  - name: datatype
+    type: dumpi_datatype
+  - name: count
+    type: int
+- dumpi_type_create_keyval:
+  - name: keyval
+    type: int
+- dumpi_type_delete_attr:
+  - name: datatype
+    type: dumpi_datatype
+  - name: keyval
+    type: int
+- dumpi_type_dup:
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_free_keyval:
+  - name: keyval
+    type: int
+- dumpi_type_get_attr:
+  - name: datatype
+    type: dumpi_datatype
+  - name: keyval
+    type: int
+  - name: flag
+    type: int
+- dumpi_type_get_contents:
+  - name: numdatatypes
+    type: int
+  - name: numaddresses
+    type: int
+  - name: numintegers
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: maxintegers
+    type: int
+  - name: maxaddresses
+    type: int
+  - name: maxdatatypes
+    type: int
+  - name: arrintegers
+    type: int[numintegers]
+  - name: arraddresses
+    type: int[numaddresses]
+  - name: arrdatatypes
+    type: dumpi_datatype[numdatatypes]
+- dumpi_type_get_envelope:
+  - name: datatype
+    type: dumpi_datatype
+  - name: numintegers
+    type: int
+  - name: numaddresses
+    type: int
+  - name: numdatatypes
+    type: int
+  - name: combiner
+    type: int
+- dumpi_type_get_name:
+  - name: datatype
+    type: dumpi_datatype
+  - name: name
+    type: string
+  - name: resultlen
+    type: int
+- dumpi_type_set_attr:
+  - name: datatype
+    type: dumpi_datatype
+  - name: keyval
+    type: int
+- dumpi_type_set_name:
+  - name: datatype
+    type: dumpi_datatype
+  - name: name
+    type: string
+- dumpi_type_match_size:
+  - name: typeclass
+    type: int
+  - name: size
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+- dumpi_win_call_errhandler:
+  - name: win
+    type: dumpi_win
+  - name: errorcode
+    type: int
+- dumpi_win_create_keyval:
+  - name: keyval
+    type: int
+- dumpi_win_delete_attr:
+  - name: win
+    type: dumpi_win
+  - name: keyval
+    type: int
+- dumpi_win_free_keyval:
+  - name: keyval
+    type: int
+- dumpi_win_get_attr:
+  - name: win
+    type: dumpi_win
+  - name: keyval
+    type: int
+  - name: flag
+    type: int
+- dumpi_win_get_name:
+  - name: win
+    type: dumpi_win
+  - name: name
+    type: string
+  - name: resultlen
+    type: int
+- dumpi_win_set_attr:
+  - name: win
+    type: dumpi_win
+  - name: keyval
+    type: int
+- dumpi_win_set_name:
+  - name: win
+    type: dumpi_win
+  - name: name
+    type: string
+- dumpi_alloc_mem:
+  - name: size
+    type: int
+  - name: info
+    type: dumpi_info
+- dumpi_comm_create_errhandler:
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_comm_get_errhandler:
+  - name: comm
+    type: dumpi_comm
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_comm_set_errhandler:
+  - name: comm
+    type: dumpi_comm
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_file_create_errhandler:
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_file_get_errhandler:
+  - name: file
+    type: dumpi_file
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_file_set_errhandler:
+  - name: file
+    type: dumpi_file
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_finalized:
+  - name: flag
+    type: int
+- dumpi_free_mem:
+  - name: dummy
+    type: int
+- dumpi_get_address:
+  - name: address
+    type: int
+- dumpi_info_create:
+  - name: info
+    type: dumpi_info
+- dumpi_info_delete:
+  - name: info
+    type: dumpi_info
+  - name: key
+    type: string
+- dumpi_info_dup:
+  - name: oldinfo
+    type: dumpi_info
+  - name: newinfo
+    type: dumpi_info
+- dumpi_info_free:
+  - name: info
+    type: dumpi_info
+- dumpi_info_get:
+  - name: info
+    type: dumpi_info
+  - name: key
+    type: string
+  - name: valuelength
+    type: int
+  - name: value
+    type: string
+  - name: flag
+    type: int
+- dumpi_info_get_nkeys:
+  - name: info
+    type: dumpi_info
+  - name: nkeys
+    type: int
+- dumpi_info_get_nthkey:
+  - name: info
+    type: dumpi_info
+  - name: n
+    type: int
+  - name: key
+    type: string
+- dumpi_info_get_valuelen:
+  - name: info
+    type: dumpi_info
+  - name: key
+    type: string
+  - name: valuelen
+    type: int
+  - name: flag
+    type: int
+- dumpi_info_set:
+  - name: info
+    type: dumpi_info
+  - name: key
+    type: string
+  - name: value
+    type: string
+- dumpi_pack_external:
+  - name: datarep
+    type: string
+  - name: incount
+    type: int
+  - name: intype
+    type: dumpi_datatype
+  - name: outcount
+    type: int
+  - name: position
+    type:
+    - name: in
+      type: int
+    - name: out
+      type: int
+- dumpi_pack_external_size:
+  - name: datarep
+    type: string
+  - name: incount
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: size
+    type: int
+- dumpi_request_get_status:
+  - name: request
+    type: dumpi_request
+  - name: flag
+    type: int
+  - name: status
+    type: dumpi_status*
+- dumpi_type_create_darray:
+  - name: size
+    type: int
+  - name: rank
+    type: int
+  - name: ndims
+    type: int
+  - name: gsizes
+    type: int[ndims]
+  - name: distribs
+    type: int[ndims]
+  - name: dargs
+    type: int[ndims]
+  - name: psizes
+    type: int[ndims]
+  - name: order
+    type: int
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_create_hindexed:
+  - name: count
+    type: int
+  - name: blocklengths
+    type: int[count]
+  - name: displacements
+    type: int[count]
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_create_hvector:
+  - name: count
+    type: int
+  - name: blocklength
+    type: int
+  - name: stride
+    type: int
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_create_indexed_block:
+  - name: count
+    type: int
+  - name: blocklength
+    type: int
+  - name: displacments
+    type: int[count]
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_create_resized:
+  - name: oldtype
+    type: dumpi_datatype
+  - name: lb
+    type: int
+  - name: extent
+    type: int
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_create_struct:
+  - name: count
+    type: int
+  - name: blocklengths
+    type: int[count]
+  - name: displacements
+    type: int[count]
+  - name: oldtypes
+    type: dumpi_datatype[count]
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_create_subarray:
+  - name: ndims
+    type: int
+  - name: sizes
+    type: int[ndims]
+  - name: subsizes
+    type: int[ndims]
+  - name: starts
+    type: int[ndims]
+  - name: order
+    type: int 
+  - name: oldtype
+    type: dumpi_datatype
+  - name: newtype
+    type: dumpi_datatype
+- dumpi_type_get_extent:
+  - name: datatype
+    type: dumpi_datatype
+  - name: lb
+    type: int
+  - name: extent
+    type: int
+- dumpi_type_get_true_extent:
+  - name: datatype
+    type: dumpi_datatype
+  - name: lb
+    type: int
+  - name: extent
+    type: int
+- dumpi_unpack_external:
+  - name: datarep
+    type: string
+  - name: insize
+    type: int
+  - name: position
+    type:
+    - name: in
+      type: int
+    - name: out
+      type: int
+  - name: outcount
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+- dumpi_win_create_errhandler:
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_win_get_errhandler:
+  - name: win
+    type: dumpi_win
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_win_set_errhandler:
+  - name: win
+    type: dumpi_win
+  - name: errhandler
+    type: dumpi_errhandler
+- dumpi_file_open:
+  - name: comm
+    type: dumpi_comm
+  - name: filename
+    type: string
+  - name: amode
+    type: int
+  - name: info
+    type: dumpi_info
+  - name: file
+    type: dumpi_file
+- dumpi_file_close:
+  - name: file
+    type: dumpi_file
+- dumpi_file_delete:
+  - name: filename
+    type: string
+  - name: info
+    type: dumpi_info
+- dumpi_file_set_size:
+  - name: file
+    type: dumpi_file
+  - name: size
+    type: int64_t
+- dumpi_file_preallocate:
+  - name: file
+    type: dumpi_file
+  - name: size
+    type: int64_t
+- dumpi_file_get_size:
+  - name: file
+    type: dumpi_file
+  - name: size
+    type: int64_t
+- dumpi_file_get_group:
+  - name: file
+    type: dumpi_file
+  - name: group
+    type: dumpi_group
+- dumpi_file_get_amode:
+  - name: file
+    type: dumpi_file
+  - name: amode
+    type: int
+- dumpi_file_set_info:
+  - name: file
+    type: dumpi_file
+  - name: info
+    type: dumpi_info
+- dumpi_file_get_info:
+  - name: file
+    type: dumpi_file
+  - name: info
+    type: dumpi_info
+- dumpi_file_set_view:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: hosttype
+    type: dumpi_datatype
+  - name: filetype
+    type: dumpi_datatype
+  - name: datarep
+    type: string
+  - name: info
+    type: dumpi_info
+- dumpi_file_get_view:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: hosttype
+    type: dumpi_datatype
+  - name: filetype
+    type: dumpi_datatype
+  - name: datarep
+    type: string
+- dumpi_file_read_at:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_read_at_all:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_write_at:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_write_at_all:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_iread_at:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: request
+    type: dumpio_request
+- dumpi_file_iwrite_at:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: request
+    type: dumpio_request
+- dumpi_file_read:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_read_all:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_write:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_write_all:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_iread:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: request
+    type: dumpio_request
+- dumpi_file_iwrite:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: request
+    type: dumpio_request
+- dumpi_file_seek:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: whence
+    type: int
+- dumpi_file_get_position:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+- dumpi_file_get_byte_offset:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: bytes
+    type: int64_t
+- dumpi_file_read_shared:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_write_shared:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_iread_shared:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: request
+    type: dumpio_request
+- dumpi_file_iwrite_shared:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: request
+    type: dumpio_request
+- dumpi_file_read_ordered:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_write_ordered:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+  - name: status
+    type: dumpi_status*
+- dumpi_file_seek_shared:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: whence
+    type: int
+- dumpi_file_get_position_shared:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+- dumpi_file_read_at_all_begin:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+- dumpi_file_read_at_all_end:
+  - name: file
+    type: dumpi_file
+  - name: status
+    type: dumpi_status*
+- dumpi_file_write_at_all_begin:
+  - name: file
+    type: dumpi_file
+  - name: offset
+    type: int64_t
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+- dumpi_file_write_at_all_end:
+  - name: file
+    type: dumpi_file
+  - name: status
+    type: dumpi_status*
+- dumpi_file_read_all_begin:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+- dumpi_file_read_all_end:
+  - name: file
+    type: dumpi_file
+  - name: status
+    type: dumpi_status*
+- dumpi_file_write_all_begin:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+- dumpi_file_write_all_end:
+  - name: file
+    type: dumpi_file
+  - name: status
+    type: dumpi_status*
+- dumpi_file_read_ordered_begin:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+- dumpi_file_read_ordered_end:
+  - name: file
+    type: dumpi_file
+  - name: status
+    type: dumpi_status*
+- dumpi_file_write_ordered_begin:
+  - name: file
+    type: dumpi_file
+  - name: count
+    type: int
+  - name: datatype
+    type: dumpi_datatype
+- dumpi_file_write_ordered_end:
+  - name: file
+    type: dumpi_file
+  - name: status
+    type: dumpi_status*
+- dumpi_file_get_type_extent:
+  - name: file
+    type: dumpi_file
+  - name: datatype
+    type: dumpi_datatype
+  - name: extent
+    type: int
+- dumpi_register_datarep:
+  - name: name
+    type: string
+- dumpi_file_set_atomicity:
+  - name: file
+    type: dumpi_file
+  - name: flag
+    type: int
+- dumpi_file_get_atomicity:
+  - name: file
+    type: dumpi_file
+  - name: flag
+    type: int
+- dumpi_file_sync:
+  - name: file
+    type: dumpi_file
+- dumpio_test:
+  - name: request
+    type: dumpio_request
+  - name: flag
+    type: int
+  - name: status
+    type: dumpi_status*
+- dumpio_wait:
+  - name: request
+    type: dumpio_request
+  - name: status
+    type: dumpi_status*
+- dumpio_testall:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpio_request[count]
+  - name: flag
+    type: int
+  - name: statuses
+    type: dumpi_status[count]
+- dumpio_waitall:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpio_request[count]
+  - name: statuses
+    type: dumpi_status[count]
+- dumpio_testany:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpio_request[count]
+  - name: index
+    type: int
+  - name: flag
+    type: int
+  - name: statuses
+    type: dumpi_status[count]
+- dumpio_waitany:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpio_request[count]
+  - name: index
+    type: int
+  - name: statuses
+    type: dumpi_status[count]
+- dumpio_waitsome:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpio_request[count]
+  - name: outcount
+    type: int
+  - name: indices
+    type: int[outcount]
+  - name: statuses
+    type: dumpi_status[outcount]
+- dumpio_testsome:
+  - name: count
+    type: int
+  - name: requests
+    type: dumpio_request[count]
+  - name: outcount
+    type: int
+  - name: indices
+    type: int[outcount]
+  - name: statuses
+    type: dumpi_status[outcount]

@@ -9,6 +9,10 @@
 #include <dumpi/common/funclabels.h>
 #include <cortex/cortex.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct cortex_dumpi_profile; // forward declaration
 struct cortex_operation;
 
@@ -36,5 +40,9 @@ int cortex_post(struct cortex_dumpi_profile* profile,
 		const dumpi_perfinfo *perf);
 
 int cortex_exec(struct cortex_dumpi_profile* profile, libundumpi_cbpair* callarr, void* uargs, int* mpi_finalized);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

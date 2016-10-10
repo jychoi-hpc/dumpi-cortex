@@ -11,6 +11,10 @@
 #include <cortex/cortex.h>
 #include <uthash/uthash.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct cortex_comm {
 	dumpi_comm handle;
 	unsigned int size;
@@ -28,5 +32,9 @@ void cortex_comm_delete_all(cortex_dumpi_profile* profile);
 int cortex_comm_get_size(cortex_dumpi_profile* profile, dumpi_comm, int* size);
 
 int cortex_comm_dup(cortex_dumpi_profile* profile, dumpi_comm oldc, dumpi_comm newc);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

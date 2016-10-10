@@ -10,6 +10,10 @@
 #include <dumpi/common/argtypes.h>
 #include <dumpi/common/constants.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int cortex_post_MPI_Send(const dumpi_send *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
 
 int cortex_post_MPI_Recv(const dumpi_recv *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
@@ -587,5 +591,9 @@ int cortex_post_MPIO_Waitany(const dumpio_waitany *prm, uint16_t thread, const d
 int cortex_post_MPIO_Waitsome(const dumpio_waitsome *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
 
 int cortex_post_MPIO_Testsome(const dumpio_testsome *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

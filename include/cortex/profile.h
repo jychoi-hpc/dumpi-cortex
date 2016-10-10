@@ -11,6 +11,10 @@
 #include <cortex/operation.h>
 //#include <cortex/dragonfly.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct cortex_operation; // forward declaration
 struct cortex_comm; // forward declaration
 
@@ -30,5 +34,9 @@ typedef struct cortex_dumpi_profile {
 	rank_t rank; /* rank of this process in MPI_COMM_WORLD */
 	struct cortex_comm* comms; /* hash table for the communicators */
 } cortex_dumpi_profile;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
