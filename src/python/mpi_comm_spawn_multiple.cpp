@@ -9,6 +9,9 @@ extern bool cortex_python_initialized;
 extern bp::object user_python_translator;
 extern bp::object cortex_python_translator;
 extern void* cortex_python_current_uarg;
+extern const dumpi_time* cortex_python_current_cpu;
+extern const dumpi_time* cortex_python_current_wall;
+extern const dumpi_perfinfo* cortex_python_current_perf;
 
 static void dumpi_comm_spawn_multiple_to_python(bp::dict& args, const dumpi_comm_spawn_multiple *prm) {
 
@@ -22,8 +25,7 @@ static void dumpi_comm_spawn_multiple_to_python(bp::dict& args, const dumpi_comm
 	for(int i=0; i < prm->count; i++) {
 		bp::list l2;
 		int j = 0;
-		while(prm->argvs[i][j] != NULL) {
-			l2.append(std::string(prm->argvs[i][j]));
+		while(prm->argvs[i][j] != NULL) {;			l2.append(std::string(prm->argvs[i][j]));
 			j++;
 		}
 		l.append(l2);
@@ -67,6 +69,9 @@ extern "C" int cortex_python_translate_MPI_Comm_spawn_multiple(const dumpi_comm_
 	}
 	// set the uarg attribute
 	cortex_python_current_uarg = uarg;
+	cortex_python_current_cpu  = cpu;
+	cortex_python_current_wall = wall;
+	cortex_python_current_perf = perf;
 	try {
 		bp::dict arguments;
 		dumpi_comm_spawn_multiple_to_python(arguments,prm);
@@ -76,5 +81,5 @@ extern "C" int cortex_python_translate_MPI_Comm_spawn_multiple(const dumpi_comm_
 		exit(-1);
 	}
 	cortex_python_current_uarg = NULL;
-	return 0;
+	cortex_python_current_cpu  = NULL;	cortex_python_current_wall = NULL;	cortex_python_current_perf = NULL;	return 0;
 }

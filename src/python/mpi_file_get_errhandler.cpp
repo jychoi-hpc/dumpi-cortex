@@ -9,6 +9,9 @@ extern bool cortex_python_initialized;
 extern bp::object user_python_translator;
 extern bp::object cortex_python_translator;
 extern void* cortex_python_current_uarg;
+extern const dumpi_time* cortex_python_current_cpu;
+extern const dumpi_time* cortex_python_current_wall;
+extern const dumpi_perfinfo* cortex_python_current_perf;
 
 static void dumpi_file_get_errhandler_to_python(bp::dict& args, const dumpi_file_get_errhandler *prm) {
 
@@ -39,6 +42,9 @@ extern "C" int cortex_python_translate_MPI_File_get_errhandler(const dumpi_file_
 	}
 	// set the uarg attribute
 	cortex_python_current_uarg = uarg;
+	cortex_python_current_cpu  = cpu;
+	cortex_python_current_wall = wall;
+	cortex_python_current_perf = perf;
 	try {
 		bp::dict arguments;
 		dumpi_file_get_errhandler_to_python(arguments,prm);
@@ -48,5 +54,5 @@ extern "C" int cortex_python_translate_MPI_File_get_errhandler(const dumpi_file_
 		exit(-1);
 	}
 	cortex_python_current_uarg = NULL;
-	return 0;
+	cortex_python_current_cpu  = NULL;	cortex_python_current_wall = NULL;	cortex_python_current_perf = NULL;	return 0;
 }

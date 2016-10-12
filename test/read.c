@@ -20,21 +20,21 @@ static int handleDUMPISendrecv(const dumpi_sendrecv* prm, uint16_t thread,
 static int handleDUMPISend(const dumpi_send* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
-	//printf("MPI_Send called with dst=%d\n",prm->dest);
+	printf("MPI_Send called with dst=%d\n",prm->dest);
 	return 0;
 }
 
 static int handleDUMPIRecv(const dumpi_recv* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
-	//printf("MPI_Recv called with src=%d\n",prm->source);
+	printf("MPI_Recv called with src=%d\n",prm->source);
 	return 0;
 }
 
 static int handleDUMPIBcast(const dumpi_bcast* prm, uint16_t thread,
 			const dumpi_time *cpu, const dumpi_time *wall,
 			const dumpi_perfinfo *perf, void *uarg) {
-	//printf("MPI_Bcast called\n");
+	printf("MPI_Bcast called with root=%d\n",prm->root);
 	return 0;
 }
 
