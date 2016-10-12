@@ -105,7 +105,7 @@ int main(int argc, char** argv) {
 
 	cortex_dumpi_start_stream_read(profile);
 
-	cortex_python_set_module("MyPythonClass","MyTranslator");
+	cortex_python_set_module("MyBcastTranslator","MyTranslator");
 
 	cortex_undumpi_read_stream(profile, &cbacks, CORTEX_PYTHON_TRANSLATION, NULL);
 
