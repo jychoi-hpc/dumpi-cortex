@@ -303,8 +303,8 @@ libundumpi_callbacks cortex_python_translation = {
   .on_iowaitany                 =  cortex_python_translate_MPIO_Waitany                 ,
   .on_iowaitsome                =  cortex_python_translate_MPIO_Waitsome                ,
   .on_iotestsome                =  cortex_python_translate_MPIO_Testsome                ,
-  .on_function_enter            =  cortex_python_Function_enter                         ,
-  .on_function_exit             =  cortex_python_Function_exit                                  
+  .on_function_enter            =  cortex_Function_enter                                ,
+  .on_function_exit             =  cortex_Function_exit                          
 };
 
 const libundumpi_callbacks* CORTEX_PYTHON_TRANSLATION = &cortex_python_translation;

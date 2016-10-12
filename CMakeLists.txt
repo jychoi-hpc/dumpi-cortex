@@ -58,3 +58,7 @@ add_subdirectory (test)
 #-----------------------------------------------------------#
 install(DIRECTORY "include/cortex" DESTINATION include)
 install(FILES "${CMAKE_BINARY_DIR}/lib/libcortex.a" DESTINATION lib)
+install(FILES "${CMAKE_BINARY_DIR}/lib/libcortex-mpich.a" DESTINATION lib)
+if(ENABLE_PYTHON)
+  install(FILES "${CMAKE_BINARY_DIR}/lib/libcortex-python.a" DESTINATION lib)
+endif(ENABLE_PYTHON)
