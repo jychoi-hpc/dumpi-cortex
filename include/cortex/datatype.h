@@ -9,6 +9,14 @@
 #include <dumpi/common/types.h>
 #include <dumpi/common/constants.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int cortex_datatype_get_size(dumpi_datatype dt);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
