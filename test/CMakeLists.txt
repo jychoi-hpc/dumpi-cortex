@@ -1,7 +1,7 @@
-set(READ_TEST_SOURCE read.c)
+add_executable(read_mpich read_mpich.c)
+target_link_libraries(read_mpich cortex-mpich cortex ${DUMPI_LIBRARIES})
 
-add_executable(read ${READ_TEST_SOURCE})
-target_link_libraries(read cortex-python cortex ${DUMPI_LIBRARIES} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
-
-add_executable(py py.cpp)
-target_link_libraries(py ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+if(ENABLE_PYTHON)
+  add_executable(read_python read_python)
+  target_link_libraries(read_python cortex-python cortex ${DUMPI_LIBRARIES} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+endif(ENABLE_PYTHON)

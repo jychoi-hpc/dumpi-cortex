@@ -1,6 +1,5 @@
 #include <cortex/cortex.h>
 #include <cortex/cortex-mpich.h>
-#include <cortex/cortex-python.h>
 #include <string.h>
 
 static int handleDUMPIInit(const dumpi_init *prm, uint16_t thread,
@@ -105,9 +104,7 @@ int main(int argc, char** argv) {
 
 	cortex_dumpi_start_stream_read(profile);
 
-	cortex_python_set_module("MyBcastTranslator","MyTranslator");
-
-	cortex_undumpi_read_stream(profile, &cbacks, CORTEX_PYTHON_TRANSLATION, NULL);
+	cortex_undumpi_read_stream(profile, &cbacks, CORTEX_MPICH_TRANSLATION, NULL);
 
 	cortex_undumpi_close(profile);
 
