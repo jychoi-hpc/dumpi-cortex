@@ -595,9 +595,9 @@ int cortex_python_translate_MPIO_Waitsome(const dumpio_waitsome *prm, uint16_t t
 
 int cortex_python_translate_MPIO_Testsome(const dumpio_testsome *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
 
-int  cortex_Function_enter(const dumpi_func_call *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
+int  cortex_python_Function_enter(const dumpi_func_call *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
 
-int  cortex_Function_exit(const dumpi_func_call *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
+int  cortex_python_Function_exit(const dumpi_func_call *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
 
 #ifdef __cplusplus
 }
