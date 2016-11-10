@@ -652,14 +652,13 @@ int cortex_post(cortex_dumpi_profile* profile,
 int cortex_exec(cortex_dumpi_profile* profile, libundumpi_cbpair* callarr, void* uargs, int* mpi_finalized)
 {
 	cortex_operation* op = dequeue_operation(profile);
-	int i = op->type;
+	if(op == NULL) return -1;
 
-	if(op->type == DUMPI_Finalize) *mpi_finalized = 1;
-	else *mpi_finalized = 0;
-
-	libundumpi_unsafe_fun callout = callarr[i].callout;
+	if(op->type == DUMPI_Finalize) {
+		*mpi_finalized = 1;
+	}
+	libundumpi_unsafe_fun callout = callarr[op->type].callout;
 	if(callout) callout(op->args, op->thread, &(op->cpu), &(op->wall), &(op->perf), uargs);
-
 	free_operation(op);
 	return 0;
 }

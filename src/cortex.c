@@ -10,10 +10,12 @@
 cortex_dumpi_profile* cortex_undumpi_open(const char* fname, job_id_t job_id, size_t world_size, rank_t world_rank) {
 	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)malloc(sizeof(cortex_dumpi_profile));
 	profile->dumpi = undumpi_open(fname);
+	profile->active = 1;
+	profile->first_pending = NULL;
+	profile->last_pending = NULL;
 	profile->nprocs = world_size;
 	profile->rank = world_rank;
 	profile->job_id = job_id;
-
 	if(profile->dumpi == NULL) {
 		free(profile);
 		return NULL;
@@ -48,9 +50,12 @@ int cortex_undumpi_read_single_call(cortex_dumpi_profile *profile,
 	if(cortex_has_operation(profile)) {
 		cortex_exec(profile, callarr, userarg, mpi_finalized);
 	} else {
-		profile->active = undumpi_read_single_call(profile->dumpi, translations, (void*)profile, mpi_finalized);
-		if(cortex_has_operation(profile)) {
-			cortex_exec(profile, callarr, userarg, mpi_finalized);
+		if(profile->active) {
+			int dummy = 0;
+			profile->active = undumpi_read_single_call(profile->dumpi, translations, (void*)profile, &dummy);
+			if(cortex_has_operation(profile)) {
+				cortex_exec(profile, callarr, userarg, mpi_finalized);
+			}
 		}
 	}
 	return profile->active || cortex_has_operation(profile);
