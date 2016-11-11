@@ -4,15 +4,13 @@
  *
  */
 
-#include "cortex/cortex.h"
 #include <dumpi/libundumpi/callbacks.h>
 #include <dumpi/common/argtypes.h>
 #include <dumpi/common/constants.h>
-#include <assert.h>
-#include <stdio.h>
+#include "cortex/operation.h"
 
 #define CORTEX_FORWARD(fun,prm,thread,cpu,wall,perf) 			\
-	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)uarg; 	\
+	struct cortex_dumpi_profile* profile = (struct cortex_dumpi_profile*)uarg; 	\
 	cortex_post(profile, DU ## fun,prm,thread,cpu,wall,perf);	\
 	return 1
 
@@ -1243,7 +1241,7 @@ int  cortex_Function_exit(const dumpi_func_call *prm, uint16_t thread, const dum
   return 1;
 }
 
-libundumpi_callbacks cortex_no_translation = {
+static libundumpi_callbacks cortex_no_translation = {
   .on_send                      =  cortex_default_translate_MPI_Send                     ,
   .on_recv                      =  cortex_default_translate_MPI_Recv                     ,
   .on_get_count                 =  cortex_default_translate_MPI_Get_count                ,

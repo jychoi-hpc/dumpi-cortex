@@ -1,4 +1,12 @@
+#include <uthash/uthash.h>
 #include "cortex/comm.h"
+#include "cortex/profile.h"
+
+typedef struct cortex_comm {
+	dumpi_comm handle;
+	unsigned int size;
+	UT_hash_handle hh;
+} cortex_comm;
 
 #define HASH_FIND_COMM(head,findint,out)\
 		HASH_FIND(hh,head,findint,sizeof(dumpi_comm),out)

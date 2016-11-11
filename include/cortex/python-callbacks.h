@@ -13,10 +13,6 @@
 extern "C" {
 #endif
 
-extern libundumpi_callbacks cortex_python_translation;
-
-extern const libundumpi_callbacks* CORTEX_PYTHON_TRANSLATION;
-
 int cortex_python_translate_MPI_Send(const dumpi_send *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
 
 int cortex_python_translate_MPI_Recv(const dumpi_recv *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;

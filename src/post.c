@@ -4,11 +4,10 @@
  *
  */
 
-#include "cortex/cortex.h"
 #include "cortex/post.h"
 
 #define CORTEX_FORWARD(fun,prm,thread,cpu,wall,perf) 			\
-	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)uarg; 	\
+	struct cortex_dumpi_profile* profile = (struct cortex_dumpi_profile*)uarg; 	\
 	cortex_post(profile, DU ## fun,prm,thread,cpu,wall,perf);	\
 	return 1
 

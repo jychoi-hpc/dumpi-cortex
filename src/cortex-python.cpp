@@ -1,6 +1,6 @@
 #include <boost/python.hpp>
 #include <cstdlib>
-#include <cortex/cortex.h>
+#include <cortex/operation.h>
 #include <cortex/comm.h>
 #include <cortex/datatype.h>
 #include <cortex/cortex-python.h>

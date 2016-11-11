@@ -6,13 +6,15 @@
 #ifndef DUMPI_CORTEX_H
 #define DUMPI_CORTEX_H
 
+#include <dumpi/libundumpi/callbacks.h>
 #include <dumpi/libundumpi/libundumpi.h>
-#include <cortex/profile.h>
-#include <cortex/default-callbacks.h>
+#include <cortex/common.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* ! __cplusplus */
+
+  typedef struct cortex_dumpi_profile cortex_dumpi_profile;
 
   /**
    * Open a trace file for reading.
@@ -113,6 +115,8 @@ extern "C" {
    */
   dumpi_sizeof cortex_undumpi_read_datatype_sizes(cortex_dumpi_profile *profile);
 
+
+  extern const libundumpi_callbacks* CORTEX_NO_TRANSLATION;
 
 #ifdef __cplusplus
 } /* End of extern "C" block */

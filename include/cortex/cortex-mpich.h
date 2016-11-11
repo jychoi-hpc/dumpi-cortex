@@ -7,6 +7,7 @@
 #define DUMPI_CORTEX_MPICH_H
 
 #include <dumpi/libundumpi/libundumpi.h>
-#include <cortex/mpich-callbacks.h>
+
+extern const libundumpi_callbacks* CORTEX_MPICH_TRANSLATION;
 
 #endif

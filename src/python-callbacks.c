@@ -4,16 +4,13 @@
  *
  */
 
-#include "cortex/cortex.h"
-#include "cortex/python-callbacks.h"
+#include "cortex/default-callbacks.h"
 #include "cortex/python-callbacks.h"
 #include <dumpi/libundumpi/callbacks.h>
 #include <dumpi/common/argtypes.h>
 #include <dumpi/common/constants.h>
-#include <assert.h>
-#include <stdio.h>
 
-libundumpi_callbacks cortex_python_translation = {
+static libundumpi_callbacks cortex_python_translation = {
   .on_send                      =  cortex_python_translate_MPI_Send                     ,
   .on_recv                      =  cortex_python_translate_MPI_Recv                     ,
   .on_get_count                 =  cortex_python_translate_MPI_Get_count                ,

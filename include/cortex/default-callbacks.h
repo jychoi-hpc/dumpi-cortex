@@ -9,10 +9,6 @@
 
 #include <dumpi/libundumpi/libundumpi.h>
 
-extern libundumpi_callbacks cortex_no_translation;
-
-extern const libundumpi_callbacks* CORTEX_NO_TRANSLATION;
-
 int  cortex_default_translate_MPI_Send(const dumpi_send *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;
 
 int  cortex_default_translate_MPI_Recv(const dumpi_recv *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) ;

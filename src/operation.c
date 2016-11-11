@@ -5,8 +5,21 @@
  */
 
 #include <string.h>
+#include "cortex/profile.h"
 #include "cortex/operation.h"
 #include "cortex/util.h"
+
+typedef struct cortex_operation {
+	dumpi_function type;
+	void* args;
+	uint16_t thread;
+	dumpi_time cpu;
+	dumpi_time wall;
+	dumpi_perfinfo perf;
+
+	struct cortex_operation* next;
+	struct cortex_operation* prev;
+} cortex_operation;
 
 static void enqueue_operation(cortex_dumpi_profile* profile, cortex_operation* op) {
 	if(profile->first_pending == NULL) {

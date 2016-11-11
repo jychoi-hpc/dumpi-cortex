@@ -8,8 +8,7 @@
 
 #include <dumpi/libundumpi/bindings.h>
 #include <dumpi/libundumpi/libundumpi.h>
-#include <cortex/operation.h>
-//#include <cortex/dragonfly.h>
+#include <cortex/common.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,12 +18,8 @@ struct cortex_operation; // forward declaration
 struct cortex_comm; // forward declaration
 struct cortex_datatype; // forward declaration
 
-typedef int16_t job_id_t;
-typedef int32_t  rank_t;
-
 typedef struct cortex_dumpi_profile {
 	dumpi_profile* dumpi; /* internal dumpi profile */
-//	libundumpi_cbpair callarr[DUMPI_END_OF_STREAM]; /* same callbacks in the form of an array */
 	int active; /* stores the result of the last call to cortex_undumpi_read_single_call */
 
 	struct cortex_operation* first_pending;

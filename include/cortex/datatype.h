@@ -8,30 +8,25 @@
 
 #include <dumpi/common/types.h>
 #include <dumpi/common/constants.h>
-#include <cortex/cortex.h>
-#include <uthash/uthash.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct cortex_datatype {
-	dumpi_datatype handle;
-	unsigned int size;
-	UT_hash_handle hh;
-} cortex_datatype;
+struct cortex_datatype; // forward declaration
+struct cortex_dumpi_profile; // forward declaration
 
-int cortex_datatype_add(cortex_dumpi_profile* profile, dumpi_datatype dt, int size);
+int cortex_datatype_add(struct cortex_dumpi_profile* profile, dumpi_datatype dt, int size);
 
-cortex_datatype* cortex_datatype_find(cortex_dumpi_profile* profile, dumpi_datatype dt);
+struct cortex_datatype* cortex_datatype_find(struct cortex_dumpi_profile* profile, dumpi_datatype dt);
 
-void cortex_datatype_delete(cortex_dumpi_profile* profile, dumpi_datatype dt);
+void cortex_datatype_delete(struct cortex_dumpi_profile* profile, dumpi_datatype dt);
 
-void cortex_datatype_delete_all(cortex_dumpi_profile* profile);
+void cortex_datatype_delete_all(struct cortex_dumpi_profile* profile);
 
-int cortex_datatype_get_size(cortex_dumpi_profile* profile, dumpi_datatype dt);
+int cortex_datatype_get_size(struct cortex_dumpi_profile* profile, dumpi_datatype dt);
 
-int cortex_datatype_dup(cortex_dumpi_profile* profile, dumpi_datatype olddt, dumpi_datatype newdt);
+int cortex_datatype_dup(struct cortex_dumpi_profile* profile, dumpi_datatype olddt, dumpi_datatype newdt);
 
 #ifdef __cplusplus
 }

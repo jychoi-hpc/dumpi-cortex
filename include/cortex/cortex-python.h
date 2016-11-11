@@ -7,13 +7,14 @@
 #define DUMPI_CORTEX_PYTHON_H
 
 #include <dumpi/libundumpi/libundumpi.h>
-#include <cortex/python-callbacks.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 int cortex_python_set_module(const char* module, const char* class_name);
+
+extern const libundumpi_callbacks* CORTEX_PYTHON_TRANSLATION;
 
 #ifdef __cplusplus
 }

@@ -1,4 +1,12 @@
 #include "cortex/datatype.h"
+#include "cortex/profile.h"
+#include <uthash/uthash.h>
+
+typedef struct cortex_datatype {
+	dumpi_datatype handle;
+	unsigned int size;
+	UT_hash_handle hh;
+} cortex_datatype;
 
 #define HASH_FIND_DTYPE(head,findint,out)\
 		HASH_FIND(hh,head,findint,sizeof(dumpi_datatype),out)
