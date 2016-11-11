@@ -5735,7 +5735,7 @@ static bool pycortex_is_mpi_comm_null(dumpi_comm comm) {
 }
 
 static int pycortex_datatype_get_size(dumpi_datatype t) {
-	return cortex_datatype_get_size(t);
+	return cortex_datatype_get_size((cortex_dumpi_profile*)cortex_python_current_uarg,t);
 }
 
 static int pycortex_is_basic_datatype(dumpi_datatype t) {

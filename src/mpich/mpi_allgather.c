@@ -30,7 +30,7 @@ int cortex_mpich_translate_MPI_Allgather(const dumpi_allgather *prm,
 
 	if(prm->sendcount == 0) return 0;
 
-	type_size = cortex_datatype_get_size(prm->recvtype);
+	type_size = cortex_datatype_get_size(uarg,prm->recvtype);
 
 	dumpi_sendrecv sendrecv_prm;
 		sendrecv_prm.comm 	= prm->comm;

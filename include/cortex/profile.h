@@ -17,6 +17,7 @@ extern "C" {
 
 struct cortex_operation; // forward declaration
 struct cortex_comm; // forward declaration
+struct cortex_datatype; // forward declaration
 
 typedef int16_t job_id_t;
 typedef int32_t  rank_t;
@@ -32,7 +33,9 @@ typedef struct cortex_dumpi_profile {
 	job_id_t job_id; /* job id */
 	size_t nprocs; /* size of MPI_COMM_WORLD */
 	rank_t rank; /* rank of this process in MPI_COMM_WORLD */
+
 	struct cortex_comm* comms; /* hash table for the communicators */
+	struct cortex_datatype* dtypes; /* hash table for the datatypes */
 } cortex_dumpi_profile;
 
 #ifdef __cplusplus

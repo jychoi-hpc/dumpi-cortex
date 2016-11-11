@@ -9,20 +9,23 @@
 
 cortex_dumpi_profile* cortex_undumpi_open(const char* fname, job_id_t job_id, size_t world_size, rank_t world_rank) {
 	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)malloc(sizeof(cortex_dumpi_profile));
+
 	profile->dumpi = undumpi_open(fname);
+
+	if(profile->dumpi == NULL) {
+		free(profile);
+		return NULL;
+	}
+
 	profile->active = 1;
 	profile->first_pending = NULL;
 	profile->last_pending = NULL;
 	profile->nprocs = world_size;
 	profile->rank = world_rank;
 	profile->job_id = job_id;
-	if(profile->dumpi == NULL) {
-		free(profile);
-		return NULL;
-	}
-
-	// create the world communicator
 	profile->comms = NULL;
+	profile->dtypes = NULL;
+
 	cortex_comm_add(profile, 2, world_size);
 
 	return profile;

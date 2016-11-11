@@ -157,26 +157,57 @@ int  cortex_default_translate_MPI_Sendrecv_replace(const dumpi_sendrecv_replace 
 }
 
 int  cortex_default_translate_MPI_Type_contiguous(const dumpi_type_contiguous *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int size = cortex_datatype_get_size(uarg, prm->oldtype);
+  size *= prm->count;
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_contiguous, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_vector(const dumpi_type_vector *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int size = cortex_datatype_get_size(uarg, prm->oldtype);
+  size *= (prm->count * prm->blocklength);
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_vector, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_hvector(const dumpi_type_hvector *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int size = cortex_datatype_get_size(uarg, prm->oldtype);
+  size *= (prm->count * prm->blocklength);
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_hvector, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_indexed(const dumpi_type_indexed *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int elem_size = cortex_datatype_get_size(uarg, prm->oldtype);
+  int size = 0;
+  int i;
+  for(i=0; i < prm->count; i++) {
+    size += prm->lengths[i];
+  }
+  size *= elem_size;
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_indexed, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_hindexed(const dumpi_type_hindexed *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int elem_size = cortex_datatype_get_size(uarg, prm->oldtype);
+  int size = 0;
+  int i;
+  for(i=0; i < prm->count; i++) {
+    size += prm->lengths[i];
+  }
+  size *= elem_size;
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_hindexed, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_struct(const dumpi_type_struct *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int size = 0;
+  int i;
+  for(i=0; i < prm->count; i++) {
+    size += cortex_datatype_get_size(uarg, prm->oldtypes[i])*(prm->lengths[i]);
+  }
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_struct, prm, thread, cpu, wall, perf);
 }
 
@@ -725,6 +756,7 @@ int  cortex_default_translate_MPI_Type_delete_attr(const dumpi_type_delete_attr 
 }
 
 int  cortex_default_translate_MPI_Type_dup(const dumpi_type_dup *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  cortex_datatype_dup(uarg,prm->oldtype,prm->newtype);
   CORTEX_FORWARD(MPI_Type_dup, prm, thread, cpu, wall, perf);
 }
 
@@ -881,30 +913,61 @@ int  cortex_default_translate_MPI_Request_get_status(const dumpi_request_get_sta
 }
 
 int  cortex_default_translate_MPI_Type_create_darray(const dumpi_type_create_darray *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  // TODO
   CORTEX_FORWARD(MPI_Type_create_darray, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_create_hindexed(const dumpi_type_create_hindexed *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int elem_size = cortex_datatype_get_size(uarg,prm->oldtype);
+  int i;
+  int size = 0;
+  for(i=0; i< prm->count; i++) {
+    size += prm->blocklengths[i];
+  }
+  size *= elem_size;
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_create_hindexed, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_create_hvector(const dumpi_type_create_hvector *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int elem_size = cortex_datatype_get_size(uarg,prm->oldtype);
+  int size = elem_size * prm->count * prm->blocklength;
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_create_hvector, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_create_indexed_block(const dumpi_type_create_indexed_block *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int elem_size = cortex_datatype_get_size(uarg,prm->oldtype);
+  int size = elem_size * prm->count * prm->blocklength;
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_create_indexed_block, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_create_resized(const dumpi_type_create_resized *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int size = cortex_datatype_get_size(uarg,prm->oldtype);
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_create_resized, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_create_struct(const dumpi_type_create_struct *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int size = 0;
+  int i;
+  for(i=0; i< prm->count; i++) {
+    int elem_size = cortex_datatype_get_size(uarg,prm->oldtypes[i]);
+    size += elem_size * prm->blocklengths[i];
+  }
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_create_struct, prm, thread, cpu, wall, perf);
 }
 
 int  cortex_default_translate_MPI_Type_create_subarray(const dumpi_type_create_subarray *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
+  int elem_size = cortex_datatype_get_size(uarg,prm->oldtype);
+  int i;
+  int size = elem_size;
+  for(i=0; i < prm->ndims; i++) {
+    size *= prm->subsizes[i];
+  }
+  cortex_datatype_add(uarg,prm->newtype,size);
   CORTEX_FORWARD(MPI_Type_create_subarray, prm, thread, cpu, wall, perf);
 }
 
