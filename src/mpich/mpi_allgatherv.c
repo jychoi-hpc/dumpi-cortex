@@ -24,7 +24,7 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 	int curr_cnt, dst, total_count, recv_offset, send_cnt;
 	int mask, dst_tree_root, my_tree_root,
 	    last_recv_cnt = 0;
-	int recvtype_size = cortex_datatype_get_size(prm->recvtype);
+	int recvtype_size = cortex_datatype_get_size(uarg,prm->recvtype);
 
 	dumpi_sendrecv sendrecv_prm;
 		sendrecv_prm.comm 	= prm->comm;

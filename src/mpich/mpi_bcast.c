@@ -68,7 +68,7 @@ int cortex_mpich_translate_MPI_Bcast(const dumpi_bcast *prm,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
 
-	int type_size = cortex_datatype_get_size(prm->datatype);
+	int type_size = cortex_datatype_get_size(uarg,prm->datatype);
 	int comm_size;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 	int nbytes = prm->count * type_size;
@@ -159,7 +159,7 @@ static int bcast_scatter_doubling_allgather(const dumpi_bcast* prm,
 	int type_size, nbytes = 0;
 	int relative_dst, dst_tree_root, my_tree_root, send_offset, recv_offset;
 	
-	type_size = cortex_datatype_get_size(prm->datatype);
+	type_size = cortex_datatype_get_size(uarg,prm->datatype);
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 
 	relative_rank = (rank >= prm->root) ? rank - prm->root : rank - prm->root + comm_size;
@@ -224,7 +224,7 @@ static int bcast_scatter_ring_allgather(const dumpi_bcast* prm,
 	int left, right, jnext, curr_size = 0;
 	int recvd_size;
 
-	type_size = cortex_datatype_get_size(prm->datatype);
+	type_size = cortex_datatype_get_size(uarg,prm->datatype);
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 
 	if(comm_size == 1) return 0;

@@ -20,7 +20,7 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 	int pof2, mask, rem, newrank, newdst, dst, *cnts, *disps;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 	int rank = thread;
-	int type_size = cortex_datatype_get_size(prm->datatype);
+	int type_size = cortex_datatype_get_size(uarg,prm->datatype);
 
 	cnts = disps = NULL;
 	

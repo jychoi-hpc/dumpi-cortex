@@ -29,7 +29,7 @@ int cortex_mpich_translate_MPI_Reduce(const dumpi_reduce *prm,
 			void *uarg) {
 
 	int comm_size, type_size;
-	type_size = cortex_datatype_get_size(prm->datatype);
+	type_size = cortex_datatype_get_size(uarg,prm->datatype);
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 	int pof2 = 1;
 	while (pof2 <= comm_size) pof2 <<= 1;
@@ -113,7 +113,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 	disps = NULL;
 
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
-	type_size = cortex_datatype_get_size(prm->datatype);
+	type_size = cortex_datatype_get_size(uarg,prm->datatype);
 	
 	pof2 = 1;
 	while (pof2 <= comm_size) pof2 <<= 1;
