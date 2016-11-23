@@ -80,7 +80,7 @@ int cortex_datatype_add(cortex_dumpi_profile* profile, dumpi_datatype dt, int si
 cortex_datatype* cortex_datatype_find(cortex_dumpi_profile* profile, dumpi_datatype dt) {
 	cortex_datatype* cdt = NULL;
 	cortex_datatype** root = &(profile->dtypes);
-	HASH_FIND_DTYPE(*root, &dt_int, dt);
+	HASH_FIND_DTYPE(*root, &dt, cdt);
 	return cdt;
 }
 
