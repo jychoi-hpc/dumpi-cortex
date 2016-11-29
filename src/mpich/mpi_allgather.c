@@ -66,7 +66,7 @@ int cortex_mpich_translate_MPI_Allgather(const dumpi_allgather *prm,
 
 				sendrecv_prm.sendcount = curr_cnt;
 				sendrecv_prm.dest = dst;
-				last_recv_cnt = (comm_size-dst_tree_root)*(prm->recvcount);
+				last_recv_cnt = curr_cnt;
 				sendrecv_prm.recvcount = last_recv_cnt;
 				sendrecv_prm.source = dst;
 				cortex_post_MPI_Sendrecv(&sendrecv_prm, rank, cpu, wall, perf, uarg);
