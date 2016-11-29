@@ -1,6 +1,7 @@
 #include "cortex/cortex.h"
 #include "cortex/mpich-constants.h"
 #include "cortex/debug.h"
+#include "cortex/profile.h"
 
 #define MPICH_ALLGATHERV_TAG -1234
 
@@ -17,7 +18,7 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 			void *uarg) {
 
 	int rank, comm_size;
-	rank = thread;
+	rank = ((cortex_dumpi_profile*)uarg)->rank;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 
 	int j, i, pof2, src, rem;

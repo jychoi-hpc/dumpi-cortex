@@ -1,6 +1,7 @@
 #include "cortex/cortex.h"
 #include "cortex/mpich-constants.h"
 #include "cortex/debug.h"
+#include "cortex/profile.h"
 
 #define MPICH_ALLTOALLV_TAG -1234
 
@@ -15,6 +16,7 @@ int cortex_mpich_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
+	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
 	int comm_size, i, j;
 	int dst, rank, req_cnt, req_num = 1;

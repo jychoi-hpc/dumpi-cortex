@@ -1,5 +1,6 @@
 #include "cortex/cortex.h"
 #include "cortex/debug.h"
+#include "cortex/profile.h"
 
 #define MPICH_BARRIER_TAG -1234
 
@@ -14,6 +15,8 @@ int cortex_mpich_translate_MPI_Barrier(const dumpi_barrier *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
+
+	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
 	INFO("Barrier using Mpich's barrier algorithm\n");
 

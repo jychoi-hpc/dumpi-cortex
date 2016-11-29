@@ -671,7 +671,7 @@ int cortex_exec(cortex_dumpi_profile* profile, libundumpi_cbpair* callarr, void*
 		*mpi_finalized = 1;
 	}
 	libundumpi_unsafe_fun callout = callarr[op->type].callout;
-	if(callout) callout(op->args, op->thread, &(op->cpu), &(op->wall), &(op->perf), uargs);
+	if(callout) callout(op->args, profile->rank, &(op->cpu), &(op->wall), &(op->perf), uargs);
 	free_operation(op);
 	return 0;
 }

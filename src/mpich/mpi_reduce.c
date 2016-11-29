@@ -1,6 +1,7 @@
 #include "cortex/cortex.h"
 #include "cortex/mpich-constants.h"
 #include "cortex/debug.h"
+#include "cortex/profile.h"
 
 #define MPICH_REDUCE_TAG -1234
 
@@ -27,6 +28,8 @@ int cortex_mpich_translate_MPI_Reduce(const dumpi_reduce *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
+
+	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
 	int comm_size, type_size;
 	type_size = cortex_datatype_get_size(uarg,prm->datatype);

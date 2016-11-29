@@ -1,6 +1,7 @@
 #include "cortex/cortex.h"
 #include "cortex/mpich-constants.h"
 #include "cortex/debug.h"
+#include "cortex/profile.h"
 
 #define MPICH_ALLREDUCE_TAG -1234
 
@@ -19,7 +20,7 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 	int comm_size, i, send_idx, recv_idx, last_idx, send_cnt, recv_cnt;
 	int pof2, mask, rem, newrank, newdst, dst, *cnts, *disps;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
-	int rank = thread;
+	int rank = ((cortex_dumpi_profile*)uarg)->rank;
 	int type_size = cortex_datatype_get_size(uarg,prm->datatype);
 
 	cnts = disps = NULL;
@@ -43,7 +44,7 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 				send_prm.dest = rank+1;
 				send_prm.tag = MPICH_ALLREDUCE_TAG;
 				send_prm.comm = prm->comm;
-			cortex_post_MPI_Send(&send_prm,thread,cpu,wall,perf,uarg);
+			cortex_post_MPI_Send(&send_prm,rank,cpu,wall,perf,uarg);
 			newrank = -1;
 		} else { /* odd */
 			dumpi_recv recv_prm;
@@ -52,7 +53,7 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 				recv_prm.source = rank-1;
 				recv_prm.tag = MPICH_ALLREDUCE_TAG;
 				recv_prm.comm = prm->comm;
-			cortex_post_MPI_Recv(&recv_prm,thread,cpu,wall,perf,uarg);
+			cortex_post_MPI_Recv(&recv_prm,rank,cpu,wall,perf,uarg);
 			newrank = rank / 2;
 		}
 	} else {
@@ -85,7 +86,7 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 					sr_prm.source = dst;
 					sr_prm.recvtag = MPICH_ALLREDUCE_TAG;
 					sr_prm.comm = prm->comm;
-				cortex_post_MPI_Sendrecv(&sr_prm,thread,cpu,wall,perf,uarg);
+				cortex_post_MPI_Sendrecv(&sr_prm,rank,cpu,wall,perf,uarg);
 
 				mask <<= 1;
 			}
@@ -137,7 +138,7 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 					sr_prm.source = dst;
 					sr_prm.recvtag = MPICH_ALLREDUCE_TAG;
 					sr_prm.comm = prm->comm;
-				cortex_post_MPI_Sendrecv(&sr_prm,thread,cpu,wall,perf,uarg);
+				cortex_post_MPI_Sendrecv(&sr_prm,rank,cpu,wall,perf,uarg);
 
 				send_idx = recv_idx;
 				mask <<= 1;
@@ -181,7 +182,7 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 					sr_prm.source = dst;
 					sr_prm.recvtag = MPICH_ALLREDUCE_TAG;
 					sr_prm.comm = prm->comm;
-				cortex_post_MPI_Sendrecv(&sr_prm,thread,cpu,wall,perf,uarg);
+				cortex_post_MPI_Sendrecv(&sr_prm,rank,cpu,wall,perf,uarg);
 
 				if (newrank > newdst) send_idx = recv_idx;
 				
@@ -198,7 +199,7 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 				send_prm.dest = rank-1;
 				send_prm.tag = MPICH_ALLREDUCE_TAG;
 				send_prm.comm = prm->comm;
-			cortex_post_MPI_Send(&send_prm,thread,cpu,wall,perf,uarg);
+			cortex_post_MPI_Send(&send_prm,rank,cpu,wall,perf,uarg);
 		} else {
 			dumpi_recv recv_prm;
 				recv_prm.count = prm->count;
@@ -206,7 +207,7 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 				recv_prm.source = rank+1;
 				recv_prm.tag = MPICH_ALLREDUCE_TAG;
 				recv_prm.comm = prm->comm;
-			cortex_post_MPI_Recv(&recv_prm,thread,cpu,wall,perf,uarg);
+			cortex_post_MPI_Recv(&recv_prm,rank,cpu,wall,perf,uarg);
 		}
 	}
 

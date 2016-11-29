@@ -1,6 +1,7 @@
 #include "cortex/cortex.h"
 #include "cortex/mpich-constants.h"
 #include "cortex/debug.h"
+#include "cortex/profile.h"
 
 #define MPICH_BCAST_TAG -1234
 
@@ -67,6 +68,8 @@ int cortex_mpich_translate_MPI_Bcast(const dumpi_bcast *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
+
+	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
 	int type_size = cortex_datatype_get_size(uarg,prm->datatype);
 	int comm_size;

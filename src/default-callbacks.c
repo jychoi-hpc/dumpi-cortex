@@ -7,11 +7,12 @@
 #include <dumpi/libundumpi/callbacks.h>
 #include <dumpi/common/argtypes.h>
 #include <dumpi/common/constants.h>
+#include "cortex/profile.h"
 #include "cortex/operation.h"
 
 #define CORTEX_FORWARD(fun,prm,thread,cpu,wall,perf) 			\
 	struct cortex_dumpi_profile* profile = (struct cortex_dumpi_profile*)uarg; 	\
-	cortex_post(profile, DU ## fun,prm,thread,cpu,wall,perf);	\
+	cortex_post(profile, DU ## fun,prm,profile->rank,cpu,wall,perf);	\
 	return 1
 
 int  cortex_default_translate_MPI_Send(const dumpi_send *prm, uint16_t thread, const dumpi_time *cpu, const dumpi_time *wall, const dumpi_perfinfo *perf, void *uarg) {
