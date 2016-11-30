@@ -75,6 +75,8 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 			mask <<= 1;
 		}
 
+		free(data_sizes);
+
 	} else if(total_count*recvtype_size < CORTEX_ALLGATHER_SHORT_MSG_SIZE){
 		/* Non-power-of-two no. of processes, use Bruck algorithm. */
 		/* do the first \floor(\lg p) steps */
