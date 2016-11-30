@@ -1,9 +1,19 @@
+#include <string.h>
 #include "cortex/cortex.h"
 #include "cortex/mpich-constants.h"
 #include "cortex/debug.h"
 #include "cortex/profile.h"
 
 #define MPICH_ALLGATHERV_TAG -1234
+
+static void aggregate_sizes(int* data_sizes, int n, int step) {
+	int i, j, s;
+	for(i=0; i<n; i += step) {
+		s = 0;
+		for(j=i; j<step; j++) s += data_sizes[j];
+		for(j=i; j<step; j++) data_sizes[j] = s;
+	}
+}
 
 /**
  * This translates MPI_Allgatherv calls into a series of
@@ -46,37 +56,23 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 
 		INFO("Allgatherv for %d bytes across %d processes, use recursive doubling algorithm\n",(total_count*recvtype_size),comm_size);
 
-		i = 0;
 		mask = 0x1;
-		curr_cnt = prm->recvcounts[rank];
+		int* data_sizes = (int*)malloc(comm_size*sizeof(int));
+		memcpy(data_sizes,prm->recvcounts,sizeof(int)*comm_size);
 
 		while(mask < comm_size) {
 			dst = rank ^ mask;
 
-			dst_tree_root = dst >> i;
-			dst_tree_root <<= i;
-			
-			my_tree_root = rank >> i;
-			my_tree_root <<= i;
+			aggregate_sizes(data_sizes,comm_size,mask);
 
-			if(dst < comm_size) {
+			sendrecv_prm.sendcount = data_sizes[rank];
+			sendrecv_prm.dest = dst;
+			sendrecv_prm.recvcount = data_sizes[dst];
+			sendrecv_prm.source = dst;
 
-				recv_offset = 0;
-				for (j=0; j<dst_tree_root; j++)
-					recv_offset += prm->recvcounts[j];
-
-				sendrecv_prm.sendcount = curr_cnt;
-				sendrecv_prm.dest = dst;
-				last_recv_cnt = total_count - recv_offset;
-				sendrecv_prm.recvcount = last_recv_cnt;
-				sendrecv_prm.source = dst;
-				cortex_post_MPI_Sendrecv(&sendrecv_prm, rank, cpu, wall, perf, uarg);
-
-				curr_cnt += last_recv_cnt;
-			}
+			cortex_post_MPI_Sendrecv(&sendrecv_prm, rank, cpu, wall, perf, uarg);
 
 			mask <<= 1;
-			i++;
 		}
 
 	} else if(total_count*recvtype_size < CORTEX_ALLGATHER_SHORT_MSG_SIZE){
