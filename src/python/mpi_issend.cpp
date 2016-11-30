@@ -1,4 +1,5 @@
 #include <boost/python.hpp>
+#include "cortex/profile.h"
 #include "cortex/python-util.hpp"
 #include "cortex/cortex.h"
 #include "cortex/debug.h"
@@ -41,6 +42,7 @@ extern "C" int cortex_python_translate_MPI_Issend(const dumpi_issend *prm,
 		// No translation provided, just forward the call
 		PyErr_Clear();
 		cortex_dumpi_profile* profile = (cortex_dumpi_profile*)uarg;
+                thread = profile->rank;
 		cortex_post(profile, DUMPI_Issend, prm, thread, cpu, wall, perf);
 		return 0;
 	}
