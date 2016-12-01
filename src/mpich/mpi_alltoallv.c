@@ -3,8 +3,6 @@
 #include "cortex/debug.h"
 #include "cortex/profile.h"
 
-#define MPICH_ALLTOALLV_TAG -1234
-
 /**
  * This translates MPI_Alltoallv calls into a series of
  * point to point calls. The following
@@ -52,7 +50,7 @@ int cortex_mpich_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 					irecv_param.count	= prm->recvcounts[dst];
 					irecv_param.datatype	= prm->recvtype;
 					irecv_param.source	= dst;
-					irecv_param.tag		= MPICH_ALLTOALLV_TAG;
+					irecv_param.tag		= CORTEX_ALLTOALLV_TAG;
 					irecv_param.comm	= prm->comm;
 					irecv_param.request	= req_num++; // hopefuly the program is not doing other requests at the same time...
 					reqarray[req_cnt] = irecv_param.request;
@@ -69,7 +67,7 @@ int cortex_mpich_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 					isend_param.count	= prm->sendcounts[dst];
 					isend_param.datatype	= prm->sendtype;
 					isend_param.dest 	= dst;
-					isend_param.tag		= MPICH_ALLTOALLV_TAG;
+					isend_param.tag		= CORTEX_ALLTOALLV_TAG;
 					isend_param.comm	= prm->comm;
 					isend_param.request	= req_num++;
 

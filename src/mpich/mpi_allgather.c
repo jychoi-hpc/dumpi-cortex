@@ -4,8 +4,6 @@
 #include "cortex/debug.h"
 #include "cortex/profile.h"
 
-#define MPICH_ALLGATHER_TAG -1234
-
 /**
  * This translates MPI_Allgather calls into a series of
  * point to point calls. The following
@@ -37,10 +35,10 @@ int cortex_mpich_translate_MPI_Allgather(const dumpi_allgather *prm,
 		sendrecv_prm.comm 	= prm->comm;
 		sendrecv_prm.sendcount 	= 1;
 		sendrecv_prm.sendtype 	= prm->recvtype;
-		sendrecv_prm.sendtag	= MPICH_ALLGATHER_TAG;
+		sendrecv_prm.sendtag	= CORTEX_ALLGATHER_TAG;
 		sendrecv_prm.recvcount	= 1;
 		sendrecv_prm.recvtype	= prm->recvtype;
-		sendrecv_prm.recvtag	= MPICH_ALLGATHER_TAG;
+		sendrecv_prm.recvtag	= CORTEX_ALLGATHER_TAG;
 		sendrecv_prm.status	= NULL;
 
 	tot_bytes = prm->recvcount * comm_size * type_size;
@@ -50,32 +48,22 @@ int cortex_mpich_translate_MPI_Allgather(const dumpi_allgather *prm,
 
 		mask = 0x1;
 		curr_cnt = prm->recvcount;
-		i = 0;
 
 		/* Power-of-two no. of processes, use recursive doubling algo */
 		while(mask < comm_size) {
 			dst = rank ^ mask;
 
-			dst_tree_root = dst >> i;
-			dst_tree_root <<= i;
-			
-			my_tree_root = rank >> i;
-			my_tree_root <<= i;
-
 			if(dst < comm_size) {
 
 				sendrecv_prm.sendcount = curr_cnt;
 				sendrecv_prm.dest = dst;
-				last_recv_cnt = curr_cnt;
-				sendrecv_prm.recvcount = last_recv_cnt;
+				sendrecv_prm.recvcount = curr_cnt;
 				sendrecv_prm.source = dst;
 				cortex_post_MPI_Sendrecv(&sendrecv_prm, rank, cpu, wall, perf, uarg);
-
-				curr_cnt += last_recv_cnt;
+				curr_cnt *= 2;
 			}
 
 			mask <<= 1;
-			i++;
 		}
 
 	} else if(tot_bytes < CORTEX_ALLGATHER_SHORT_MSG_SIZE) {

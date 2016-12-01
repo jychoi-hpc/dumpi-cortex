@@ -4,8 +4,7 @@
 #include "cortex/debug.h"
 #include "cortex/profile.h"
 
-#define MPICH_ALLGATHERV_TAG -1234
-
+// Updates an array of data sizes according to the recursive doubling algo
 static void aggregate_sizes(int* data_sizes, int n, int step) {
 	int i, j, s;
 	for(i=0; i<n; i += step) {
@@ -13,6 +12,20 @@ static void aggregate_sizes(int* data_sizes, int n, int step) {
 		for(j=i; j<step; j++) s += data_sizes[j];
 		for(j=i; j<step; j++) data_sizes[j] = s;
 	}
+}
+
+// Update an array of data sizes according to Bruck's algorithm
+static void bruck_update_sizes(int* data_sizes, int n, int pof2) {
+	int* new_data_sizes = (int*)malloc(sizeof(int)*n);
+	int i;
+	for(i=0; i<n; i++) {
+		int src = (i + pof2) % n;
+		new_data_sizes[i] = data_sizes[i]+data_sizes[src];
+	}
+	for(i=0; i<n; i++) {
+		data_sizes[i] = new_data_sizes[i];
+	}
+	free(new_data_sizes);
 }
 
 /**
@@ -40,9 +53,9 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 	dumpi_sendrecv sendrecv_prm;
 		sendrecv_prm.comm 	= prm->comm;
 		sendrecv_prm.sendtype 	= prm->recvtype;
-		sendrecv_prm.sendtag	= MPICH_ALLGATHERV_TAG;
+		sendrecv_prm.sendtag	= CORTEX_ALLGATHERV_TAG;
 		sendrecv_prm.recvtype	= prm->recvtype;
-		sendrecv_prm.recvtag	= MPICH_ALLGATHERV_TAG;
+		sendrecv_prm.recvtag	= CORTEX_ALLGATHERV_TAG;
 		sendrecv_prm.status	= NULL;
 
 	total_count = 0;
@@ -83,19 +96,21 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 
 		INFO("Allgatherv for %d bytes across %d processes, use Bruck algorithm\n",(total_count*recvtype_size),comm_size);
 
-		curr_cnt = prm->recvcounts[rank];
+		int* data_sizes = (int*)malloc(comm_size*sizeof(int));
+                memcpy(data_sizes,prm->recvcounts,sizeof(int)*comm_size);
+
 		pof2 = 1;
 		while (pof2 <= comm_size/2) {
 			src = (rank + pof2) % comm_size;
 			dst = (rank - pof2 + comm_size) % comm_size;
 			
-			sendrecv_prm.sendcount = curr_cnt;
+			sendrecv_prm.sendcount = data_sizes[rank];
 			sendrecv_prm.dest = dst;
-			sendrecv_prm.recvcount = total_count - curr_cnt;
+			sendrecv_prm.recvcount = data_sizes[src];
 			sendrecv_prm.source = src;
 			cortex_post_MPI_Sendrecv(&sendrecv_prm, rank, cpu, wall, perf, uarg);
+			bruck_update_sizes(data_sizes, comm_size, pof2);
 
-			curr_cnt += total_count - curr_cnt;
 			pof2 *= 2;
 		}
 		/* do the rest */
@@ -110,10 +125,12 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 
 			sendrecv_prm.sendcount = send_cnt;
 			sendrecv_prm.dest = dst;
-			sendrecv_prm.recvcount = total_count - curr_cnt;
+			sendrecv_prm.recvcount = total_count - data_sizes[rank];
 			sendrecv_prm.source = src;
 			cortex_post_MPI_Sendrecv(&sendrecv_prm, rank, cpu, wall, perf, uarg);
 		}
+
+		free(data_sizes);
 	} else {
 		// for long messages, Ring algo should be used... (allgatherv.c line 643)
 
@@ -153,7 +170,7 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 					recv_prm.count 		= recvnow;
 					recv_prm.datatype 	= prm->recvtype;
 					recv_prm.source 	= left;
-					recv_prm.tag 		= MPICH_ALLGATHERV_TAG;
+					recv_prm.tag 		= CORTEX_ALLGATHERV_TAG;
 					recv_prm.comm 		= prm->comm;
 				cortex_post_MPI_Recv(&recv_prm, rank, cpu, wall, perf, uarg);
 				torecv -= recvnow;
@@ -162,7 +179,7 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 					send_prm.count 		= sendnow;
 					send_prm.datatype 	= prm->recvtype;
 					send_prm.dest 		= right;
-					send_prm.tag 		= MPICH_ALLGATHERV_TAG;
+					send_prm.tag 		= CORTEX_ALLGATHERV_TAG;
 					send_prm.comm 		= prm->comm;
 				cortex_post_MPI_Send(&send_prm, rank, cpu, wall, perf, uarg);
 				tosend -= sendnow;
