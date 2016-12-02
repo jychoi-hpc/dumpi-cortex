@@ -31,7 +31,18 @@ cortex_dumpi_profile* cortex_undumpi_open(const char* fname, job_id_t job_id, si
 	profile->comms = NULL;
 	profile->dtypes = NULL;
 
+	// initializes the communicators
 	cortex_comm_add(profile, 2, world_size);
+
+	// initializes the datatypes
+	if(profile->dumpi) {
+		dumpi_sizeof datatype_sizes = undumpi_read_datatype_sizes(profile->dumpi);
+		int i;
+		for(i=0; i < datatype_sizes.count; i++) {
+			cortex_datatype_add(profile, i, datatype_sizes.size[i]);
+		}
+		free(datatype_sizes.size);
+	}
 
 	return profile;
 }
