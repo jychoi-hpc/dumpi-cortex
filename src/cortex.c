@@ -11,14 +11,18 @@
 cortex_dumpi_profile* cortex_undumpi_open(const char* fname, job_id_t job_id, size_t world_size, rank_t world_rank) {
 	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)malloc(sizeof(cortex_dumpi_profile));
 
-	profile->dumpi = undumpi_open(fname);
-
-	if(profile->dumpi == NULL) {
-		free(profile);
-		return NULL;
+	if(fname) {
+		profile->dumpi = undumpi_open(fname);
+		if(profile->dumpi == NULL) {
+			free(profile);
+			return NULL;
+		}
+		profile->active = 1;
+	} else {
+		profile->dumpi = NULL;
+		profile->active = 0;
 	}
 
-	profile->active = 1;
 	profile->first_pending = NULL;
 	profile->last_pending = NULL;
 	profile->nprocs = world_size;
@@ -33,17 +37,25 @@ cortex_dumpi_profile* cortex_undumpi_open(const char* fname, job_id_t job_id, si
 }
 
 void cortex_undumpi_close(cortex_dumpi_profile* profile) {
-	undumpi_close(profile->dumpi);
+	if(profile->dumpi)
+		undumpi_close(profile->dumpi);
 	cortex_comm_delete_all(profile);
 	free(profile);
 }
 
 int cortex_dumpi_start_stream_read(cortex_dumpi_profile *profile) {
-	return dumpi_start_stream_read(profile->dumpi);
+	if(profile->dumpi) {
+		return dumpi_start_stream_read(profile->dumpi);
+	} else {
+		return 0;
+	}
 }
 
 dumpi_header* cortex_undumpi_read_header(cortex_dumpi_profile* profile) {
-	return undumpi_read_header(profile->dumpi);
+	if(profile->dumpi)
+		return undumpi_read_header(profile->dumpi);
+	else
+		return NULL;
 }
  
 int cortex_undumpi_read_single_call(cortex_dumpi_profile *profile,
@@ -101,16 +113,27 @@ int cortex_undumpi_read_stream(cortex_dumpi_profile* profile,
 
 dumpi_keyval_record* cortex_undumpi_read_keyval_record(cortex_dumpi_profile* profile)
 {
-	return undumpi_read_keyval_record(profile->dumpi);
+	if(profile->dumpi)
+		return undumpi_read_keyval_record(profile->dumpi);
+	else
+		return NULL;
 }
 
 dumpi_footer* cortex_undumpi_read_footer(cortex_dumpi_profile* profile)
 {
-	return undumpi_read_footer(profile->dumpi);
+	if(profile->dumpi)
+		return undumpi_read_footer(profile->dumpi);
+	else
+		return NULL;
 }
 
 dumpi_sizeof cortex_undumpi_read_datatype_sizes(cortex_dumpi_profile *profile)
 {
-	return undumpi_read_datatype_sizes(profile->dumpi);
+	if(profile->dumpi)
+		return undumpi_read_datatype_sizes(profile->dumpi);
+	else {
+		dumpi_sizeof s = { .count = 0, .size = NULL };
+		return s;
+	}
 }
 

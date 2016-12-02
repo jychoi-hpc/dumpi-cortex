@@ -12,7 +12,11 @@
 extern "C" {
 #endif
 
+typedef struct cortex_dumpi_profile cortex_dumpi_profile;
+
 int cortex_python_set_module(const char* module, const char* class_name);
+
+int cortex_python_call_generator(cortex_dumpi_profile* profile, const char* fun_name);
 
 extern const libundumpi_callbacks* CORTEX_PYTHON_TRANSLATION;
 

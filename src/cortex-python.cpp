@@ -4,6 +4,7 @@
 #include <cortex/comm.h>
 #include <cortex/datatype.h>
 #include <cortex/cortex-python.h>
+#include <cortex/profile.h>
 #include "cortex/debug.h"
 
 namespace bp = boost::python;
@@ -7319,14 +7320,46 @@ extern "C" int cortex_python_set_module(const char* module, const char* class_na
 		bp::object __dict__ = __main__.attr("__dict__");
 		cortex_python_module = bp::object(bp::handle<>(PyImport_ImportModule("cortex")));
 		user_python_module = bp::import(module);
-		user_python_translator 
-			= user_python_module.attr(class_name)();
-		
+		if(class_name) {
+			user_python_translator 
+				= user_python_module.attr(class_name)();
+		} else {
+			user_python_translator = user_python_module;
+		}
 	} catch(const bp::error_already_set&)
 	{
 		PyErr_Print();
 		exit(-1);
 	}
 	cortex_python_initialized = true;
+	return 0;
+}
+
+extern "C" int cortex_python_call_generator(cortex_dumpi_profile* profile, const char* fun_name) {
+	if(!cortex_python_initialized) return -1;
+
+	try {
+		bp::object fun = user_python_translator.attr(fun_name);
+		cortex_python_current_uarg = profile;
+		dumpi_time dt = { .start = dumpi_clock_init_time(0,0),
+				  .stop  = dumpi_clock_init_time(0,0) };
+
+		cortex_python_current_cpu  = &dt;
+		cortex_python_current_wall = &dt;
+		dumpi_perfinfo pi; pi.count = 0;
+		cortex_python_current_perf = &pi;
+
+		fun(profile->rank);
+
+		cortex_python_current_uarg = NULL;
+		cortex_python_current_cpu  = NULL;
+		cortex_python_current_wall = NULL;
+		cortex_python_current_perf = NULL;
+		
+	} catch(const bp::error_already_set&) {
+		PyErr_Print();
+		exit(-1);
+	}
+
 	return 0;
 }
