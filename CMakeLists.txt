@@ -27,7 +27,7 @@ include_directories(${DUMPI_INCLUDE_DIR})
 
 set(Python_ADDITIONAL_VERSIONS 3.4 3.5)
 if(DEFINED PYTHON_ROOT)
-	set(PYTHON_LIBRARY ${PYTHON_ROOT}/lib)
+	set(PYTHON_LIBRARY_DIR ${PYTHON_ROOT}/lib)
 	set(PYTHON_INCLUDE_DIR ${PYTHON_ROOT}/include)
 endif(DEFINED PYTHON_ROOT)
 find_package(PythonLibs)
