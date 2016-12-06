@@ -5738,11 +5738,11 @@ static int pycortex_datatype_register(dumpi_datatype t, int size) {
 BOOST_PYTHON_MODULE(cortex)
 {
 	bp::class_<dumpi_status>("MPI_Status")
-		.def_readonly("bytes",&dumpi_status::bytes)
-		.def_readonly("source",&dumpi_status::source)
-		.def_readonly("tag",&dumpi_status::tag)
-		.def_readonly("cancelled",&dumpi_status::cancelled)
-		.def_readonly("error",&dumpi_status::error);
+		.def_readwrite("nbytes",&dumpi_status::bytes)
+		.def_readwrite("source",&dumpi_status::source)
+		.def_readwrite("tag",&dumpi_status::tag)
+		.def_readwrite("cancelled",&dumpi_status::cancelled)
+		.def_readwrite("error",&dumpi_status::error);
 
 	bp::scope().attr("MPI_TOPOLOGY_ERROR") = (int)DUMPI_TOPOLOGY_ERROR;
 	bp::scope().attr("MPI_GRAPH") = (int)DUMPI_GRAPH;

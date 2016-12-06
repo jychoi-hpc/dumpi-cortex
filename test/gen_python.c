@@ -74,13 +74,19 @@ static int handleDUMPIAllgatherv(const dumpi_allgatherv* prm, uint16_t thread,
 
 int main(int argc, char** argv) {
 	
-	if(argc != 2) {
-		printf("Usage: %s world_size\n", argv[0]);
+	if(argc != 3) {
+		printf("Usage: %s world_size rank\n", argv[0]);
 		exit(-1);
 	}
 	int world_size = atoi(argv[1]);
+	int rank = atoi(argv[2]);
 
-	cortex_dumpi_profile* profile = cortex_undumpi_open(NULL,12345,world_size,0);
+	if(rank < 0 || rank >= world_size) {
+		printf("Invalid rank\n");
+		exit(-1);
+	}
+
+	cortex_dumpi_profile* profile = cortex_undumpi_open(NULL,12345,world_size,rank);
 
 	if(!profile) {
 		exit(-1);
@@ -99,7 +105,7 @@ int main(int argc, char** argv) {
 	cbacks.on_allgather	= handleDUMPIAllgather;
 	cbacks.on_allgatherv	= handleDUMPIAllgatherv;
 
-	cortex_python_set_module("MyBcastTranslator",NULL);
+	cortex_python_set_module("MyGenerator",NULL);
 
 	cortex_python_call_generator(profile, "GenerateThings");
 
