@@ -5723,18 +5723,6 @@ static int pycortex_get_world_size() {
 	return size;
 }
 
-static bool pycortex_is_mpi_comm_world(dumpi_comm comm) {
-	return comm == DUMPI_COMM_WORLD;
-}
-
-static bool pycortex_is_mpi_comm_self(dumpi_comm comm) {
-	return comm == DUMPI_COMM_SELF;
-}
-
-static bool pycortex_is_mpi_comm_null(dumpi_comm comm) {
-	return comm == DUMPI_COMM_NULL;
-}
-
 static int pycortex_datatype_get_size(dumpi_datatype t) {
 	return cortex_datatype_get_size((cortex_dumpi_profile*)cortex_python_current_uarg,t);
 }
@@ -5752,10 +5740,146 @@ BOOST_PYTHON_MODULE(cortex)
 		.def_readonly("cancelled",&dumpi_status::cancelled)
 		.def_readonly("error",&dumpi_status::error);
 
+	bp::scope().attr("MPI_TOPOLOGY_ERROR") = (int)DUMPI_TOPOLOGY_ERROR;
+	bp::scope().attr("MPI_GRAPH") = (int)DUMPI_GRAPH;
+	bp::scope().attr("MPI_CART") = (int)DUMPI_CART;
+	bp::scope().attr("MPI_UNDEFINED") = (int)DUMPI_UNDEFINED;
+
+	bp::scope().attr("MPI_DATATYPE_ERROR") = (int)DUMPI_DATATYPE_ERROR;
+	bp::scope().attr("MPI_DATATYPE_NULL") = (int)DUMPI_DATATYPE_NULL;
+	bp::scope().attr("MPI_CHAR") = (int)DUMPI_CHAR;
+	bp::scope().attr("MPI_SIGNED_CHAR") = (int)DUMPI_SIGNED_CHAR;
+	bp::scope().attr("MPI_UNSIGNED_CHAR") = (int)DUMPI_UNSIGNED_CHAR;
+	bp::scope().attr("MPI_BYTE") = (int)DUMPI_BYTE;
+	bp::scope().attr("MPI_WCHAR") = (int)DUMPI_WCHAR;
+	bp::scope().attr("MPI_SHORT") = (int)DUMPI_SHORT;
+	bp::scope().attr("MPI_UNSIGNED_SHORT") = (int)DUMPI_UNSIGNED_SHORT;
+	bp::scope().attr("MPI_INT") = (int)DUMPI_INT;
+	bp::scope().attr("MPI_UNSIGNED") = (int)DUMPI_UNSIGNED;
+	bp::scope().attr("MPI_LONG") = (int)DUMPI_LONG;
+	bp::scope().attr("MPI_UNSIGNED_LONG") = (int)DUMPI_UNSIGNED_LONG;
+	bp::scope().attr("MPI_FLOAT") = (int)DUMPI_FLOAT;
+	bp::scope().attr("MPI_DOUBLE") = (int)DUMPI_DOUBLE;
+	bp::scope().attr("MPI_LONG_DOUBLE") = (int)DUMPI_LONG_DOUBLE;
+	bp::scope().attr("MPI_LONG_LONG_INT") = (int)DUMPI_LONG_LONG_INT;
+	bp::scope().attr("MPI_UNSIGNED_LONG_LONG") = (int)DUMPI_UNSIGNED_LONG_LONG;
+	bp::scope().attr("MPI_LONG_LONG") = (int)DUMPI_LONG_LONG;
+	bp::scope().attr("MPI_PACKED") = (int)DUMPI_PACKED;
+	bp::scope().attr("MPI_LB") = (int)DUMPI_LB;
+	bp::scope().attr("MPI_UB") = (int)DUMPI_UB;
+	bp::scope().attr("MPI_FLOAT_INT") = (int)DUMPI_FLOAT_INT;
+	bp::scope().attr("MPI_DOUBLE_INT") = (int)DUMPI_DOUBLE_INT;
+	bp::scope().attr("MPI_LONG_INT") = (int)DUMPI_LONG_INT;
+	bp::scope().attr("MPI_SHORT_INT") = (int)DUMPI_SHORT_INT;
+	bp::scope().attr("MPI_2INT") = (int)DUMPI_2INT;
+	bp::scope().attr("MPI_LONG_DOUBLE_INT") = (int)DUMPI_LONG_DOUBLE_INT;
+
+	bp::scope().attr("MPI_FILE_NULL") = (int)DUMPI_FILE_NULL;
+	bp::scope().attr("MPI_INFO_NULL") = (int)DUMPI_INFO_NULL;
+
+	bp::scope().attr("MPI_OP_ERROR") = (int)DUMPI_OP_ERROR;
+	bp::scope().attr("MPI_MAX") = (int)DUMPI_MAX;
+	bp::scope().attr("MPI_MIN") = (int)DUMPI_MIN;
+	bp::scope().attr("MPI_SUM") = (int)DUMPI_SUM;
+	bp::scope().attr("MPI_PROD") = (int)DUMPI_PROD;
+	bp::scope().attr("MPI_LAND") = (int)DUMPI_LAND;
+	bp::scope().attr("MPI_BAND") = (int)DUMPI_BAND;
+	bp::scope().attr("MPI_LOR") = (int)DUMPI_LOR;
+	bp::scope().attr("MPI_BOR") = (int)DUMPI_BOR;
+	bp::scope().attr("MPI_LXOR") = (int)DUMPI_LXOR;
+	bp::scope().attr("MPI_BXOR") = (int)DUMPI_BXOR;
+	bp::scope().attr("MPI_MINLOC") = (int)DUMPI_MINLOC;
+	bp::scope().attr("MPI_MAXLOC") = (int)DUMPI_MAXLOC;
+	bp::scope().attr("MPI_REPLACE") = (int)DUMPI_REPLACE;
+	bp::scope().attr("MPI_OP_NULL") = (int)DUMPI_OP_NULL;
+
+	bp::scope().attr("MPI_COMPARISON_ERROR") = (int)DUMPI_COMPARISON_ERROR;
+	bp::scope().attr("MPI_IDENT") = (int)DUMPI_IDENT;
+	bp::scope().attr("MPI_CONGRUENT") = (int)DUMPI_CONGRUENT;
+	bp::scope().attr("MPI_SIMILAR") = (int)DUMPI_SIMILAR;
+	bp::scope().attr("MPI_UNEQUAL") = (int)DUMPI_UNEQUAL;
+
+	bp::scope().attr("MPI_GROUP_ERROR") = (int)DUMPI_GROUP_ERROR;
+	bp::scope().attr("MPI_GROUP_NULL") = (int)DUMPI_GROUP_NULL;
+	bp::scope().attr("MPI_GROUP_EMPTY") = (int)DUMPI_GROUP_EMPTY;
+
+	bp::scope().attr("MPI_COMM_ERROR") = (int)DUMPI_COMM_ERROR;
+	bp::scope().attr("MPI_COMM_NULL") = (int)DUMPI_COMM_NULL;
+	bp::scope().attr("MPI_COMM_WORLD") = (int)DUMPI_COMM_WORLD;
+	bp::scope().attr("MPI_COMM_SELF") = (int)DUMPI_COMM_SELF;
+
+	bp::scope().attr("MPI_REQUEST_ERROR") = (int)DUMPI_REQUEST_ERROR;
+	bp::scope().attr("MPI_REQUEST_NULL") = (int)DUMPI_REQUEST_NULL;
+
+	bp::scope().attr("MPI_ERRHANDLER_ERROR") = (int)DUMPI_ERRHANDLER_ERROR;
+	bp::scope().attr("MPI_ERRHANDLER_NULL") = (int)DUMPI_ERRHANDLER_NULL;
+
+	bp::scope().attr("MPI_FILEMODE_ERROR") = (int)DUMPI_FILEMODE_ERROR;
+	bp::scope().attr("MPI_MODE_RDONLY") = (int)DUMPI_MODE_RDONLY;
+	bp::scope().attr("MPI_MODE_RDWR") = (int)DUMPI_MODE_RDWR;
+	bp::scope().attr("MPI_MODE_WRONLY") = (int)DUMPI_MODE_WRONLY;
+	bp::scope().attr("MPI_MODE_CREATE") = (int)DUMPI_MODE_CREATE;
+	bp::scope().attr("MPI_MODE_EXCL") = (int)DUMPI_MODE_EXCL;
+	bp::scope().attr("MPI_MODE_DELETE_ON_CLOSE") = (int)DUMPI_MODE_DELETE_ON_CLOSE;
+	bp::scope().attr("MPI_MODE_UNIQUE_OPEN") = (int)DUMPI_MODE_UNIQUE_OPEN;
+	bp::scope().attr("MPI_MODE_SEQUENTIAL") = (int)DUMPI_MODE_SEQUENTIAL;
+	bp::scope().attr("MPI_MODE_APPEND") = (int)DUMPI_MODE_APPEND;
+
+	bp::scope().attr("MPI_LOCKTYPE_ERROR") = (int)DUMPI_LOCKTYPE_ERROR;
+	bp::scope().attr("MPI_LOCK_SHARED") = (int)DUMPI_LOCK_SHARED;
+	bp::scope().attr("MPI_LOCK_EXCLUSIVE") = (int)DUMPI_LOCK_EXCLUSIVE;
+
+	bp::scope().attr("MPI_ORDERING_ERROR") = (int)DUMPI_ORDERING_ERROR;
+	bp::scope().attr("MPI_ORDER_C") = (int)DUMPI_ORDER_C;
+	bp::scope().attr("MPI_ORDER_FORTRAN") = (int)DUMPI_ORDER_FORTRAN;
+
+	bp::scope().attr("MPI_THREADLEVEL_ERROR") = (int)DUMPI_THREADLEVEL_ERROR;
+	bp::scope().attr("MPI_THREAD_SINGLE") = (int)DUMPI_THREAD_SINGLE;
+	bp::scope().attr("MPI_THREAD_FUNNELED") = (int)DUMPI_THREAD_FUNNELED;
+	bp::scope().attr("MPI_THREAD_SERIALIZED") = (int)DUMPI_THREAD_SERIALIZED;
+	bp::scope().attr("MPI_THREAD_MULTIPLE") = (int)DUMPI_THREAD_MULTIPLE;
+
+	bp::scope().attr("MPI_TYPECLASS_ERROR") = (int)DUMPI_TYPECLASS_ERROR;
+	bp::scope().attr("MPI_TYPECLASS_REAL") = (int)DUMPI_TYPECLASS_REAL;
+	bp::scope().attr("MPI_TYPECLASS_INTEGER") = (int)DUMPI_TYPECLASS_INTEGER;
+	bp::scope().attr("MPI_TYPECLASS_COMPLEX") = (int)DUMPI_TYPECLASS_COMPLEX;
+
+	bp::scope().attr("MPI_WIN_NULL") = (int)DUMPI_WIN_NULL;
+
+	bp::scope().attr("MPI_WHENCE_ERROR") = (int)DUMPI_WHENCE_ERROR;
+	bp::scope().attr("MPI_SEEK_SET") = (int)DUMPI_SEEK_SET;
+	bp::scope().attr("MPI_SEEK_CUR") = (int)DUMPI_SEEK_CUR;
+	bp::scope().attr("MPI_SEEK_END") = (int)DUMPI_SEEK_END;
+
+	bp::scope().attr("MPI_MODE_ERROR") = (int)DUMPI_MODE_ERROR;
+	bp::scope().attr("MPI_MODE_NONE") = (int)DUMPI_MODE_NONE;
+	bp::scope().attr("MPI_MODE_NOCHECK") = (int)DUMPI_MODE_NOCHECK;
+	bp::scope().attr("MPI_MODE_NOSTORE") = (int)DUMPI_MODE_NOSTORE;
+	bp::scope().attr("MPI_MODE_NOPUT") = (int)DUMPI_MODE_NOPUT;
+	bp::scope().attr("MPI_MODE_NOPRECEDE") = (int)DUMPI_MODE_NOPRECEDE;
+	bp::scope().attr("MPI_MODE_NOSUCCEED") = (int)DUMPI_MODE_NOSUCCEED;
+
+	bp::scope().attr("MPI_COMBINER_ERROR") = (int)DUMPI_COMBINER_ERROR;
+	bp::scope().attr("MPI_COMBINER_DUP") = (int)DUMPI_COMBINER_DUP;
+	bp::scope().attr("MPI_COMBINER_VECTOR") = (int)DUMPI_COMBINER_VECTOR;
+	bp::scope().attr("MPI_COMBINER_HVECTOR") = (int)DUMPI_COMBINER_HVECTOR;
+	bp::scope().attr("MPI_COMBINER_HINDEXED_INTEGER") = (int)DUMPI_COMBINER_HINDEXED_INTEGER;
+	bp::scope().attr("MPI_COMBINER_INDEXED_BLOCK") = (int)DUMPI_COMBINER_INDEXED_BLOCK;
+	bp::scope().attr("MPI_COMBINER_STRUCT") = (int)DUMPI_COMBINER_STRUCT;
+	bp::scope().attr("MPI_COMBINER_DARRAY") = (int)DUMPI_COMBINER_DARRAY;
+	bp::scope().attr("MPI_COMBINER_F90_COMPLEX") = (int)DUMPI_COMBINER_F90_COMPLEX;
+	bp::scope().attr("MPI_COMBINER_RESIZED") = (int)DUMPI_COMBINER_RESIZED;
+	bp::scope().attr("MPI_COMBINER_NAMED") = (int)DUMPI_COMBINER_NAMED;
+	bp::scope().attr("MPI_COMBINER_CONTIGUOUS") = (int)DUMPI_COMBINER_CONTIGUOUS;
+	bp::scope().attr("MPI_COMBINER_HVECTOR_INTEGER") = (int)DUMPI_COMBINER_HVECTOR_INTEGER;
+	bp::scope().attr("MPI_COMBINER_INDEXED") = (int)DUMPI_COMBINER_INDEXED;
+	bp::scope().attr("MPI_COMBINER_HINDEXED") = (int)DUMPI_COMBINER_HINDEXED;
+	bp::scope().attr("MPI_COMBINER_STRUCT_INTEGER") = (int)DUMPI_COMBINER_STRUCT_INTEGER;
+	bp::scope().attr("MPI_COMBINER_SUBARRAY") = (int)DUMPI_COMBINER_SUBARRAY;
+	bp::scope().attr("MPI_COMBINER_F90_REAL") = (int)DUMPI_COMBINER_F90_REAL;
+	bp::scope().attr("MPI_COMBINER_F90_INTEGER") = (int)DUMPI_COMBINER_F90_INTEGER;
+
 	bp::def("world_size", &pycortex_get_world_size);
-	bp::def("is_mpi_comm_world", &pycortex_is_mpi_comm_world);
-	bp::def("is_mpi_comm_null",  &pycortex_is_mpi_comm_null);
-	bp::def("is_mpi_comm_self",  &pycortex_is_mpi_comm_self);
 	bp::def("is_basic_datatype", &pycortex_is_basic_datatype);
 	bp::def("datatype_size", &pycortex_datatype_get_size);
 
