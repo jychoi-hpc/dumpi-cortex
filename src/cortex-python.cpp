@@ -5727,8 +5727,12 @@ static int pycortex_datatype_get_size(dumpi_datatype t) {
 	return cortex_datatype_get_size((cortex_dumpi_profile*)cortex_python_current_uarg,t);
 }
 
-static int pycortex_is_basic_datatype(dumpi_datatype t) {
+static int pycortex_datatype_is_basic(dumpi_datatype t) {
 	return t < DUMPI_FIRST_USER_DATATYPE && t > 0;
+}
+
+static int pycortex_datatype_register(dumpi_datatype t, int size) {
+	return  cortex_datatype_add((cortex_dumpi_profile*)cortex_python_current_uarg,t,size);
 }
 
 BOOST_PYTHON_MODULE(cortex)
@@ -5879,9 +5883,10 @@ BOOST_PYTHON_MODULE(cortex)
 	bp::scope().attr("MPI_COMBINER_F90_REAL") = (int)DUMPI_COMBINER_F90_REAL;
 	bp::scope().attr("MPI_COMBINER_F90_INTEGER") = (int)DUMPI_COMBINER_F90_INTEGER;
 
-	bp::def("world_size", &pycortex_get_world_size);
-	bp::def("is_basic_datatype", &pycortex_is_basic_datatype);
+	bp::def("comm_world_size", &pycortex_get_world_size);
+	bp::def("datatype_is_basic", &pycortex_datatype_is_basic);
 	bp::def("datatype_size", &pycortex_datatype_get_size);
+	bp::def("datatype_register", &pycortex_datatype_register);
 
 	bp::def("MPI_Send", &pycortex_post_dumpi_send,
 		(bp::arg("thread"),
