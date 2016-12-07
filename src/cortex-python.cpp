@@ -5883,6 +5883,21 @@ BOOST_PYTHON_MODULE(cortex)
 	bp::scope().attr("MPI_COMBINER_F90_REAL") = (int)DUMPI_COMBINER_F90_REAL;
 	bp::scope().attr("MPI_COMBINER_F90_INTEGER") = (int)DUMPI_COMBINER_F90_INTEGER;
 
+	bp::scope().attr("MPI_ROOT") = (int)(DUMPI_ROOT);
+	bp::scope().attr("MPI_ANY_SOURCE") = (int)(DUMPI_ANY_SOURCE);
+	bp::scope().attr("MPI_ANY_TAG") = (int)(DUMPI_ANY_TAG);
+
+	bp::scope().attr("MPI_TAG_UB") = (int)DUMPI_TAG_UB;
+	bp::scope().attr("MPI_WTIME_IS_GLOBAL") = (int)DUMPI_WTIME_IS_GLOBAL;
+	bp::scope().attr("MPI_APPNUM") = (int)DUMPI_APPNUM;
+	bp::scope().attr("MPI_WIN_DISP_UNIT") = (int)DUMPI_WIN_DISP_UNIT;
+	bp::scope().attr("MPI_HOST") = (int)DUMPI_HOST;
+	bp::scope().attr("MPI_UNIVERSE_SIZE") = (int)DUMPI_UNIVERSE_SIZE;
+	bp::scope().attr("MPI_WIN_BASE") = (int)DUMPI_WIN_BASE;
+	bp::scope().attr("MPI_IO") = (int)DUMPI_IO;
+	bp::scope().attr("MPI_LASTUSEDCODE") = (int)DUMPI_LASTUSEDCODE;
+	bp::scope().attr("MPI_WIN_SIZE") = (int)DUMPI_WIN_SIZE;
+
 	bp::def("comm_world_size", &pycortex_get_world_size);
 	bp::def("datatype_is_basic", &pycortex_datatype_is_basic);
 	bp::def("datatype_size", &pycortex_datatype_get_size);
