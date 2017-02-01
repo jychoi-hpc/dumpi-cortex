@@ -3,8 +3,6 @@
 #include "cortex/debug.h"
 #include "cortex/profile.h"
 
-#define MPICH_REDUCE_TAG -1234
-
 static int reduce_binomial(const dumpi_reduce* prm,
 			int rank,
 			const dumpi_time *cpu,
@@ -190,11 +188,11 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 				sr_prm.sendcount = send_cnt;
 				sr_prm.sendtype = prm->datatype;
 				sr_prm.dest = dst;
-				sr_prm.sendtag = 1234;
+				sr_prm.sendtag = CORTEX_REDUCE_TAG;
 				sr_prm.recvcount = recv_cnt;
 				sr_prm.recvtype = prm->datatype;
 				sr_prm.source = dst,
-				sr_prm.recvtag = 1234;
+				sr_prm.recvtag = CORTEX_REDUCE_TAG;
 				sr_prm.comm = prm->comm;
 			cortex_post_MPI_Sendrecv(&sr_prm,cpu,wall,perf,uarg);
 
@@ -222,7 +220,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 					recv_prm.count = cnts[0];
 					recv_prm.datatype = prm->datatype;
 					recv_prm.source = 0;
-					recv_prm.tag = 1234;
+					recv_prm.tag = CORTEX_REDUCE_TAG;
 					recv_prm.comm = prm->comm;
 				cortex_post_MPI_Recv(&recv_prm,cpu,wall,perf,uarg);
 
@@ -235,7 +233,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 					send_prm.count = cnts[0];
 					send_prm.datatype = prm->datatype;
 					send_prm.dest = prm->root;
-					send_prm.tag = 1234;
+					send_prm.tag = CORTEX_REDUCE_TAG;
 					send_prm.comm = prm->comm;
 				cortex_post_MPI_Send(&send_prm,cpu,wall,perf,uarg);
 			
@@ -294,7 +292,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 					send_prm.count = send_cnt;
 					send_prm.datatype = prm->datatype;
 					send_prm.dest = dst;
-					send_prm.tag = 1234;
+					send_prm.tag = CORTEX_REDUCE_TAG;
 					send_prm.comm = prm->comm;
 				cortex_post_MPI_Send(&send_prm,cpu,wall,perf,uarg);
 				break;
@@ -303,7 +301,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 					recv_prm.count = recv_cnt;
 					recv_prm.datatype = prm->datatype;
 					recv_prm.source = dst;
-					recv_prm.tag = 1234;
+					recv_prm.tag = CORTEX_REDUCE_TAG;
 					recv_prm.comm = prm->comm;
 				cortex_post_MPI_Recv(&recv_prm,cpu,wall,perf,uarg);
 			}

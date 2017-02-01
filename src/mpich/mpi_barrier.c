@@ -2,8 +2,6 @@
 #include "cortex/debug.h"
 #include "cortex/profile.h"
 
-#define MPICH_BARRIER_TAG -1234
-
 /**
  * This translates MPI_Barrier calls into a series of
  * point to point calls (MPI_Sendrecv). The following
@@ -29,10 +27,10 @@ int cortex_mpich_translate_MPI_Barrier(const dumpi_barrier *prm,
 	args.comm = prm->comm;
 	args.sendcount = 0;
 	args.sendtype = DUMPI_BYTE;
-	args.sendtag = MPICH_BARRIER_TAG;
+	args.sendtag = CORTEX_BARRIER_TAG;
 	args.recvcount = 0;
 	args.recvtype = DUMPI_BYTE;
-	args.recvtag = MPICH_BARRIER_TAG;
+	args.recvtag = CORTEX_BARRIER_TAG;
 	args.status = NULL;
 
 	while(mask < size) {
