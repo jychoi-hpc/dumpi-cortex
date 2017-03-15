@@ -31,6 +31,13 @@ set(CORTEX_PYTHON_SRC
 	${CORTEX_SOURCE_DIR}/src/cortex-python.cpp
 	${CORTEX_SOURCE_DIR}/src/python-callbacks.c
 	${CORTEX_SOURCE_DIR}/src/python/module.cpp
+	${CORTEX_SOURCE_DIR}/src/python/mpi_all.cpp
+)
+
+set(CORTEX_PYTHON_SRC_OLD
+	${CORTEX_SOURCE_DIR}/src/cortex-python.cpp
+	${CORTEX_SOURCE_DIR}/src/python-callbacks.c
+	${CORTEX_SOURCE_DIR}/src/python/module.cpp
 	${CORTEX_SOURCE_DIR}/src/python/mpi_abort.cpp
 	${CORTEX_SOURCE_DIR}/src/python/mpi_accumulate.cpp
 	${CORTEX_SOURCE_DIR}/src/python/mpi_add_error_class.cpp
