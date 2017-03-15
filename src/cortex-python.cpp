@@ -5,6 +5,8 @@
 #include <cortex/datatype.h>
 #include <cortex/cortex-python.h>
 #include <cortex/profile.h>
+#include <cortex/placement.h>
+#include <cortex/topology.h>
 #include "cortex/debug.h"
 
 namespace bp = boost::python;
@@ -5735,6 +5737,56 @@ static int pycortex_datatype_register(dumpi_datatype t, int size) {
 	return  cortex_datatype_add((cortex_dumpi_profile*)cortex_python_current_uarg,t,size);
 }
 
+// Placement functions
+
+static int pycortex_get_location(int rank) {
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
+	uint32_t cn_id;
+	if(0 == cortex_placement_get(profile, rank, &cn_id)) {
+		return cn_id;
+	} else {
+		return -1;
+	}
+}
+
+// Topology functions
+
+static int pycortex_get_router_from_node(int node) {
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
+	cortex_topology topo = profile->topology;
+	if(!topo) return -1;
+	if(node >= (topo->cn_per_router * topo->num_routers)) return -1;
+	return node / (topo->cn_per_router);
+}
+
+static double pycortex_get_bandwidth_between(int r1, int r2) {
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
+	cortex_topology topo = profile->topology;
+	if(!topo) return -1.0;
+	return topo->get_link_bandwidth(topo,r1,r2);
+}
+
+static double pycortex_get_node_bandwidth() {
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
+	cortex_topology topo = profile->topology;
+	if(!topo) return -1.0;
+	return topo->cn_bw;
+}
+
+static int pycortex_get_num_routers() {
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
+	cortex_topology topo = profile->topology;
+	if(!topo) return -1;
+	return topo->num_routers;
+}
+
+static int pycortex_get_cn_per_router() {
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
+	cortex_topology topo = profile->topology;
+	if(!topo) return -1;
+	return topo->cn_per_router;
+}
+
 BOOST_PYTHON_MODULE(cortex)
 {
 	bp::class_<dumpi_status>("MPI_Status")
@@ -5902,6 +5954,14 @@ BOOST_PYTHON_MODULE(cortex)
 	bp::def("datatype_is_basic", &pycortex_datatype_is_basic);
 	bp::def("datatype_size", &pycortex_datatype_get_size);
 	bp::def("datatype_register", &pycortex_datatype_register);
+
+	bp::def("location",&pycortex_get_location);
+
+	bp::def("router_id_from_node",&pycortex_get_router_from_node);
+	bp::def("bandwidth_between",&pycortex_get_bandwidth_between);
+	bp::def("node_bandwidth",&pycortex_get_node_bandwidth);
+	bp::def("num_routers",&pycortex_get_num_routers);
+	bp::def("nodes_per_router",&pycortex_get_cn_per_router);
 
 	bp::def("MPI_Send", &pycortex_post_dumpi_send,
 		(bp::arg("thread"),

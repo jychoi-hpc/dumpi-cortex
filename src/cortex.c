@@ -44,6 +44,13 @@ cortex_dumpi_profile* cortex_undumpi_open(const char* fname, job_id_t job_id, si
 		free(datatype_sizes.size);
 	}
 
+	// initialize the topology
+	profile->topology = NULL;
+
+	// initialize the placement information
+	profile->placement = (uint32_t*)malloc(sizeof(uint32_t)*(profile->nprocs));
+	memset(profile->placement,0,sizeof(uint32_t)*(profile->nprocs));
+
 	return profile;
 }
 
@@ -51,6 +58,8 @@ void cortex_undumpi_close(cortex_dumpi_profile* profile) {
 	if(profile->dumpi)
 		undumpi_close(profile->dumpi);
 	cortex_comm_delete_all(profile);
+	free(profile->placement);
+	cortex_topology_free(profile->topology);
 	free(profile);
 }
 
