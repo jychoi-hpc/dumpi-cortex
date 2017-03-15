@@ -74,13 +74,13 @@ static int reduce_binomial(const dumpi_reduce* prm,
 	dumpi_recv recv_prm;
 		recv_prm.count		= prm->count;
 		recv_prm.datatype	= prm->datatype;
-		recv_prm.tag		= MPICH_REDUCE_TAG;
+		recv_prm.tag		= CORTEX_REDUCE_TAG;
 		recv_prm.comm		= prm->comm;
 
 	dumpi_send send_prm;
 		send_prm.count		= prm->count;
 		send_prm.datatype	= prm->datatype;
-		send_prm.tag		= MPICH_REDUCE_TAG;
+		send_prm.tag		= CORTEX_REDUCE_TAG;
 		send_prm.comm		= prm->comm;
 
 	while(mask < comm_size) {
@@ -129,7 +129,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 				send_prm.count = prm->count;
 				send_prm.datatype = prm->datatype;
 				send_prm.dest = rank-1;
-				send_prm.tag = MPICH_REDUCE_TAG;
+				send_prm.tag = CORTEX_REDUCE_TAG;
 				send_prm.comm = prm->comm;
 			cortex_post_MPI_Send(&send_prm,cpu,wall,perf,uarg);
 
@@ -139,7 +139,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 				recv_prm.count = prm->count;
 				recv_prm.datatype = prm->datatype;
 				recv_prm.source = rank+1;
-				recv_prm.tag = MPICH_REDUCE_TAG;
+				recv_prm.tag = CORTEX_REDUCE_TAG;
 				recv_prm.comm = prm->comm;
 			cortex_post_MPI_Recv(&recv_prm,cpu,wall,perf,uarg);
 

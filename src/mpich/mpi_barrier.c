@@ -1,6 +1,7 @@
 #include "cortex/cortex.h"
 #include "cortex/debug.h"
 #include "cortex/profile.h"
+#include "cortex/mpich-constants.h"
 
 /**
  * This translates MPI_Barrier calls into a series of
