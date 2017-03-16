@@ -9,6 +9,7 @@
 #include <dumpi/libundumpi/bindings.h>
 #include <dumpi/libundumpi/libundumpi.h>
 #include <cortex/common.h>
+#include <cortex/topology.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,7 +18,7 @@ extern "C" {
 struct cortex_operation; // forward declaration
 struct cortex_comm; // forward declaration
 struct cortex_datatype; // forward declaration
-struct cortex_topology_s; // forward declaration
+struct cortex_topology; // forward declaration
 
 typedef struct cortex_dumpi_profile {
 	dumpi_profile* dumpi; /* internal dumpi profile */
@@ -33,7 +34,7 @@ typedef struct cortex_dumpi_profile {
 	struct cortex_comm* comms; /* hash table for the communicators */
 	struct cortex_datatype* dtypes; /* hash table for the datatypes */
 
-	struct cortex_topology_s* topology; /* topology information */
+	cortex_topology topology; /* topology information */
 	uint32_t* placement; /* array associating ranks to compute node IDs */
 
 } cortex_dumpi_profile;
