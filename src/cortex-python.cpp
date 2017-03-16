@@ -5741,7 +5741,7 @@ static int pycortex_datatype_register(dumpi_datatype t, int size) {
 
 // Placement functions
 
-static int pycortex_get_node_from_rank(int rank) {
+static int pycortex_get_compute_node_from_rank(int rank) {
 	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
 	uint32_t cn_id;
 	if(0 == cortex_placement_get(profile, rank, &cn_id)) {
@@ -5749,6 +5749,12 @@ static int pycortex_get_node_from_rank(int rank) {
 	} else {
 		return -1;
 	}
+}
+
+static bp::list pycortex_get_allocation() {
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
+	std::vector<uint32_t> pl(profile->placement,profile->placement+profile->nprocs);
+	return stl_vector_to_py_list(pl);
 }
 
 // Topology functions
@@ -5982,7 +5988,8 @@ BOOST_PYTHON_MODULE(cortex)
 	bp::def("datatype_size", &pycortex_datatype_get_size);
 	bp::def("datatype_register", &pycortex_datatype_register);
 
-	bp::def("node_id_from_rank",&pycortex_get_node_from_rank);
+	bp::def("get_compute_node_id_from_rank",&pycortex_get_compute_node_from_rank);
+	bp::def("get_full_allocation",&pycortex_get_allocation);
 
 	bp::def("get_router_link_bandwidth",&pycortex_get_router_link_bandwidth);
 	bp::def("get_compute_node_bandwidth",&pycortex_get_compute_node_bandwidth);
