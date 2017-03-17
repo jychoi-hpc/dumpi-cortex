@@ -25,7 +25,7 @@ typedef int    (*rr_location_fn)(void*,router_id_t,int32_t*,int);
 typedef int    (*cn_location_fn)(void*,cn_id_t,int32_t*,int);
 typedef router_id_t (*cn_router_fn)(void*,cn_id_t);
 typedef int    (*rr_compute_node_count_fn)(void*,router_id_t);
-typedef int    (*rr_compute_node_list_fn)(void*,router_id_t,cn_id_t*);
+typedef void   (*rr_compute_node_list_fn)(void*,router_id_t,cn_id_t*);
 
 struct cortex_topology {
 	void* internal; // Internal representation of the topology

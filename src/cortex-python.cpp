@@ -5778,6 +5778,7 @@ static bp::list pycortex_get_router_neighbors(int router) {
 	cortex_topology* topo = &(profile->topology);
 	if(!(topo->get_router_neighbor_count && topo->get_router_neighbor_list)) return bp::list();
 	int len = topo->get_router_neighbor_count(topo->internal,router);
+	if(len < 1) return bp::list();
 	std::vector<router_id_t> neighbors(len);
 	topo->get_router_neighbor_list(topo->internal,router,&neighbors[0]);
 	return stl_vector_to_py_list(neighbors);
@@ -5789,6 +5790,7 @@ static bp::list pycortex_get_router_location(int router) {
 	if(!(topo->get_router_location)) return bp::list();
 	int32_t location[16];
 	int s = topo->get_router_location(topo->internal,router,location,16);
+	if(s < 1) return bp::list();
 	std::vector<int32_t> result(location,location+s);
 	return stl_vector_to_py_list(result);
 }
@@ -5799,6 +5801,7 @@ static bp::list pycortex_get_compute_node_location(int cn) {
 	if(!(topo->get_compute_node_location)) return bp::list();
 	int32_t location[16];
 	int s = topo->get_compute_node_location(topo->internal,cn,location,16);
+	if(s < 1) return bp::list();
 	std::vector<int32_t> result(location,location+s);
 	return stl_vector_to_py_list(result);
 }
@@ -5815,6 +5818,7 @@ static bp::list pycortex_get_router_compute_nodes(int router) {
 	cortex_topology* topo = &(profile->topology);
 	if(!(topo->get_router_compute_node_count && topo->get_router_compute_node_list)) return bp::list();
 	int len = topo->get_router_compute_node_count(topo->internal,router);
+	if(len < 1) return bp::list();
 	std::vector<cn_id_t> cns(len);
 	topo->get_router_compute_node_list(topo->internal,router,&cns[0]);
 	return stl_vector_to_py_list(cns);
