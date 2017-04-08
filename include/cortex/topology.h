@@ -17,6 +17,8 @@ typedef struct cortex_topology cortex_topology;
 typedef int router_id_t;
 typedef int cn_id_t;
 
+typedef int    (*rr_count)(void*);
+typedef int    (*cn_count)(void*);
 typedef double (*rr_bandwidth_fn)(void*,router_id_t,router_id_t);
 typedef double (*cn_bandwidth_fn)(void*,cn_id_t);
 typedef int    (*rr_neighbor_count_fn)(void*,router_id_t);
@@ -29,9 +31,11 @@ typedef void   (*rr_compute_node_list_fn)(void*,router_id_t,cn_id_t*);
 
 struct cortex_topology {
 	void* internal; // Internal representation of the topology
+	rr_count				get_number_of_routers;
+	cn_count				get_number_of_compute_nodes;
 	rr_bandwidth_fn 		get_router_link_bandwidth;
 	cn_bandwidth_fn 		get_compute_node_bandwidth;
-	rr_neighbor_count_fn 		get_router_neighbor_count;
+	rr_neighbor_count_fn 	get_router_neighbor_count;
 	rr_neighbor_list_fn		get_router_neighbor_list;
 	rr_location_fn			get_router_location;
 	cn_location_fn			get_compute_node_location;
