@@ -32,7 +32,6 @@ if(ENABLE_PYTHON)
 set(CORTEX_PYTHON_SRC
 	${CORTEX_SOURCE_DIR}/src/cortex-python.cpp
 	${CORTEX_SOURCE_DIR}/src/python-callbacks.c
-	${CORTEX_SOURCE_DIR}/src/python/module.cpp
 	${CORTEX_SOURCE_DIR}/src/python/mpi_all.cpp
 )
 

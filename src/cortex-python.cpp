@@ -5759,6 +5759,20 @@ static bp::list pycortex_get_allocation() {
 
 // Topology functions
 
+static int pycortex_get_number_of_routers() {
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
+	cortex_topology* topo = &(profile->topology);
+	if(!(topo->get_number_of_routers)) return -1;
+	return topo->get_number_of_routers(topo->internal);
+}
+
+static int pycortex_get_number_of_compute_nodes() {
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
+	cortex_topology* topo = &(profile->topology);
+	if(!(topo->get_number_of_compute_nodes)) return -1;
+	return topo->get_number_of_compute_nodes(topo->internal);
+}
+
 static double pycortex_get_router_link_bandwidth(int r1, int r2) {
 	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)cortex_python_current_uarg;
 	cortex_topology* topo = &(profile->topology);
@@ -5995,6 +6009,8 @@ BOOST_PYTHON_MODULE(cortex)
 	bp::def("get_compute_node_id_from_rank",&pycortex_get_compute_node_from_rank);
 	bp::def("get_full_allocation",&pycortex_get_allocation);
 
+	bp::def("get_number_of_routers",&pycortex_get_number_of_routers);
+	bp::def("get_number_of_compute_nodes",&pycortex_get_number_of_compute_nodes);
 	bp::def("get_router_link_bandwidth",&pycortex_get_router_link_bandwidth);
 	bp::def("get_compute_node_bandwidth",&pycortex_get_compute_node_bandwidth);
 	bp::def("get_router_neighbors",&pycortex_get_router_neighbors);
