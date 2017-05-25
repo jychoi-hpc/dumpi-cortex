@@ -10,8 +10,8 @@
 extern "C" {
 #endif
 
-typedef struct cortex_dumpi_profile cortex_dumpi_profile;
-
+//typedef struct cortex_dumpi_profile cortex_dumpi_profile;
+struct cortex_dumpi_profile; //forward declaration
 typedef struct cortex_topology cortex_topology;
 
 typedef int router_id_t;
@@ -44,7 +44,7 @@ struct cortex_topology {
 	rr_compute_node_list_fn		get_router_compute_node_list;
 };
 
-int cortex_topology_set(cortex_dumpi_profile* profile, cortex_topology* topology);
+int cortex_topology_set(struct cortex_dumpi_profile* profile, cortex_topology* topology);
 
 #ifdef __cplusplus
 }
