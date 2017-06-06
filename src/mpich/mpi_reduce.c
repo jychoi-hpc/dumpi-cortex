@@ -1,5 +1,6 @@
 #include "cortex/cortex.h"
 #include "cortex/mpich-constants.h"
+#define __DEBUG
 #include "cortex/debug.h"
 #include "cortex/profile.h"
 
@@ -68,7 +69,7 @@ static int reduce_binomial(const dumpi_reduce* prm,
 	root = prm->root;
 
 	mask = 0x1;
-	lroot = 0;
+	lroot = root;
 	relrank = (rank - lroot+comm_size) % comm_size;
 
 	dumpi_recv recv_prm;
@@ -86,8 +87,10 @@ static int reduce_binomial(const dumpi_reduce* prm,
 	while(mask < comm_size) {
 		if ((mask & relrank) == 0) {
 			source = (relrank | mask);
-			recv_prm.source = source;
-			cortex_post_MPI_Recv(&recv_prm,rank,cpu,wall,perf,uarg);
+			if (source < comm_size) {
+				recv_prm.source = source;
+				cortex_post_MPI_Recv(&recv_prm,rank,cpu,wall,perf,uarg);
+			}
 		} else {
 			source = ((relrank & (~ mask)) + lroot) % comm_size;
 			send_prm.dest = source;
