@@ -1,6 +1,5 @@
 #include "cortex/cortex.h"
 #include "cortex/mpich-constants.h"
-#define __DEBUG
 #include "cortex/debug.h"
 #include "cortex/profile.h"
 
