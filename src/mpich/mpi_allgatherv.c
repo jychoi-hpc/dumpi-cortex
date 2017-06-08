@@ -40,6 +40,10 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
 
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Allgatherv(prm, thread, cpu, wall, perf, uarg);
+#endif
+
 	int rank, comm_size;
 	rank = ((cortex_dumpi_profile*)uarg)->rank;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
@@ -62,7 +66,7 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 	for (i=0; i<comm_size; i++)
 		total_count += prm->recvcounts[i];
 
-	if (total_count == 0) return 0;
+	if (total_count == 0) goto fn_exit;
 
 	if((total_count*recvtype_size < CORTEX_ALLGATHER_LONG_MSG_SIZE) && !(comm_size & (comm_size - 1))) {
 		/* Power-of-two no. of processes, use recursive doubling algo */
@@ -208,5 +212,9 @@ int cortex_mpich_translate_MPI_Allgatherv(const dumpi_allgatherv *prm,
 		}
 	}
 
+fn_exit:
+#ifdef MPICH_FORWARD
+	cortex_post_MPI_Allgatherv(prm, thread, cpu, wall, perf, uarg);
+#endif
 	return 0;
 }

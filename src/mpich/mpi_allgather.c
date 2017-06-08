@@ -16,6 +16,10 @@ int cortex_mpich_translate_MPI_Allgather(const dumpi_allgather *prm,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
 
+#ifdef MPICH_FORWARD
+	cortex_post_MPI_Allgather(prm, thread, cpu, wall, perf, uarg);
+#endif
+
 	int rank, comm_size;
 	rank = ((cortex_dumpi_profile*)uarg)->rank;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
@@ -122,6 +126,10 @@ int cortex_mpich_translate_MPI_Allgather(const dumpi_allgather *prm,
 			jnext = (comm_size + jnext - 1) % comm_size;
 		}
 	}
+
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Allgather(prm, thread, cpu, wall, perf, uarg);
+#endif
 
 	return 0;
 }

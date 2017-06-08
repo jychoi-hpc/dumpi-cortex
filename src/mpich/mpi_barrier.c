@@ -15,6 +15,10 @@ int cortex_mpich_translate_MPI_Barrier(const dumpi_barrier *prm,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
 
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Barrier(prm, thread, cpu, wall, perf, uarg);
+#endif
+
 	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
 	INFO("Barrier using Mpich's barrier algorithm\n");
@@ -46,5 +50,8 @@ int cortex_mpich_translate_MPI_Barrier(const dumpi_barrier *prm,
 		mask <<= 1;
 	}
 
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Barrier(prm, thread, cpu, wall, perf, uarg);
+#endif
 	return 0;
 }

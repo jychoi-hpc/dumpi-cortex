@@ -16,6 +16,10 @@ int cortex_mpich_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 			void *uarg) {
 	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Alltoallv(prm, thread, cpu, wall, perf, uarg);
+#endif
+
 	int comm_size, i, j;
 	int dst, rank, req_cnt, req_num = 1;
 	int ii, ss, bblock;
@@ -87,6 +91,10 @@ int cortex_mpich_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 
 	free(starray);
 	free(reqarray);
+
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Alltoallv(prm, thread, cpu, wall, perf, uarg);
+#endif
 
 	return 0;
 }

@@ -67,22 +67,31 @@ int cortex_mpich_translate_MPI_Bcast(const dumpi_bcast *prm,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
 
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Bcast(prm, thread, cpu, wall, perf, uarg);
+#endif
+
 	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
 	int type_size = cortex_datatype_get_size(uarg,prm->datatype);
 	int comm_size;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 	int nbytes = prm->count * type_size;
+	int ret;
 	if((nbytes < CORTEX_BCAST_SHORT_MSG_SIZE) || (comm_size < CORTEX_BCAST_MIN_PROCS)) {
 		INFO("Bcast for %d bytes and %d processes, use binomial algorithm\n",nbytes,comm_size);
-		return bcast_binomial(prm,thread,cpu,wall,perf,uarg);
+		ret = bcast_binomial(prm,thread,cpu,wall,perf,uarg);
 	} else if((nbytes < CORTEX_BCAST_LONG_MSG_SIZE) && !(comm_size & (comm_size - 1))) {
 		INFO("Bcast for %d bytes and %d processes, use scatter followed by recursive doubling allgather\n",nbytes,comm_size);
-		return bcast_scatter_doubling_allgather(prm,thread,cpu,wall,perf,uarg);
+		ret = bcast_scatter_doubling_allgather(prm,thread,cpu,wall,perf,uarg);
 	} else {
 		INFO("Bcast for %d bytes and %d processes, use scatter followed by ring allgather\n",nbytes,comm_size);
-		return bcast_scatter_ring_allgather(prm,thread,cpu,wall,perf,uarg);
+		ret = bcast_scatter_ring_allgather(prm,thread,cpu,wall,perf,uarg);
 	}
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Bcast(prm, thread, cpu, wall, perf, uarg);
+#endif
+	return ret;
 }
 
 /**

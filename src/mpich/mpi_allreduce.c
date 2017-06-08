@@ -15,6 +15,10 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 
 	INFO("Allreduce using Mpich's algorithm\n");
 
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Allreduce(prm, thread, cpu, wall, perf, uarg);
+#endif
+
 	int comm_size, i, send_idx, recv_idx, last_idx, send_cnt, recv_cnt;
 	int pof2, mask, rem, newrank, newdst, dst, *cnts, *disps;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
@@ -211,6 +215,10 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 
 	if(cnts) free(cnts);
 	if(disps) free(disps);
+
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Allreduce(prm, thread, cpu, wall, perf, uarg);
+#endif
 
 	return 0;
 }

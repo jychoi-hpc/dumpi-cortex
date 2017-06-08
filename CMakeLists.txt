@@ -12,6 +12,12 @@ project(CORTEX)
 set(DEV_FLAGS "-g -Wall -Wextra -pedantic")
 set(CMAKE_C_FLAGS "-g")
 
+if(DEFINED MPICH_FORWARD)
+if(MPICH_FORWARD)
+	set(CMAKE_C_FLAGS "-DMPICH_FORWARD")
+endif()
+endif()
+
 #-----------------------------------------------------------#
 # Set the location of CMake Modules
 #-----------------------------------------------------------#

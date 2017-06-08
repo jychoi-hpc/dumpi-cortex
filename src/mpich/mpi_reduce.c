@@ -27,6 +27,10 @@ int cortex_mpich_translate_MPI_Reduce(const dumpi_reduce *prm,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
 
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Reduce(prm, thread, cpu, wall, perf, uarg);
+#endif
+
 	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
 	int comm_size, type_size;
@@ -43,6 +47,10 @@ int cortex_mpich_translate_MPI_Reduce(const dumpi_reduce *prm,
 		INFO("Reduce for %d bytes and %d processes, use binomial algorithm\n",(prm->count*type_size),comm_size);
 		return reduce_binomial(prm,thread,cpu,wall,perf,uarg);
 	}
+
+#ifdef MPICH_FORWARD
+    cortex_post_MPI_Reduce(prm, thread, cpu, wall, perf, uarg);
+#endif
 
 	return 0;
 }
