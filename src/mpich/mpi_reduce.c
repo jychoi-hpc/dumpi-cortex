@@ -141,7 +141,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 				send_prm.dest = rank-1;
 				send_prm.tag = CORTEX_REDUCE_TAG;
 				send_prm.comm = prm->comm;
-			cortex_post_MPI_Send(&send_prm,cpu,wall,perf,uarg);
+			cortex_post_MPI_Send(&send_prm,rank,cpu,wall,perf,uarg);
 
 			newrank = -1;
 		} else { /* even */
@@ -151,7 +151,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 				recv_prm.source = rank+1;
 				recv_prm.tag = CORTEX_REDUCE_TAG;
 				recv_prm.comm = prm->comm;
-			cortex_post_MPI_Recv(&recv_prm,cpu,wall,perf,uarg);
+			cortex_post_MPI_Recv(&recv_prm,rank,cpu,wall,perf,uarg);
 
 			newrank = rank / 2;
 		}
@@ -204,7 +204,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 				sr_prm.source = dst,
 				sr_prm.recvtag = CORTEX_REDUCE_TAG;
 				sr_prm.comm = prm->comm;
-			cortex_post_MPI_Sendrecv(&sr_prm,cpu,wall,perf,uarg);
+			cortex_post_MPI_Sendrecv(&sr_prm,rank,cpu,wall,perf,uarg);
 
 			send_idx = recv_idx;
 			mask <<= 1;
@@ -232,7 +232,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 					recv_prm.source = 0;
 					recv_prm.tag = CORTEX_REDUCE_TAG;
 					recv_prm.comm = prm->comm;
-				cortex_post_MPI_Recv(&recv_prm,cpu,wall,perf,uarg);
+				cortex_post_MPI_Recv(&recv_prm,rank,cpu,wall,perf,uarg);
 
 				newrank = 0;
 				send_idx = 0;
@@ -245,7 +245,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 					send_prm.dest = prm->root;
 					send_prm.tag = CORTEX_REDUCE_TAG;
 					send_prm.comm = prm->comm;
-				cortex_post_MPI_Send(&send_prm,cpu,wall,perf,uarg);
+				cortex_post_MPI_Send(&send_prm,rank,cpu,wall,perf,uarg);
 			
 				newrank = -1;
 			}
@@ -304,7 +304,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 					send_prm.dest = dst;
 					send_prm.tag = CORTEX_REDUCE_TAG;
 					send_prm.comm = prm->comm;
-				cortex_post_MPI_Send(&send_prm,cpu,wall,perf,uarg);
+				cortex_post_MPI_Send(&send_prm,rank,cpu,wall,perf,uarg);
 				break;
 			} else {
 				dumpi_recv recv_prm;
@@ -313,7 +313,7 @@ static int reduce_redscat_gather(const dumpi_reduce* prm,
 					recv_prm.source = dst;
 					recv_prm.tag = CORTEX_REDUCE_TAG;
 					recv_prm.comm = prm->comm;
-				cortex_post_MPI_Recv(&recv_prm,cpu,wall,perf,uarg);
+				cortex_post_MPI_Recv(&recv_prm,rank,cpu,wall,perf,uarg);
 			}
 
 			if (newrank > newdst) send_idx = recv_idx;
