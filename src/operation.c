@@ -60,8 +60,10 @@ static void* copy_parameters(dumpi_function type, const void *prm) {
 	// here we handle the case of copying pointers
 	// this should be done case-by case
 #define COPY2(_fun,_type,_field,_size_field,_mult) {	\
-	((_fun*)result)->_field = (_type*)malloc((((_fun*)prm)->_size_field)*sizeof(_type)*_mult); \
-	memcpy(((_fun*)result)->_field,((_fun*)prm)->_field,(((_fun*)prm)->_size_field)*sizeof(_type)*_mult); }
+    if(((_fun*)prm)->_field) {\
+	    ((_fun*)result)->_field = (_type*)malloc((((_fun*)prm)->_size_field)*sizeof(_type)*_mult); \
+	    memcpy(((_fun*)result)->_field,((_fun*)prm)->_field,(((_fun*)prm)->_size_field)*sizeof(_type)*_mult); }\
+    }
 
 #define COPY(_fun,_type,_field,_size_field) COPY2(_fun,_type,_field,_size_field,1)
 
