@@ -14,6 +14,8 @@ typedef struct cortex_comm {
 #define HASH_ADD_COMM(head,intfield,add)\
 		HASH_ADD(hh,head,intfield,sizeof(dumpi_comm),add)
 
+comm_info_t* cortex_lookup(cortex_dumpi_profile* profile, dumpi_comm prm_comm);
+
 int cortex_comm_add(cortex_dumpi_profile* profile, dumpi_comm comm, int size) {
 	cortex_comm* ccomm = NULL;
 	HASH_FIND_COMM((profile->comms), &comm, ccomm);
@@ -55,10 +57,14 @@ void cortex_comm_delete_all(cortex_dumpi_profile* profile) {
 }
 
 int cortex_comm_get_size(cortex_dumpi_profile* profile, dumpi_comm comm, int* size) {
+	/*
 	cortex_comm* ccomm = cortex_comm_find(profile, comm);
 	if(ccomm == NULL) {
 		return -1;
 	}
+	*size = ccomm->size;
+	*/
+	comm_info_t* ccomm = cortex_lookup(profile, comm);
 	*size = ccomm->size;
 	return 0;
 }

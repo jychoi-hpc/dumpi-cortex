@@ -53,6 +53,12 @@ message(STATUS "Python Include dirs contains ${PYTHON_INCLUDE_DIRS}")
 	endif(Boost_FOUND)
 endif(PYTHONLIBS_FOUND)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GLIB glib-2.0)
+include_directories(${GLIB_INCLUDE_DIRS})
+link_directories(${GLIB_LIBRARY_DIRS})
+add_definitions(${GLIB_CFLAGS_OTHER})
+
 #-----------------------------------------------------------#
 include_directories(${CORTEX_SOURCE_DIR})
 include_directories(${CORTEX_SOURCE_DIR}/include)

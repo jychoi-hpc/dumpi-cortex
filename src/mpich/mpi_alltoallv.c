@@ -14,11 +14,17 @@ int cortex_mpich_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
+    printf ("\n %s", __FUNCTION__);
 	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
 #ifdef MPICH_FORWARD
     cortex_post_MPI_Alltoallv(prm, thread, cpu, wall, perf, uarg);
 #endif
+
+	printf("\n cortex_mpich_translate_MPI_Alltoallv: comm=%d", prm->comm);
+	thread = ((cortex_dumpi_profile*)uarg)->rank;
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)uarg;
+	comm_info_t* comm = cortex_lookup(profile, prm->comm);
 
 	int comm_size, i, j;
 	int dst, rank, req_cnt, req_num = 1;
@@ -35,7 +41,8 @@ int cortex_mpich_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 	dumpi_waitall waitall_param;
 
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
-	rank = thread;
+	// rank = thread;
+	rank = comm->wtol[thread];
 
 	bblock = CORTEX_ALLTOALL_THROTTLE;
 
@@ -58,7 +65,8 @@ int cortex_mpich_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 					irecv_param.comm	= prm->comm;
 					irecv_param.request	= req_num++; // hopefuly the program is not doing other requests at the same time...
 					reqarray[req_cnt] = irecv_param.request;
-					cortex_post_MPI_Irecv(&irecv_param, thread, cpu, wall, perf, uarg);
+					// cortex_post_MPI_Irecv(&irecv_param, thread, cpu, wall, perf, uarg);
+					cortex_post_MPI_Irecv(&irecv_param, rank, cpu, wall, perf, uarg);
 
 					req_cnt++;
 			}
@@ -76,7 +84,8 @@ int cortex_mpich_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 					isend_param.request	= req_num++;
 
 					reqarray[req_cnt] = isend_param.request;
-					cortex_post_MPI_Isend(&isend_param, thread, cpu, wall, perf, uarg);
+					// cortex_post_MPI_Isend(&isend_param, thread, cpu, wall, perf, uarg);
+					cortex_post_MPI_Isend(&isend_param, rank, cpu, wall, perf, uarg);
 
 					req_cnt++;
 			}
@@ -86,7 +95,8 @@ int cortex_mpich_translate_MPI_Alltoallv(const dumpi_alltoallv *prm,
 		waitall_param.requests = reqarray;
 		waitall_param.statuses = starray;
 
-		cortex_post_MPI_Waitall(&waitall_param, thread, cpu, wall, perf, uarg);
+		// cortex_post_MPI_Waitall(&waitall_param, thread, cpu, wall, perf, uarg);
+		cortex_post_MPI_Waitall(&waitall_param, rank, cpu, wall, perf, uarg);
 	}
 
 	free(starray);

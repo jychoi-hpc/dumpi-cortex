@@ -26,26 +26,34 @@ int cortex_mpich_translate_MPI_Reduce(const dumpi_reduce *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
-
+    printf ("\n %s", __FUNCTION__);
 #ifdef MPICH_FORWARD
     cortex_post_MPI_Reduce(prm, thread, cpu, wall, perf, uarg);
 #endif
 
 	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
+	printf("\n cortex_mpich_translate_MPI_Reduce: comm=%d", prm->comm);
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)uarg;
+	comm_info_t* comm = cortex_lookup(profile, prm->comm);
+	int rank = comm->wtol[thread];
+
 	int comm_size, type_size;
 	type_size = cortex_datatype_get_size(uarg,prm->datatype);
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
+	printf("\n cortex_mpich_translate_MPI_Reduce: comm_size=%d", comm_size);
 	int pof2 = 1;
 	while (pof2 <= comm_size) pof2 <<= 1;
 	pof2 >>=1;
 
 	if((prm->count*type_size > CORTEX_REDUCE_SHORT_MSG_SIZE) && (prm->count >= pof2)) {
 		INFO("Reduce for %d bytes and %d processes, use redcast-gather algorithm\n",(prm->count*type_size),comm_size);
-		return reduce_redscat_gather(prm,thread,cpu,wall,perf,uarg);
+		// return reduce_redscat_gather(prm,thread,cpu,wall,perf,uarg);
+		return reduce_redscat_gather(prm,rank,cpu,wall,perf,uarg);
 	} else {
 		INFO("Reduce for %d bytes and %d processes, use binomial algorithm\n",(prm->count*type_size),comm_size);
-		return reduce_binomial(prm,thread,cpu,wall,perf,uarg);
+		// return reduce_binomial(prm,thread,thread,wall,perf,uarg);
+		return reduce_binomial(prm,rank,cpu,wall,perf,uarg);
 	}
 
 #ifdef MPICH_FORWARD

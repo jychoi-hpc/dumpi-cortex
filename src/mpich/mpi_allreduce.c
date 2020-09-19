@@ -12,6 +12,7 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
+    printf ("\n %s", __FUNCTION__);
 
 	INFO("Allreduce using Mpich's algorithm\n");
 
@@ -19,10 +20,16 @@ int cortex_mpich_translate_MPI_Allreduce(const dumpi_allreduce *prm,
     cortex_post_MPI_Allreduce(prm, thread, cpu, wall, perf, uarg);
 #endif
 
+	printf("\n cortex_mpich_translate_MPI_Allreduce: comm=%d", prm->comm);
+	thread = ((cortex_dumpi_profile*)uarg)->rank;
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)uarg;
+	comm_info_t* comm = cortex_lookup(profile, prm->comm);
+
 	int comm_size, i, send_idx, recv_idx, last_idx, send_cnt, recv_cnt;
 	int pof2, mask, rem, newrank, newdst, dst, *cnts, *disps;
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
-	int rank = ((cortex_dumpi_profile*)uarg)->rank;
+	// int rank = ((cortex_dumpi_profile*)uarg)->rank;
+	int rank = comm->wtol[thread];
 	int type_size = cortex_datatype_get_size(uarg,prm->datatype);
 
 	cnts = disps = NULL;

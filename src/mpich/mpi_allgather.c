@@ -15,13 +15,20 @@ int cortex_mpich_translate_MPI_Allgather(const dumpi_allgather *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
+    printf ("\n %s", __FUNCTION__);
 
 #ifdef MPICH_FORWARD
 	cortex_post_MPI_Allgather(prm, thread, cpu, wall, perf, uarg);
 #endif
 
+	printf("\n cortex_mpich_translate_MPI_Allgather: comm=%d", prm->comm);
+	thread = ((cortex_dumpi_profile*)uarg)->rank;
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)uarg;
+	comm_info_t* comm = cortex_lookup(profile, prm->comm);
+
 	int rank, comm_size;
-	rank = ((cortex_dumpi_profile*)uarg)->rank;
+	// rank = ((cortex_dumpi_profile*)uarg)->rank;
+	rank = comm->wtol[thread];
 	cortex_comm_get_size(uarg, prm->comm, &comm_size);
 
 	int j, i, pof2, src, rem, jnext;

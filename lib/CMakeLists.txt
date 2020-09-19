@@ -10,6 +10,7 @@ set(CORTEX_LIB_SRC
 )
 
 add_library(cortex ${CORTEX_LIB_SRC})
+target_link_libraries(cortex ${GLIB_LDFLAGS})
 
 set(CORTEX_MPICH_SRC
 	${CORTEX_SOURCE_DIR}/src/mpich-callbacks.c

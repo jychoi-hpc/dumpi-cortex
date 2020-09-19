@@ -15,6 +15,8 @@ extern "C" {
 #endif /* ! __cplusplus */
 
   typedef struct cortex_dumpi_profile cortex_dumpi_profile;
+  typedef struct comm_info_t comm_info_t;
+  comm_info_t* cortex_lookup(cortex_dumpi_profile* profile, dumpi_comm prm_comm);
 
   /**
    * Open a trace file for reading.

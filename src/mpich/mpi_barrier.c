@@ -14,6 +14,7 @@ int cortex_mpich_translate_MPI_Barrier(const dumpi_barrier *prm,
 			const dumpi_time *wall,
 			const dumpi_perfinfo *perf,
 			void *uarg) {
+    printf ("\n %s", __FUNCTION__);
 
 #ifdef MPICH_FORWARD
     cortex_post_MPI_Barrier(prm, thread, cpu, wall, perf, uarg);
@@ -21,10 +22,15 @@ int cortex_mpich_translate_MPI_Barrier(const dumpi_barrier *prm,
 
 	thread = ((cortex_dumpi_profile*)uarg)->rank;
 
+	printf("\n cortex_mpich_translate_MPI_Barrier: comm=%d", prm->comm);
+	cortex_dumpi_profile* profile = (cortex_dumpi_profile*)uarg;
+	comm_info_t* comm = cortex_lookup(profile, prm->comm);
+
 	INFO("Barrier using Mpich's barrier algorithm\n");
 
 	int rank, size, src, dst, mask;
-	rank = thread;
+	// rank = thread;
+	rank = comm->wtol[thread];
 	cortex_comm_get_size(uarg, prm->comm, &size);
 	mask = 0x1;
 
@@ -45,7 +51,8 @@ int cortex_mpich_translate_MPI_Barrier(const dumpi_barrier *prm,
 		args.dest = dst;
 		args.source = src;
 
-		cortex_post_MPI_Sendrecv(&args, thread, cpu, wall, perf, uarg);
+		// cortex_post_MPI_Sendrecv(&args, thread, cpu, wall, perf, uarg);
+		cortex_post_MPI_Sendrecv(&args, rank, cpu, wall, perf, uarg);
 
 		mask <<= 1;
 	}
